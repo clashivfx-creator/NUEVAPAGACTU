@@ -28,10 +28,10 @@ const SidebarFeature = ({
     onMouseLeave={onMouseLeave}
     className="group relative cursor-pointer"
   >
-    {/* Subtle Background Glow */}
-    <div className="absolute -inset-1 bg-violet-600/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+    {/* Subtle Background Glow for each card */}
+    <div className="absolute -inset-1 bg-violet-600/10 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     
-    <div className="relative flex items-center gap-4 bg-[#0a0a0f]/80 backdrop-blur-md border border-white/5 rounded-2xl p-5 transition-all duration-300 group-hover:border-violet-500/40 group-hover:-translate-x-1">
+    <div className="relative flex items-center gap-4 bg-[#0a0a1a]/60 backdrop-blur-xl border border-white/5 rounded-2xl p-5 transition-all duration-300 group-hover:border-violet-500/30 group-hover:-translate-x-1 group-hover:bg-[#0f0f2d]/80">
       <div className="shrink-0 relative w-10 h-10 flex items-center justify-center rounded-full bg-violet-600/10 border border-violet-500/20 group-hover:border-violet-400/50 transition-all">
         <Icon className="w-5 h-5 text-violet-400 group-hover:text-white transition-colors" />
       </div>
@@ -74,18 +74,29 @@ export const UltraWorkflow: React.FC = () => {
   const optimizeHoverVideo = "https://cdn.discordapp.com/attachments/1393659131549978666/1463350670634778666/BOTON_OPTIMIZAR.mp4?ex=69718303&is=69703183&hm=bc01c89f54128d5b34c995022b341ee428ea8debf0d9255aca09c62e3f65351e&";
 
   return (
-    <div className="pt-32 pb-24 relative bg-black min-h-screen overflow-hidden">
-      {/* Background Decor */}
+    <div className="pt-32 pb-24 relative bg-[#02000a] min-h-screen overflow-hidden">
+      {/* PROFESSIONAL SPACE BACKGROUND DECOR */}
       <div className="fixed inset-0 -z-10 pointer-events-none">
-        <div className="absolute top-[-20%] left-[20%] w-[100%] h-[50%] bg-violet-900/10 blur-[150px] rounded-full" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-violet-800/5 blur-[120px] rounded-full" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px] opacity-10"></div>
+        {/* Large smooth violet mesh */}
+        <div className="absolute top-[-10%] left-[-5%] w-[80%] h-[70%] bg-violet-600/10 blur-[180px] rounded-full animate-float-slow" />
+        
+        {/* Deep indigo glow */}
+        <div className="absolute bottom-[-15%] right-[-10%] w-[70%] h-[60%] bg-indigo-600/10 blur-[200px] rounded-full animate-float-slow" style={{ animationDelay: '-8s', animationDuration: '25s' }} />
+        
+        {/* Accent magenta bloom */}
+        <div className="absolute top-[30%] right-[15%] w-[40%] h-[40%] bg-fuchsia-600/5 blur-[150px] rounded-full animate-float-slow" style={{ animationDelay: '-15s', animationDuration: '35s' }} />
+        
+        {/* Subtly animated grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(139,92,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(139,92,246,0.03)_1px,transparent_1px)] bg-[size:80px_80px] opacity-40"></div>
+        
+        {/* Vignette for focus */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#02000a]/50 via-transparent to-[#02000a]/80"></div>
       </div>
 
       <div className="container mx-auto px-6 max-w-7xl relative z-10">
         <div className="text-center mb-16">
           <FadeIn delay={100}>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-violet-500/30 bg-violet-500/10 mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-violet-500/30 bg-violet-500/10 mb-6 backdrop-blur-sm shadow-[0_0_20px_rgba(139,92,246,0.1)]">
               <Sparkles className="w-3.5 h-3.5 text-violet-400" />
               <span className="text-[10px] font-black tracking-[0.2em] text-violet-200 uppercase">La herramienta definitiva para After Effects</span>
             </div>
@@ -99,8 +110,11 @@ export const UltraWorkflow: React.FC = () => {
           {/* Main Video Section */}
           <div className="lg:col-span-8">
             <FadeIn delay={200}>
-              <div className="relative group p-[1px] rounded-[2.5rem] overflow-hidden bg-white/5 border border-white/10 shadow-[0_0_80px_rgba(139,92,246,0.15)]">
-                <div className="relative z-10 bg-[#050508] rounded-[2.45rem] overflow-hidden aspect-[16/10]">
+              <div className="relative group p-[1.5px] rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-violet-500/20 via-white/5 to-indigo-500/20 shadow-[0_0_100px_rgba(139,92,246,0.1)]">
+                {/* Glow behind the player */}
+                <div className="absolute -inset-10 bg-violet-600/5 blur-[80px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                
+                <div className="relative z-10 bg-[#04040a] rounded-[2.45rem] overflow-hidden aspect-[16/10] border border-white/5">
                   <video
                     ref={videoRef}
                     autoPlay
@@ -122,18 +136,19 @@ export const UltraWorkflow: React.FC = () => {
                     <source src={optimizeHoverVideo} type="video/mp4" />
                   </video>
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#02000a]/80 via-transparent to-transparent pointer-events-none" />
                 </div>
               </div>
               
-              <div className="mt-8 flex justify-center">
-                <button className="relative group px-12 py-5 rounded-full text-white font-black text-xl uppercase tracking-widest bg-violet-600 hover:bg-violet-500 transition-all duration-300 shadow-[0_0_40px_rgba(139,92,246,0.6)] hover:shadow-[0_0_70px_rgba(139,92,246,0.9)] overflow-hidden">
+              <div className="mt-10 flex flex-col items-center gap-4">
+                <button className="relative group px-16 py-6 rounded-full text-white font-black text-xl uppercase tracking-widest bg-violet-600 hover:bg-violet-500 transition-all duration-300 shadow-[0_0_50px_rgba(139,92,246,0.4)] hover:shadow-[0_0_80px_rgba(139,92,246,0.7)] overflow-hidden">
                   <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                   <span className="relative flex items-center gap-4">
                     INSTALAR EXTENSIÓN
                     <MousePointer2 className="w-6 h-6 group-hover:scale-110 transition-transform" />
                   </span>
                 </button>
+                <p className="text-violet-300/50 text-[10px] font-bold uppercase tracking-[0.3em]">Compatible con After Effects 2022 - 2025</p>
               </div>
             </FadeIn>
           </div>
