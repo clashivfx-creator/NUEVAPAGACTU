@@ -1,20 +1,17 @@
 
-import React, { useContext } from 'react';
+import React from 'react';
 import { Video, Target, UsersRound, Package } from 'lucide-react';
 import { GlassCard } from './ui/GlassCard';
 import { FadeIn } from './ui/FadeIn';
-import { LanguageContext } from '../App';
 
 export const ProgramHighlights: React.FC = () => {
-  const { t } = useContext(LanguageContext);
-
   return (
     <section className="py-16 px-4 relative overflow-hidden">
       <div className="container mx-auto max-w-7xl relative z-10">
         <div className="text-center mb-12">
             <FadeIn>
               <h2 className="text-4xl md:text-6xl font-bold mb-4 tracking-tight">
-                {t('highlights.main_title')}
+                Esto no es un curso cualquiera
               </h2>
             </FadeIn>
         </div>
@@ -28,8 +25,8 @@ export const ProgramHighlights: React.FC = () => {
                        <Target className="w-7 h-7 text-pink-400 drop-shadow-[0_0_8px_rgba(236,72,153,0.5)]" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-bold mb-3 text-pink-100">{t('highlights.h1_title')}</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed group-hover:text-gray-300 transition-colors">{t('highlights.h1_desc')}</p>
+                  <h3 className="text-xl font-bold mb-3 text-pink-100">Feedback Directo</h3>
+                  <p className="text-gray-400 text-sm leading-relaxed group-hover:text-gray-300 transition-colors">Revisiones 1 a 1 de tus timelines para pulir esos detalles que marcan la diferencia.</p>
               </GlassCard>
             </FadeIn>
 
@@ -41,8 +38,8 @@ export const ProgramHighlights: React.FC = () => {
                        <Video className="w-7 h-7 text-indigo-400 drop-shadow-[0_0_8px_rgba(99,102,241,0.5)]" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-bold mb-3 text-indigo-100">{t('highlights.h2_title')}</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed group-hover:text-gray-300 transition-colors">{t('highlights.h2_desc')}</p>
+                  <h3 className="text-xl font-bold mb-3 text-indigo-100">Llamadas Grupales</h3>
+                  <p className="text-gray-400 text-sm leading-relaxed group-hover:text-gray-300 transition-colors">Sesiones semanales en vivo. Q&A, networking y análisis de proyectos reales.</p>
               </GlassCard>
             </FadeIn>
 
@@ -54,8 +51,8 @@ export const ProgramHighlights: React.FC = () => {
                        <UsersRound className="w-7 h-7 text-orange-400 drop-shadow-[0_0_8px_rgba(249,115,60,0.5)]" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-bold mb-3 text-orange-100">{t('highlights.h3_title')}</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed group-hover:text-gray-300 transition-colors">{t('highlights.h3_desc')}</p>
+                  <h3 className="text-xl font-bold mb-3 text-orange-100">Comunidad VIP</h3>
+                  <p className="text-gray-400 text-sm leading-relaxed group-hover:text-gray-300 transition-colors">Acceso exclusivo a un Discord privado con recursos, presets y ofertas laborales.</p>
               </GlassCard>
             </FadeIn>
 
@@ -67,8 +64,8 @@ export const ProgramHighlights: React.FC = () => {
                        <Package className="w-7 h-7 text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-bold mb-3 text-emerald-100">{t('highlights.h4_title')}</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed group-hover:text-gray-300 transition-colors">{t('highlights.h4_desc')}</p>
+                  <h3 className="text-xl font-bold mb-3 text-emerald-100">Software y Presets</h3>
+                  <p className="text-gray-400 text-sm leading-relaxed group-hover:text-gray-300 transition-colors">Incluye programas, plugins profesionales exclusivos y presets listos para usar.</p>
               </GlassCard>
             </FadeIn>
         </div>
