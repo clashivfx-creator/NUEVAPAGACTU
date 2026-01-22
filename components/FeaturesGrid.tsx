@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { 
   Zap, 
   Users, 
@@ -10,41 +10,44 @@ import {
 } from 'lucide-react';
 import { GlassCard } from './ui/GlassCard';
 import { FadeIn } from './ui/FadeIn';
-
-const features = [
-  {
-    Icon: Zap,
-    title: "Edición Profesional",
-    desc: "Crea VFX y ediciones profesionales."
-  },
-  {
-    Icon: Crown,
-    title: "Sé un Editor Reconocido",
-    desc: "Conviértete en el editor que todos conocen."
-  },
-  {
-    Icon: Users,
-    title: "Comunidad Activa",
-    desc: "Networking con editores que lideran el mercado."
-  },
-  {
-    Icon: Palette,
-    title: "Color Grading",
-    desc: "Logra acabados cinematográficos de estándar industrial."
-  },
-  {
-    Icon: Workflow,
-    title: "Inteligencia Artificial",
-    desc: "Crea videos con IA ultra realistas de calidad cine."
-  },
-  {
-    Icon: MessageSquare,
-    title: "Feedback Personalizado",
-    desc: "Correcciones directas sobre tus timelines."
-  }
-];
+import { LanguageContext } from '../App';
 
 export const FeaturesGrid: React.FC = () => {
+  const { t } = useContext(LanguageContext);
+
+  const features = [
+    {
+      Icon: Zap,
+      title: t('features.f1_title'),
+      desc: t('features.f1_desc')
+    },
+    {
+      Icon: Crown,
+      title: t('features.f2_title'),
+      desc: t('features.f2_desc')
+    },
+    {
+      Icon: Users,
+      title: t('features.f3_title'),
+      desc: t('features.f3_desc')
+    },
+    {
+      Icon: Palette,
+      title: t('features.f4_title'),
+      desc: t('features.f4_desc')
+    },
+    {
+      Icon: Workflow,
+      title: t('features.f5_title'),
+      desc: t('features.f5_desc')
+    },
+    {
+      Icon: MessageSquare,
+      title: t('features.f6_title'),
+      desc: t('features.f6_desc')
+    }
+  ];
+
   return (
     <section className="py-16 px-4 relative">
       <div className="container mx-auto max-w-7xl">
@@ -52,7 +55,7 @@ export const FeaturesGrid: React.FC = () => {
           <FadeIn>
             <h2 className="text-5xl md:text-7xl font-bold mb-4 tracking-tight">
               <span className="text-gradient-yellow inline-block">
-                INCLUYE:
+                {t('features.title')}
               </span>
             </h2>
           </FadeIn>

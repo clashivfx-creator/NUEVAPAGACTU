@@ -1,202 +1,253 @@
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useState, useContext } from 'react';
 import { FadeIn } from './ui/FadeIn';
 import { 
-  Sparkles, 
-  MousePointer2,
-  Zap,
-  Palette,
-  Layers,
-  Workflow,
-  Cpu,
-  Search
+  Check,
+  Star,
+  ZapIcon
 } from 'lucide-react';
+import { LanguageContext } from '../App';
 
-const SidebarFeature = ({ 
-  icon: Icon,
-  title, 
-  onMouseEnter, 
-  onMouseLeave 
-}: { 
-  icon: any,
+const FeatureList = () => {
+  const { t } = useContext(LanguageContext);
+  return (
+    <ul className="space-y-3 sm:space-y-5 mb-8 sm:mb-12">
+      {[
+        t('workflow.vfx'),
+        t('workflow.oneclick'),
+        t('workflow.save_time'),
+        t('workflow.optim')
+      ].map((item, i) => (
+        <li key={i} className="flex items-start gap-3 sm:gap-5 text-gray-300 text-sm sm:text-base font-medium tracking-tight text-left">
+          <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white/10 flex items-center justify-center shrink-0 mt-0.5">
+            <Check className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-white" />
+          </div>
+          {item}
+        </li>
+      ))}
+    </ul>
+  );
+};
+
+const SectionText = ({ number, title, desc, isHovered, align = 'left' }: { 
+  number: string, 
   title: string, 
-  onMouseEnter?: () => void,
-  onMouseLeave?: () => void
-}) => (
-  <div 
-    onMouseEnter={onMouseEnter}
-    onMouseLeave={onMouseLeave}
-    className="group relative cursor-pointer"
-  >
-    {/* Subtle Background Glow for each card */}
-    <div className="absolute -inset-1 bg-violet-600/10 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-    
-    <div className="relative flex items-center gap-4 bg-[#0a0a1a]/60 backdrop-blur-xl border border-white/5 rounded-2xl p-5 transition-all duration-300 group-hover:border-violet-500/30 group-hover:-translate-x-1 group-hover:bg-[#0f0f2d]/80">
-      <div className="shrink-0 relative w-10 h-10 flex items-center justify-center rounded-full bg-violet-600/10 border border-violet-500/20 group-hover:border-violet-400/50 transition-all">
-        <Icon className="w-5 h-5 text-violet-400 group-hover:text-white transition-colors" />
-      </div>
-      <h3 className="text-sm font-bold text-white leading-tight transition-colors group-hover:text-violet-100">
+  desc: string, 
+  isHovered: boolean, 
+  align?: 'left' | 'right'
+}) => {
+  const { t } = useContext(LanguageContext);
+  return (
+    <div className={`flex flex-col justify-center max-w-md transition-all duration-700 cubic-bezier(0.16, 1, 0.3, 1) relative
+      ${isHovered ? (align === 'left' ? 'lg:-translate-x-12 lg:scale-105 z-[70]' : 'lg:translate-x-12 lg:scale-105 z-[70]') : 'translate-x-0 z-10 opacity-100 blur-0'}
+    `}>
+      <span className="text-purple-500 font-bold text-xs sm:text-sm tracking-widest mb-2 sm:mb-4 opacity-70 uppercase">{number}</span>
+      <h3 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-4 sm:mb-6 leading-tight text-left">
         {title}
       </h3>
+      <p className="text-gray-400 leading-relaxed mb-6 sm:mb-10 text-base sm:text-lg font-light text-left">
+        {desc}
+      </p>
+      <button className="btn-premium-3d w-full sm:w-fit py-4 sm:py-5 px-8 sm:px-12 text-sm">
+        {t('workflow.access')}
+      </button>
     </div>
-  </div>
-);
+  );
+};
+
+const VideoContainer = ({ 
+  src, 
+  isHovered, 
+  onHover, 
+  onLeave, 
+  noZoom = false,
+  aspect = "aspect-video",
+  className = "",
+  side = "right" 
+}: { 
+  src: string, 
+  isHovered: boolean, 
+  onHover?: () => void, 
+  onLeave?: () => void, 
+  noZoom?: boolean, 
+  aspect?: string,
+  className?: string,
+  side?: "left" | "right"
+}) => {
+  const translation = side === "right" ? "lg:translate-x-12" : "lg:-translate-x-12";
+  
+  return (
+    <div 
+      onMouseEnter={onHover}
+      onMouseLeave={onLeave}
+      className={`relative group p-[1px] rounded-[1.5rem] sm:rounded-[2.5rem] origin-center transition-all duration-700 cubic-bezier(0.16, 1, 0.3, 1) 
+        ${!noZoom && isHovered ? `lg:scale-[1.25] ${translation} z-[100] shadow-[0_30px_100px_rgba(0,0,0,0.8)]` : 'z-10 scale-100 translate-x-0'}
+        ${className}
+      `}
+    >
+      {!noZoom && (
+        <div className={`absolute -inset-4 sm:-inset-10 bg-purple-500/20 blur-[40px] sm:blur-[80px] rounded-full transition-opacity duration-700 pointer-events-none ${isHovered ? 'opacity-100' : 'opacity-0'}`} />
+      )}
+      
+      <div className={`relative z-10 bg-[#050505] rounded-[1.45rem] sm:rounded-[2.45rem] overflow-hidden ${aspect} border border-white/10 shadow-2xl transition-all duration-700 group-hover:border-purple-500/40`}>
+        <video 
+          key={src}
+          autoPlay 
+          muted 
+          loop 
+          playsInline 
+          src={src}
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
+      </div>
+    </div>
+  );
+};
 
 export const UltraWorkflow: React.FC = () => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const hoverVideoRef = useRef<HTMLVideoElement>(null);
-  const perfVideoRef = useRef<HTMLVideoElement>(null);
-  const optimizeVideoRef = useRef<HTMLVideoElement>(null);
-  const [activeHover, setActiveHover] = useState<string | null>(null);
+  const [hoveredSection, setHoveredSection] = useState<string | null>(null);
+  const { t } = useContext(LanguageContext);
 
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.play().catch(err => console.warn(err));
-    }
-  }, []);
+  const curvesVideo = "https://cdn.discordapp.com/attachments/1393659131549978666/1463344913771925504/video_nashhh_5.mp4?ex=69722667&is=6970d4e7&hm=057bc4b26f2a179e0357bbf6708d8df641ef026170d2ff23353d035920da99a1&";
+  const layersVideo = "https://cdn.discordapp.com/attachments/1393659131549978666/1463347243749740554/perf.mp4?ex=69722892&is=6970d712&hm=e58d3f1ff39743d951c84b55829e227f04720b915393cce10aaf74b12e9161e8&";
+  const optimizeVideo = "https://cdn.discordapp.com/attachments/1393659131549978666/1463350670634778666/BOTON_OPTIMIZAR.mp4?ex=69722bc3&is=6970da43&hm=13de679231f0c36e51cf0fed7f1004579070f2c7507d907ca6d70d71cfd9db80&";
+  const moreFeaturesVideo = "https://cdn.discordapp.com/attachments/1393659131549978666/1463672404940296246/MAS_FUNCIONES.mp4?ex=6972aea7&is=69715d27&hm=0b6889bb806eb976ccb6f8b1f138a0d2414f01c23e9139e87f47e9ff242ead2d&";
+  const searchBarVideo = "https://cdn.discordapp.com/attachments/1393659131549978666/1463680890063556770/BARRA_DE_BUSQUEDA.mp4?ex=6972b68e&is=6971650e&hm=914cbfc57d7d23945034f1e473ffcff48f20a042f4baa9930f83273e5302aacd&";
+  const mainVideoUrl = "https://cdn.discordapp.com/attachments/1393659131549978666/1463716675068235931/presetnacion_final_1.mp4?ex=6972d7e1&is=69718661&hm=f146d09bac6290c64e73e1a4e0839ff0deeac542facccc1447666080f7cafe1e&";
 
-  useEffect(() => {
-    if (activeHover === 'curvas' && hoverVideoRef.current) {
-      hoverVideoRef.current.currentTime = 0;
-      hoverVideoRef.current.play().catch(err => console.warn(err));
-    } else if (activeHover === 'capas' && perfVideoRef.current) {
-      perfVideoRef.current.currentTime = 0;
-      perfVideoRef.current.play().catch(err => console.warn(err));
-    } else if (activeHover === 'optimizar' && optimizeVideoRef.current) {
-      optimizeVideoRef.current.currentTime = 0;
-      optimizeVideoRef.current.play().catch(err => console.warn(err));
-    }
-  }, [activeHover]);
-
-  const mainVideoUrl = "https://cdn.discordapp.com/attachments/1393659131549978666/1463331970879848489/video_nashhh.mp4?ex=69717199&is=69702019&hm=95da9ff0264e02f524a914190754cc4c21ca8fb65e0331b4e30773ad04396833&";
-  const curvesHoverVideo = "https://cdn.discordapp.com/attachments/1393659131549978666/1463344913771925504/video_nashhh_5.mp4?ex=69717da7&is=69702c27&hm=67c4f732442025ab9317d22e6eed95c221dd8398e87ab793080dec642ec0870f&";
-  const perfHoverVideo = "https://cdn.discordapp.com/attachments/1393659131549978666/1463347243749740554/perf.mp4?ex=69717fd2&is=69702e52&hm=ebefc3ca148611a2ca34d49c589acd68d6a34237c15f393b0dcd170d099c37e2&";
-  const optimizeHoverVideo = "https://cdn.discordapp.com/attachments/1393659131549978666/1463350670634778666/BOTON_OPTIMIZAR.mp4?ex=69718303&is=69703183&hm=bc01c89f54128d5b34c995022b341ee428ea8debf0d9255aca09c62e3f65351e&";
+  const videoAspect = "aspect-[1366/766]";
 
   return (
-    <div className="pt-32 pb-24 relative bg-[#02000a] min-h-screen overflow-hidden">
-      {/* PROFESSIONAL SPACE BACKGROUND DECOR */}
-      <div className="fixed inset-0 -z-10 pointer-events-none">
-        {/* Large smooth violet mesh */}
-        <div className="absolute top-[-10%] left-[-5%] w-[80%] h-[70%] bg-violet-600/10 blur-[180px] rounded-full animate-float-slow" />
-        
-        {/* Deep indigo glow */}
-        <div className="absolute bottom-[-15%] right-[-10%] w-[70%] h-[60%] bg-indigo-600/10 blur-[200px] rounded-full animate-float-slow" style={{ animationDelay: '-8s', animationDuration: '25s' }} />
-        
-        {/* Accent magenta bloom */}
-        <div className="absolute top-[30%] right-[15%] w-[40%] h-[40%] bg-fuchsia-600/5 blur-[150px] rounded-full animate-float-slow" style={{ animationDelay: '-15s', animationDuration: '35s' }} />
-        
-        {/* Subtly animated grid */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(139,92,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(139,92,246,0.03)_1px,transparent_1px)] bg-[size:80px_80px] opacity-40"></div>
-        
-        {/* Vignette for focus */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#02000a]/50 via-transparent to-[#02000a]/80"></div>
+    <div className="relative bg-[#000000] min-h-screen text-white overflow-x-hidden pt-4 sm:pt-10">
+      <div className="absolute inset-0 -z-10 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-5%] w-[80%] h-[70%] bg-purple-500/5 blur-[100px] sm:blur-[180px] rounded-full animate-float-slow" />
       </div>
 
-      <div className="container mx-auto px-6 max-w-7xl relative z-10">
-        <div className="text-center mb-16">
-          <FadeIn delay={100}>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-violet-500/30 bg-violet-500/10 mb-6 backdrop-blur-sm shadow-[0_0_20px_rgba(139,92,246,0.1)]">
-              <Sparkles className="w-3.5 h-3.5 text-violet-400" />
-              <span className="text-[10px] font-black tracking-[0.2em] text-violet-200 uppercase">La herramienta definitiva para After Effects</span>
-            </div>
-            <h1 className="text-5xl sm:text-7xl md:text-8xl font-black tracking-tight mb-4 uppercase italic text-workflow-shimmer select-none animate-text-glow-pulse">
-              ULTRAWORKFLOW
-            </h1>
-          </FadeIn>
-        </div>
+      <div className="container mx-auto px-4 sm:px-8 md:px-16 lg:px-24 max-w-[1600px] pt-4 sm:pt-10 pb-20 sm:pb-40 relative z-[1]">
+        {/* HERO SECTION */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 items-stretch mb-20 sm:mb-40 relative z-10">
+          <div className="lg:col-span-8 flex flex-col order-1">
+             <FadeIn delay={100} className="flex-1 flex items-center justify-center">
+                <VideoContainer src={mainVideoUrl} isHovered={false} noZoom={true} className="w-full" aspect={videoAspect} />
+             </FadeIn>
+          </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          {/* Main Video Section */}
-          <div className="lg:col-span-8">
-            <FadeIn delay={200}>
-              <div className="relative group p-[1.5px] rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-violet-500/20 via-white/5 to-indigo-500/20 shadow-[0_0_100px_rgba(139,92,246,0.1)]">
-                {/* Glow behind the player */}
-                <div className="absolute -inset-10 bg-violet-600/5 blur-[80px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-                
-                <div className="relative z-10 bg-[#04040a] rounded-[2.45rem] overflow-hidden aspect-[16/10] border border-white/5">
-                  <video
-                    ref={videoRef}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    className={`w-full h-full object-cover transition-opacity duration-700 ease-in-out ${activeHover ? 'opacity-0' : 'opacity-100'}`}
-                  >
-                    <source src={mainVideoUrl} type="video/mp4" />
-                  </video>
-
-                  <video ref={hoverVideoRef} muted loop playsInline className={`absolute inset-0 w-full h-full object-cover z-20 transition-all duration-700 ease-in-out ${activeHover === 'curvas' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                    <source src={curvesHoverVideo} type="video/mp4" />
-                  </video>
-                  <video ref={perfVideoRef} muted loop playsInline className={`absolute inset-0 w-full h-full object-cover z-20 transition-all duration-700 ease-in-out ${activeHover === 'capas' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                    <source src={perfHoverVideo} type="video/mp4" />
-                  </video>
-                  <video ref={optimizeVideoRef} muted loop playsInline className={`absolute inset-0 w-full h-full object-cover z-20 transition-all duration-700 ease-in-out ${activeHover === 'optimizar' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                    <source src={optimizeHoverVideo} type="video/mp4" />
-                  </video>
-
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#02000a]/80 via-transparent to-transparent pointer-events-none" />
+          <div className="lg:col-span-4 flex flex-col order-2">
+            <FadeIn delay={300} className="h-full">
+              <div 
+                className="h-full bg-white/[0.03] backdrop-blur-3xl border border-white/10 rounded-3xl sm:rounded-[3rem] p-6 sm:p-12 lg:p-10 xl:p-12 shadow-2xl flex flex-col overflow-hidden"
+                style={{ containerType: 'inline-size' } as React.CSSProperties}
+              >
+                <div className="flex justify-between items-center mb-6">
+                  <div className="flex gap-1 text-yellow-500/80">
+                    {[...Array(5)].map((_, i) => <Star key={i} className="w-3.5 sm:w-5 h-3.5 sm:h-5 fill-current" />)}
+                  </div>
+                  <div className="bg-purple-500/10 text-purple-400 text-[8px] sm:text-xs font-bold px-2 sm:px-4 py-1 rounded-full border border-purple-500/20 uppercase tracking-widest shrink-0 ml-4">Featured</div>
                 </div>
-              </div>
-              
-              <div className="mt-10 flex flex-col items-center gap-4">
-                <button className="relative group px-16 py-6 rounded-full text-white font-black text-xl uppercase tracking-widest bg-violet-600 hover:bg-violet-500 transition-all duration-300 shadow-[0_0_50px_rgba(139,92,246,0.4)] hover:shadow-[0_0_80px_rgba(139,92,246,0.7)] overflow-hidden">
-                  <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                  <span className="relative flex items-center gap-4">
-                    INSTALAR EXTENSIÓN
-                    <MousePointer2 className="w-6 h-6 group-hover:scale-110 transition-transform" />
-                  </span>
-                </button>
-                <p className="text-violet-300/50 text-[10px] font-bold uppercase tracking-[0.3em]">Compatible con After Effects 2022 - 2025</p>
+                {/* Título ULTRAWORKFLOW: Ajustado para ser gigante pero achicarse si toca los bordes */}
+                <h2 className="text-[min(11.8cqw,3rem)] sm:text-[min(11.8cqw,4.5rem)] font-black tracking-tighter mb-6 sm:mb-10 text-left whitespace-nowrap overflow-hidden">
+                  ULTRAWORKFLOW
+                </h2>
+                <div className="flex-1"><FeatureList /></div>
+                <div className="pt-6 sm:pt-10 border-t border-white/10 mt-auto text-left">
+                  <div className="flex items-baseline gap-2 sm:gap-4 mb-6 sm:mb-10">
+                    <span className="text-gray-500 line-through text-lg sm:text-xl font-medium">$90</span>
+                    <span className="text-4xl sm:text-6xl font-black text-white tracking-tighter">$49,99</span>
+                  </div>
+                  <div className="bg-purple-500/10 text-purple-300 text-[10px] sm:text-xs font-bold py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl text-center uppercase tracking-widest border border-purple-500/20 mb-4 sm:mb-8">
+                    {t('workflow.offer')}
+                  </div>
+                  <button className="btn-premium-3d w-full py-4 sm:py-6 text-sm">
+                    {t('workflow.access')} <ZapIcon className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
+                  </button>
+                  <p className="text-[8px] sm:text-xs text-center text-gray-500 mt-6 sm:mt-10 font-bold uppercase tracking-widest">{t('workflow.download')}</p>
+                </div>
               </div>
             </FadeIn>
           </div>
+        </div>
 
-          {/* Features Sidebar */}
-          <div className="lg:col-span-4 space-y-4">
-            <FadeIn delay={300}>
-              <SidebarFeature 
-                icon={Zap}
-                title="Curvas de movimiento"
-                onMouseEnter={() => setActiveHover('curvas')}
-                onMouseLeave={() => setActiveHover(null)}
-              />
-            </FadeIn>
-            <FadeIn delay={350}>
-              <SidebarFeature 
-                icon={Palette}
-                title="Aplicar efectos en tiempo real con un clic"
-              />
-            </FadeIn>
-            <FadeIn delay={400}>
-              <SidebarFeature 
-                icon={Layers}
-                title="Capas mas pesadas en tiempo real"
-                onMouseEnter={() => setActiveHover('capas')}
-                onMouseLeave={() => setActiveHover(null)}
-              />
-            </FadeIn>
-            <FadeIn delay={450}>
-              <SidebarFeature 
-                icon={Workflow}
-                title="Añadir y aplicar presets con 1 clic"
-              />
-            </FadeIn>
-            <FadeIn delay={500}>
-              <SidebarFeature 
-                icon={Cpu}
-                title="Optimizar After Effects con un clic"
-                onMouseEnter={() => setActiveHover('optimizar')}
-                onMouseLeave={() => setActiveHover(null)}
-              />
-            </FadeIn>
-            <FadeIn delay={550}>
-              <SidebarFeature 
-                icon={Search}
-                title="Buscar recursos en distintas plataformas"
-              />
-            </FadeIn>
+        {/* FEATURES HEADER */}
+        <div className="text-center mb-16 sm:mb-32 mt-16 sm:mt-48">
+          <FadeIn>
+            <h2 className="text-4xl sm:text-6xl md:text-8xl font-black text-white tracking-tighter mb-4 sm:mb-8">
+              {t('workflow.features_title')}
+            </h2>
+            <p className="text-gray-500 text-base sm:text-xl font-medium tracking-tight px-4">{t('workflow.features_desc')}</p>
+          </FadeIn>
+        </div>
+
+        {/* FEATURES LISTING */}
+        <div className="space-y-24 sm:space-y-48 mb-20 sm:mb-80">
+          {/* Feature 01 */}
+          <div className={`grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-24 items-center relative z-10`}>
+            <div className="relative flex justify-center lg:justify-end lg:pr-10 order-2 lg:order-1">
+              <FadeIn>
+                <SectionText number="01" title={t('workflow.f1_title')} desc={t('workflow.f1_desc')} isHovered={hoveredSection === '01'} align="left" />
+              </FadeIn>
+            </div>
+            <div className="relative flex justify-center lg:justify-start order-1 lg:order-2">
+              <FadeIn className="w-full max-w-2xl">
+                <VideoContainer src={layersVideo} isHovered={hoveredSection === '01'} onHover={() => setHoveredSection('01')} onLeave={() => setHoveredSection(null)} side="right" aspect={videoAspect} />
+              </FadeIn>
+            </div>
+          </div>
+
+          {/* Feature 02 */}
+          <div className={`grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-24 items-center relative z-10`}>
+            <div className="order-1 lg:order-1 relative flex justify-center lg:justify-end">
+              <FadeIn className="w-full max-w-2xl">
+                <VideoContainer src={curvesVideo} isHovered={hoveredSection === '02'} onHover={() => setHoveredSection('02')} onLeave={() => setHoveredSection(null)} side="left" aspect={videoAspect} />
+              </FadeIn>
+            </div>
+            <div className="order-2 lg:order-2 relative flex justify-center lg:justify-start lg:pl-10">
+              <FadeIn>
+                <SectionText number="02" title={t('workflow.f2_title')} desc={t('workflow.f2_desc')} isHovered={hoveredSection === '02'} align="right" />
+              </FadeIn>
+            </div>
+          </div>
+
+          {/* Feature 03 */}
+          <div className={`grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-24 items-center relative z-10`}>
+            <div className="relative flex justify-center lg:justify-end lg:pr-10 order-2 lg:order-1">
+              <FadeIn>
+                <SectionText number="03" title={t('workflow.f3_title')} desc={t('workflow.f3_desc')} isHovered={hoveredSection === '03'} align="left" />
+              </FadeIn>
+            </div>
+            <div className="relative flex justify-center lg:justify-start order-1 lg:order-2">
+              <FadeIn className="w-full max-w-2xl">
+                <VideoContainer src={optimizeVideo} isHovered={hoveredSection === '03'} onHover={() => setHoveredSection('03')} onLeave={() => setHoveredSection(null)} side="right" aspect={videoAspect} />
+              </FadeIn>
+            </div>
+          </div>
+
+          {/* Feature 04 */}
+          <div className={`grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-24 items-center relative z-10`}>
+            <div className="order-1 lg:order-1 relative flex justify-center lg:justify-end">
+              <FadeIn className="w-full max-w-2xl">
+                <VideoContainer src={moreFeaturesVideo} isHovered={hoveredSection === '04'} onHover={() => setHoveredSection('04')} onLeave={() => setHoveredSection(null)} side="left" aspect={videoAspect} />
+              </FadeIn>
+            </div>
+            <div className="order-2 lg:order-2 relative flex justify-center lg:justify-start lg:pl-10">
+              <FadeIn>
+                <SectionText number="04" title={t('workflow.f4_title')} desc={t('workflow.f4_desc')} isHovered={hoveredSection === '04'} align="right" />
+              </FadeIn>
+            </div>
+          </div>
+
+          {/* Feature 05 */}
+          <div className={`grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-24 items-center relative z-10`}>
+            <div className="relative flex justify-center lg:justify-end lg:pr-10 order-2 lg:order-1">
+              <FadeIn>
+                <SectionText number="05" title={t('workflow.f5_title')} desc={t('workflow.f5_desc')} isHovered={hoveredSection === '05'} align="left" />
+              </FadeIn>
+            </div>
+            <div className="relative flex justify-center lg:justify-start order-1 lg:order-2">
+              <FadeIn className="w-full max-w-2xl">
+                <VideoContainer src={searchBarVideo} isHovered={hoveredSection === '05'} onHover={() => setHoveredSection('05')} onLeave={() => setHoveredSection(null)} side="right" aspect={videoAspect} />
+              </FadeIn>
+            </div>
           </div>
         </div>
       </div>

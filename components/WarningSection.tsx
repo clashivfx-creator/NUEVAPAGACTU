@@ -1,10 +1,12 @@
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { TriangleAlert } from 'lucide-react';
 import { GlassCard } from './ui/GlassCard';
 import { FadeIn } from './ui/FadeIn';
+import { LanguageContext } from '../App';
 
 export const WarningSection: React.FC = () => {
+  const { t } = useContext(LanguageContext);
   return (
     <section className="pt-4 pb-12 px-4 relative flex justify-center">
       <div className="container max-w-3xl">
@@ -19,10 +21,9 @@ export const WarningSection: React.FC = () => {
                 </div>
                 
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold text-orange-100 mb-1 tracking-tight drop-shadow-md">Esta formación NO es para principiantes</h3>
+                  <h3 className="text-xl font-bold text-orange-100 mb-1 tracking-tight drop-shadow-md">{t('warning.title')}</h3>
                   <p className="text-gray-400 leading-relaxed font-light text-base">
-                    Este programa requiere minimos conocimientos previos de <span className="text-gray-200 font-medium border-b border-orange-500/30">After Effects & Premiere</span>. 
-                    Si buscas aprender desde cero, este no es el lugar.
+                    {t('warning.desc')}
                   </p>
                 </div>
               </div>
