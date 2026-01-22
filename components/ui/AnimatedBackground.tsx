@@ -6,8 +6,8 @@ export const AnimatedBackground: React.FC = () => {
 
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden bg-black pointer-events-none">
-      {/* Video de fondo */}
-      <div className="absolute inset-0 w-full h-full opacity-40">
+      {/* Video de fondo con opacidad controlada para no saturar la GPU */}
+      <div className="absolute inset-0 w-full h-full opacity-30 overflow-hidden">
         <video
           autoPlay
           muted
@@ -18,23 +18,18 @@ export const AnimatedBackground: React.FC = () => {
           <source src={videoUrl} type="video/mp4" />
         </video>
         
-        {/* Capa de desvanecimiento inferior (Fade) */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black pointer-events-none" />
         <div className="absolute bottom-0 left-0 right-0 h-[30vh] bg-gradient-to-t from-black to-transparent" />
       </div>
 
-      {/* Mesh gradients sutiles de Apple por encima para dar profundidad */}
+      {/* Mesh gradients optimizados con blurs menores para rendimiento */}
       <div 
-        className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full bg-blue-900/5 blur-[120px] animate-float-slow"
+        className="absolute top-[-5%] left-[-5%] w-[50%] h-[50%] rounded-full bg-blue-900/5 blur-[60px] animate-float-slow will-change-transform"
         style={{ animationDuration: '25s' }}
       />
       <div 
-        className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-900/5 blur-[150px] animate-float-slow"
+        className="absolute bottom-[5%] right-[-5%] w-[40%] h-[40%] rounded-full bg-purple-900/5 blur-[80px] animate-float-slow will-change-transform"
         style={{ animationDuration: '30s', animationDelay: '-5s' }}
-      />
-      <div 
-        className="absolute top-[20%] right-[10%] w-[40%] h-[40%] rounded-full bg-slate-800/5 blur-[130px] animate-float-slow"
-        style={{ animationDuration: '35s', animationDelay: '-12s' }}
       />
     </div>
   );

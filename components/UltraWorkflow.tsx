@@ -91,7 +91,7 @@ const VideoContainer = ({
       `}
     >
       {!noZoom && (
-        <div className={`absolute -inset-4 sm:-inset-10 bg-purple-500/20 blur-[40px] sm:blur-[80px] rounded-full transition-opacity duration-700 pointer-events-none ${isHovered ? 'opacity-100' : 'opacity-0'}`} />
+        <div className={`absolute -inset-4 sm:-inset-10 bg-purple-500/10 blur-[40px] rounded-full transition-opacity duration-700 pointer-events-none ${isHovered ? 'opacity-100' : 'opacity-0'}`} />
       )}
       
       <div className={`relative z-10 bg-[#050505] rounded-[1.45rem] sm:rounded-[2.45rem] overflow-hidden ${aspect} border border-white/10 shadow-2xl transition-all duration-700 group-hover:border-purple-500/40`}>
@@ -116,9 +116,9 @@ export const UltraWorkflow: React.FC = () => {
   const featuresHeaderRef = useRef<HTMLDivElement>(null);
   const shopifyUrl = "https://e08ff1-xx.myshopify.com/products/pack-avanzado-copia-1";
 
-  const curvesVideo = "https://cdn.discordapp.com/attachments/1393659131549978666/1463344913771925504/video_nashhh_5.mp4?ex=69722667&is=6970d4e7&hm=057bc4b26f2a179e0357bbf6708d8df641ef026170d2ff23353d035920da99a1&";
-  const layersVideo = "https://cdn.discordapp.com/attachments/1393659131549978666/1463347243749740554/perf.mp4?ex=69722892&is=6970d712&hm=e58d3f1ff39743d951c84b55829e227f04720b915393cce10aaf74b12e9161e8&";
-  const optimizeVideo = "https://cdn.discordapp.com/attachments/1393659131549978666/1463350670634778666/BOTON_OPTIMIZAR.mp4?ex=69722bc3&is=6970da43&hm=13de679231f0c36e51cf0fed7f1004579070f2c7507d907ca6d70d71cfd9db80&";
+  const curvesVideo = "https://cdn.discordapp.com/attachments/1393659131549978666/1463344913771925504/video_nashhh_5.mp4?ex=697377e7&is=69722667&hm=ab02160bde3daafae1894a774d68f940efc0d6eaafd0f531ef8533ea0a9a6337&";
+  const layersVideo = "https://cdn.discordapp.com/attachments/1393659131549978666/1463347243749740554/perf.mp4?ex=69737a12&is=69722892&hm=c2d5757faea731a3c1f4cc2a5434a119c8f65fd99c7bfa65eabb4071c1ca60b0&";
+  const optimizeVideo = "https://cdn.discordapp.com/attachments/1393659131549978666/1463350670634778666/BOTON_OPTIMIZAR.mp4?ex=69737d43&is=69722bc3&hm=c8b6a63a9bd913e1da881adc2d1c8a6293243f1c77416443cc0de972cb425fc1&";
   const moreFeaturesVideo = "https://cdn.discordapp.com/attachments/1393659131549978666/1463672404940296246/MAS_FUNCIONES.mp4?ex=6972aea7&is=69715d27&hm=0b6889bb806eb976ccb6f8b1f138a0d2414f01c23e9139e87f47e9ff242ead2d&";
   const searchBarVideo = "https://cdn.discordapp.com/attachments/1393659131549978666/1463680890063556770/BARRA_DE_BUSQUEDA.mp4?ex=6972b68e&is=6971650e&hm=914cbfc57d7d23945034f1e473ffcff48f20a042f4baa9930f83273e5302aacd&";
   const mainVideoUrl = "https://cdn.discordapp.com/attachments/1393659131549978666/1463720099583103110/presetnacion_final_1_1.mp4?ex=6972db12&is=69718992&hm=f4ac13a946e251d79f8742a02c1737251fb272a41edc19c84ac225a98aebe9b5&";
@@ -132,14 +132,14 @@ export const UltraWorkflow: React.FC = () => {
   return (
     <div className="relative bg-[#000000] min-h-screen text-white overflow-x-hidden pt-4 sm:pt-10">
       <div className="absolute inset-0 -z-10 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-5%] w-[80%] h-[70%] bg-purple-500/5 blur-[100px] sm:blur-[180px] rounded-full animate-float-slow" />
+        <div className="absolute top-[-10%] left-[-5%] w-[80%] h-[70%] bg-purple-500/5 blur-[80px] rounded-full animate-float-slow" />
       </div>
 
       <div className="container mx-auto px-4 sm:px-8 md:px-16 lg:px-24 max-w-[1600px] pt-4 sm:pt-10 pb-20 sm:pb-40 relative z-[1]">
-        {/* HERO SECTION */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 items-stretch mb-20 sm:mb-40 relative z-10">
+        {/* HERO SECTION - Alineación superior forzada */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 items-start mb-20 sm:mb-40 relative z-10">
           <div className="lg:col-span-8 flex flex-col order-1">
-             <FadeIn delay={100} className="flex-1 flex flex-col items-center justify-center">
+             <FadeIn delay={100} className="w-full flex flex-col items-center">
                 <VideoContainer src={mainVideoUrl} isHovered={false} noZoom={true} className="w-full" aspect={videoAspect} />
                 <button 
                   onClick={scrollToFeatures}
@@ -152,10 +152,10 @@ export const UltraWorkflow: React.FC = () => {
              </FadeIn>
           </div>
 
-          <div className="lg:col-span-4 flex flex-col order-2">
+          <div className="lg:col-span-4 flex flex-col order-2 h-full">
             <FadeIn delay={300} className="h-full">
               <div 
-                className="h-full bg-violet-900/40 backdrop-blur-3xl border border-violet-500/30 rounded-3xl sm:rounded-[3rem] p-6 sm:p-12 lg:p-10 xl:p-12 shadow-[0_0_50px_rgba(139,92,246,0.15)] flex flex-col overflow-hidden"
+                className="h-full bg-violet-900/30 backdrop-blur-2xl border border-violet-500/30 rounded-3xl sm:rounded-[3rem] p-6 sm:p-12 lg:p-10 xl:p-12 shadow-[0_0_50px_rgba(139,92,246,0.1)] flex flex-col overflow-hidden"
                 style={{ containerType: 'inline-size' } as React.CSSProperties}
               >
                 <div className="flex justify-between items-center mb-6">
@@ -164,7 +164,7 @@ export const UltraWorkflow: React.FC = () => {
                   </div>
                   <div className="bg-purple-500/10 text-purple-400 text-[8px] sm:text-xs font-bold px-2 sm:px-4 py-1 rounded-full border border-purple-500/20 uppercase tracking-widest shrink-0 ml-4">Featured</div>
                 </div>
-                {/* Título ULTRAWORKFLOW: Ajustado para ser gigante pero achicarse si toca los bordes */}
+                
                 <h2 className="text-[min(11.8cqw,3rem)] sm:text-[min(11.8cqw,4.5rem)] font-black tracking-tighter mb-6 sm:mb-10 text-left whitespace-nowrap overflow-hidden">
                   ULTRAWORKFLOW
                 </h2>
@@ -197,13 +197,13 @@ export const UltraWorkflow: React.FC = () => {
             <h2 className="text-4xl sm:text-6xl md:text-8xl font-black text-white tracking-tighter mb-4 sm:mb-8 uppercase">
               {t('workflow.features_title')}
             </h2>
-            <p className="text-gray-500 text-base sm:text-xl font-medium tracking-tight px-4">{t('workflow.features_desc')}</p>
+            <p className="text-gray-400 text-base sm:text-xl font-medium tracking-tight px-4">{t('workflow.features_desc')}</p>
           </FadeIn>
         </div>
 
         {/* FEATURES LISTING */}
         <div className="space-y-24 sm:space-y-48 mb-20 sm:mb-80">
-          {/* Feature 01 */}
+          {/* Feature 01: Motor IA */}
           <div className={`grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-24 items-center relative z-10`}>
             <div className="relative flex justify-center lg:justify-end lg:pr-10 order-2 lg:order-1">
               <FadeIn>
@@ -217,7 +217,7 @@ export const UltraWorkflow: React.FC = () => {
             </div>
           </div>
 
-          {/* Feature 02 */}
+          {/* Feature 02: Curvas Maestras */}
           <div className={`grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-24 items-center relative z-10`}>
             <div className="order-1 lg:order-1 relative flex justify-center lg:justify-end">
               <FadeIn className="w-full max-w-2xl">
@@ -231,7 +231,7 @@ export const UltraWorkflow: React.FC = () => {
             </div>
           </div>
 
-          {/* Feature 03 */}
+          {/* Feature 03: Optimización */}
           <div className={`grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-24 items-center relative z-10`}>
             <div className="relative flex justify-center lg:justify-end lg:pr-10 order-2 lg:order-1">
               <FadeIn>
@@ -245,7 +245,7 @@ export const UltraWorkflow: React.FC = () => {
             </div>
           </div>
 
-          {/* Feature 04 (Now Search Bar) */}
+          {/* Feature 04: Barra de Búsqueda */}
           <div className={`grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-24 items-center relative z-10`}>
             <div className="order-1 lg:order-1 relative flex justify-center lg:justify-end">
               <FadeIn className="w-full max-w-2xl">
@@ -259,7 +259,7 @@ export const UltraWorkflow: React.FC = () => {
             </div>
           </div>
 
-          {/* Feature 05 (Now More Features) */}
+          {/* Feature 05: Más funciones */}
           <div className={`grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-24 items-center relative z-10`}>
             <div className="relative flex justify-center lg:justify-end lg:pr-10 order-2 lg:order-1">
               <FadeIn>
