@@ -20,23 +20,43 @@ export const ProductDetailView: React.FC = () => {
             id: selectedProduct.shopifyId, node: node, moneyFormat: '%24%7B%7Bamount%7D%7D',
             options: {
               "product": {
-                "styles": { "button": { "font-family": "Manrope, sans-serif", "font-weight": "900", "font-size": "18px", "padding": "24px", "border-radius": "50px", "background-color": "#22c55e", "width": "100%", ":hover": { "background-color": "#16a34a" } } },
+                "styles": { "button": { "font-family": "Manrope, sans-serif", "font-weight": "900", "font-size": "18px", "padding": "24px", "border-radius": "50px", "background-color": "#22c55e", "color": "#ffffff", "width": "100%", ":hover": { "background-color": "#16a34a" } } },
                 "contents": { "img": false, "title": false, "price": false },
                 "text": { "button": t('detail.add') }
               },
               "cart": {
                 "styles": {
                   "cart": { "background-color": "#000000" },
-                  "header": { "color": "#ffffff" },
+                  "header": { "background-color": "#000000", "color": "#ffffff" },
                   "title": { "color": "#ffffff" },
-                  "footer": { "color": "#ffffff" },
-                  "button": { "background-color": "#22c55e" },
+                  "footer": { "background-color": "#000000", "color": "#ffffff", "border-top": "1px solid rgba(255,255,255,0.1)" },
+                  "button": { "background-color": "#22c55e", "color": "#ffffff", ":hover": { "background-color": "#16a34a" } },
                   "subtotal": { "color": "#ffffff" },
                   "subtotalText": { "color": "#ffffff" },
-                  "currency": { "color": "#ffffff" }
-                }
+                  "currency": { "color": "#ffffff" },
+                  "notice": { 
+                    "color": "#22c55e", 
+                    "font-weight": "900", 
+                    "font-size": "14px", 
+                    "text-align": "center", 
+                    "margin-bottom": "15px",
+                    "text-shadow": "0 0 10px rgba(34, 197, 94, 0.8), 0 0 20px rgba(34, 197, 94, 0.4)"
+                  },
+                  "close": { "color": "#ffffff" }
+                },
+                "contents": { "notice": true },
+                "text": { "notice": "¡AGREGA OTRO PRODUCTO CON 40% OFF!" }
               },
-              "lineItem": { "styles": { "title": { "color": "#ffffff" }, "price": { "color": "#ffffff" }, "quantity": { "color": "#ffffff" }, "quantityIncrement": { "color": "#ffffff" }, "quantityDecrement": { "color": "#ffffff" } } }
+              "lineItem": { 
+                "styles": { 
+                  "title": { "color": "#ffffff", "font-weight": "800" }, 
+                  "price": { "color": "#ffffff" }, 
+                  "quantity": { "color": "#ffffff" }, 
+                  "quantityIncrement": { "color": "#ffffff", "border-color": "#ffffff" }, 
+                  "quantityDecrement": { "color": "#ffffff", "border-color": "#ffffff" },
+                  "quantityInput": { "color": "#ffffff", "background": "transparent" }
+                } 
+              }
             }
           });
         });

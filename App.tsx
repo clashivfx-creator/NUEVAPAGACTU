@@ -114,7 +114,7 @@ const translations = {
     'checkout.title': 'FINALIZAR PEDIDO',
     'checkout.subtitle': 'Estás a un paso de revolucionar tus producciones.',
     'workflow.hero_desc': 'La herramienta más potente para After Effects de 2026',
-    'detail.back': 'VOLVER A LA TIENDA',
+    'detail.back': 'FINALIZAR PEDIDO',
     'detail.professional': 'NIVEL PROFESIONAL',
     'detail.instant': 'ACCESO INSTANTÁNEO',
     'detail.winmac': 'Compatible con Win/Mac',
@@ -304,31 +304,31 @@ const App = () => {
   };
 
   const NavButtons = ({ vertical = false, mobileNav = false }: { vertical?: boolean, mobileNav?: boolean }) => (
-    <div className={`flex ${vertical ? 'flex-col gap-6 items-start' : 'items-center justify-center gap-2 sm:gap-10'} px-2`}>
+    <div className={`flex ${vertical ? 'flex-col gap-6 items-start' : 'items-center justify-center gap-2 sm:gap-10'} px-2 h-full`}>
       <button 
         onClick={() => handleSetTab('about')}
-        className={`${mobileNav ? 'text-[7px]' : 'text-[9px] sm:text-xs'} font-bold tracking-[0.1em] sm:tracking-[0.2em] uppercase transition-all whitespace-nowrap ${activeTab === 'about' ? 'text-purple-500 opacity-100 scale-105' : 'text-white opacity-40 hover:opacity-100'}`}
+        className={`${mobileNav ? 'text-[8px]' : 'text-[9px] sm:text-xs'} font-bold tracking-[0.1em] sm:tracking-[0.2em] uppercase transition-all whitespace-nowrap ${activeTab === 'about' ? 'text-purple-500 opacity-100 scale-105' : 'text-white opacity-40 hover:opacity-100'}`}
       >
         {t('nav.about')}
       </button>
       <button 
         onClick={() => handleSetTab('products')}
-        className={`relative flex flex-col items-center group/nav ${mobileNav ? 'text-[7px]' : 'text-[9px] sm:text-xs'} font-bold tracking-[0.1em] sm:tracking-[0.2em] uppercase transition-all whitespace-nowrap ${activeTab === 'products' ? 'text-purple-500 opacity-100 scale-105' : 'text-white opacity-40 hover:opacity-100'}`}
+        className={`relative flex flex-col items-center justify-center group/nav ${mobileNav ? 'text-[8px]' : 'text-[9px] sm:text-xs'} font-bold tracking-[0.1em] sm:tracking-[0.2em] uppercase transition-all whitespace-nowrap h-full ${activeTab === 'products' ? 'text-purple-500 opacity-100 scale-105' : 'text-white opacity-40 hover:opacity-100'}`}
       >
-        <span className="leading-tight">{t('nav.products')}</span>
-        <span className="text-[5px] sm:text-[6px] text-amber-500 font-black animate-pulse whitespace-nowrap -mt-0.5 tracking-tighter">
+        <span className="leading-none">{t('nav.products')}</span>
+        <span className="absolute top-[68%] left-1/2 -translate-x-1/2 text-[5.5px] sm:text-[6.5px] text-amber-500 font-black animate-pulse whitespace-nowrap tracking-tighter uppercase pointer-events-none">
           {t('nav.bestseller')}
         </span>
       </button>
       <button 
         onClick={() => handleSetTab('platinum')}
-        className={`${mobileNav ? 'text-[7px]' : 'text-[9px] sm:text-xs'} font-bold tracking-[0.1em] sm:tracking-[0.2em] uppercase transition-all whitespace-nowrap ${activeTab === 'platinum' ? 'text-purple-500 opacity-100 scale-105' : 'text-white opacity-40 hover:opacity-100'} ${vertical || mobileNav ? '' : 'hidden lg:block'}`}
+        className={`${mobileNav ? 'text-[8px]' : 'text-[9px] sm:text-xs'} font-bold tracking-[0.1em] sm:tracking-[0.2em] uppercase transition-all whitespace-nowrap ${activeTab === 'platinum' ? 'text-purple-500 opacity-100 scale-105' : 'text-white opacity-40 hover:opacity-100'} ${vertical || mobileNav ? '' : 'hidden lg:block'}`}
       >
         {t('nav.platinum')}
       </button>
       <button 
         onClick={() => handleSetTab('store')}
-        className={`${mobileNav ? 'text-[7px]' : 'text-[9px] sm:text-xs'} font-bold tracking-[0.1em] sm:tracking-[0.2em] uppercase transition-all whitespace-nowrap px-2 py-1 rounded-md ${activeTab === 'store' ? 'text-purple-500 bg-purple-500/10' : 'text-white opacity-40 hover:opacity-100'}`}
+        className={`${mobileNav ? 'text-[8px]' : 'text-[9px] sm:text-xs'} font-bold tracking-[0.1em] sm:tracking-[0.2em] uppercase transition-all whitespace-nowrap px-2 py-1 rounded-md ${activeTab === 'store' ? 'text-purple-500 bg-purple-500/10' : 'text-white opacity-40 hover:opacity-100'}`}
       >
         {t('nav.store')}
       </button>
@@ -344,22 +344,27 @@ const App = () => {
         <SocialFloatingButtons />
         
         <nav className="fixed top-0 left-0 w-full z-[100] bg-black/40 backdrop-blur-2xl border-b border-white/5">
-          <div className="container mx-auto px-2 sm:px-6 h-14 md:h-20 flex items-center justify-between">
+          <div className="container mx-auto px-4 sm:px-6 h-16 md:h-20 flex items-center justify-between">
             
             <div className="hidden lg:flex flex-1 justify-start items-center gap-4">
               <span className="text-[10px] font-black opacity-20 tracking-[0.3em]">CLASHIVFX</span>
             </div>
 
-            <div className="flex-1 flex items-center justify-center">
-              <div className="flex items-center justify-center w-full">
+            <div className="flex-1 flex items-center justify-center h-full">
+              <div className="flex items-center justify-center w-full h-full">
                 <NavButtons mobileNav={true} />
               </div>
             </div>
 
-            <div className="hidden lg:flex flex-1 justify-end items-center gap-2 sm:gap-3">
-              <a href="https://discord.com/invite/zEcFPBqy6s" target="_blank" rel="noopener noreferrer" className="group flex items-center gap-2 px-3 sm:px-5 md:px-6 py-2 rounded-lg sm:rounded-xl bg-[#5865F2] hover:bg-[#4752C4] transition-all shadow-[0_0_15px_rgba(88,101,242,0.3)]">
+            <div className="flex-1 flex justify-end items-center gap-2 sm:gap-3">
+              <a 
+                href="https://discord.com/invite/zEcFPBqy6s" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="group flex items-center gap-2 px-3 sm:px-5 md:px-6 py-2 rounded-lg sm:rounded-xl bg-[#5865F2] hover:bg-[#4752C4] transition-all shadow-[0_0_15px_rgba(88,101,242,0.3)] active:scale-95"
+              >
                 <DiscordIcon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                <span className="text-[10px] sm:text-xs font-black tracking-tight text-white uppercase hidden md:block">
+                <span className="text-[9px] sm:text-xs font-black tracking-tight text-white uppercase hidden md:block">
                   {t('nav.comunidad')}
                 </span>
               </a>
@@ -367,7 +372,7 @@ const App = () => {
           </div>
         </nav>
 
-        <main className="pt-14 md:pt-20 overflow-x-hidden">
+        <main className="pt-16 md:pt-20 overflow-x-hidden">
           {activeTab === 'about' ? (
             <AboutUs />
           ) : activeTab === 'products' ? (

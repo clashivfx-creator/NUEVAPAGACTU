@@ -121,6 +121,7 @@ const FAQItem = ({ question, answer }: { question: string, answer: string }) => 
 
 export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
   const { lang, t, setActiveTab } = useContext(LanguageContext);
+  const uiRef = useRef<any>(null);
 
   const productData = useMemo(() => {
     if (variant === 'platinum') {
@@ -142,7 +143,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
       name: t('product.ultimate_name'),
       oldPrice: '299.99',
       newPrice: '29.99',
-      image: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770155198/aaaaaaaaaxa_t8wfsf.png',
+      image: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770687573/aaaaaaaaaxa_0-00-00-00_w2uo0s.png',
       resourcesLabel: t('bundle.resources_count'),
       reviewsCount: '374',
       isBestSeller: true
@@ -161,6 +162,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
         storefrontAccessToken: '64026182325df844d6b96ce1f55661c5',
       });
       window.ShopifyBuy.UI.onReady(client).then((ui: any) => {
+        uiRef.current = ui;
         ui.createComponent('product', {
           id: productData.shopifyId,
           node: node,
@@ -177,6 +179,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
                   "padding-bottom": "10px",
                   "border-radius": "40px",
                   "background-color": "#22c55e",
+                  "color": "#ffffff",
                   ":hover": { "background-color": "#16a34a" }
                 }
               },
@@ -185,26 +188,34 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
             },
             "cart": {
               "styles": {
-                "cart": { "background-color": "#262626", "box-shadow": "0 0 50px rgba(0,0,0,0.8)" },
-                "header": { "background-color": "#262626", "color": "#ffffff", "padding-top": "30px", "padding-bottom": "15px" },
+                "cart": { "background-color": "#000000", "box-shadow": "0 0 50px rgba(0,0,0,0.8)" },
+                "header": { "background-color": "#000000", "color": "#ffffff", "padding-top": "30px", "padding-bottom": "15px" },
                 "title": { "color": "#ffffff", "font-family": "Manrope, sans-serif", "font-weight": "900", "font-size": "11px", "text-transform": "uppercase", "text-shadow": "none" },
-                "footer": { "background-color": "#262626", "color": "#ffffff", "border-top": "1px solid rgba(255,255,255,0.05)", "padding-top": "24px" },
-                "button": { "font-family": "Manrope, sans-serif", "font-weight": "900", "font-size": "18px", "background-color": "#22c55e", "border-radius": "14px" },
+                "footer": { "background-color": "#000000", "color": "#ffffff", "border-top": "1px solid rgba(255,255,255,0.15)", "padding-top": "24px" },
+                "button": { "font-family": "Manrope, sans-serif", "font-weight": "900", "font-size": "18px", "background-color": "#22c55e", "color": "#ffffff", "border-radius": "14px", ":hover": { "background-color": "#16a34a" } },
                 "close": { "color": "#ffffff" },
                 "empty": { "color": "#ffffff" },
                 "subtotalText": { "color": "#ffffff" },
                 "subtotal": { "color": "#ffffff", "font-weight": "900", "font-size": "18px" },
-                "notice": { "color": "#ffffff" },
+                "notice": { 
+                  "color": "#22c55e", 
+                  "font-weight": "900", 
+                  "font-size": "14px", 
+                  "text-align": "center", 
+                  "margin-bottom": "20px", 
+                  "text-shadow": "0 0 10px rgba(34, 197, 94, 0.8), 0 0 20px rgba(34, 197, 94, 0.4)" 
+                },
                 "currency": { "color": "#ffffff" },
                 "discountText": { "color": "#ffffff", "font-weight": "900" },
                 "discountAmount": { "color": "#ffffff", "font-weight": "900" },
                 "discountIcon": { "fill": "#ffffff" }
               },
-              "contents": { "title": true, "note": false, "footer": true },
+              "contents": { "title": true, "note": false, "footer": true, "notice": true },
               "text": {
                 "total": "SUBTOTAL",
                 "button": lang === 'es' ? "PAGAR AHORA" : "CHECKOUT",
-                "title": "OFERTA",
+                "title": "CARRITO",
+                "notice": "¡AGREGA OTRO PRODUCTO CON 40% OFF!",
                 "empty": lang === 'es' ? "Tu carrito está vacío" : "Your cart is empty"
               }
             },
@@ -215,7 +226,8 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
                 "discount": { "color": "#ffffff", "font-weight": "900" },
                 "quantity": { "color": "#ffffff", "font-weight": "900" },
                 "quantityIncrement": { "color": "#ffffff", "border-color": "#ffffff" },
-                "quantityDecrement": { "color": "#ffffff", "border-color": "#ffffff" }
+                "quantityDecrement": { "color": "#ffffff", "border-color": "#ffffff" },
+                "quantityInput": { "color": "#ffffff", "background": "transparent" }
               }
             }
           }
@@ -256,6 +268,32 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
       const el = document.getElementById('artists-section');
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
+  };
+
+  const handleCtaBuy = async () => {
+    if (!uiRef.current) return;
+    
+    // IDs de variantes para agregar al carrito
+    const eliteVariantId = 'gid://shopify/ProductVariant/45803273158927';
+    const platinumVariantId = 'gid://shopify/ProductVariant/45826978513167';
+    const variantId = variant === 'platinum' ? platinumVariantId : eliteVariantId;
+
+    try {
+      // Intentamos agregar a través del componente de producto o directamente al carrito
+      const cart = uiRef.current.components.cart[0];
+      const productComp = uiRef.current.components.product.find((p: any) => p.id[0] === productData.shopifyId);
+      
+      if (productComp) {
+        await productComp.addVariantToCart({ id: variantId, quantity: 1 });
+      } else if (cart) {
+        await cart.addVariantToCart({ id: variantId, quantity: 1 });
+      }
+      
+      uiRef.current.components.cart[0]?.open();
+    } catch (e) {
+      console.error("Error adding to cart:", e);
+      document.getElementById(productData.nodeId)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
   };
 
   const renderTagline = () => {
@@ -361,74 +399,88 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
       </div>
 
       <div className="container mx-auto px-4 max-w-7xl mt-2 sm:mt-4">
-        <FadeIn className="mb-2 text-center">
-          <h2 className="text-3xl sm:text-7xl font-black uppercase tracking-tighter leading-none">
-            <span className="text-white opacity-40">{t('bundle.includes')}</span> <br />
-            <span className="text-red-600 italic">{t('bundle.this_pack')}</span>
-          </h2>
-        </FadeIn>
+        {variant !== 'platinum' && (
+          <FadeIn className="mb-10 text-center">
+            <h2 className="text-3xl sm:text-7xl font-black uppercase tracking-tighter leading-none">
+              <span className="text-white opacity-40">{t('bundle.includes')}</span> <br />
+              <span className="text-red-600 italic">{t('bundle.this_pack')}</span>
+            </h2>
+          </FadeIn>
+        )}
 
         <div className="space-y-0">
-          {categories.map((cat) => (
-            <React.Fragment key={cat.id}>
-              {variant !== 'platinum' && (
-                <div id={cat.id} className="pt-10 mb-10">
-                  {cat.title && (
-                    <FadeIn>
-                      <h2 className="text-3xl sm:text-5xl font-black text-white uppercase tracking-tighter mb-8 inline-block relative">
-                        {cat.title}
-                        <div className="absolute -bottom-2 left-0 w-24 h-1 bg-purple-600" />
-                      </h2>
-                    </FadeIn>
-                  )}
-
-                  <div className="flex flex-col gap-12 sm:gap-16">
-                    {/* VIDEOS LADO A LADO */}
-                    <div className="w-full">
-                      <div className="text-[6px] sm:text-[8px] text-white/30 font-black uppercase text-left tracking-widest w-full mb-3">@PESALU</div>
-                      <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:gap-10">
-                        <div className={`relative rounded-xl overflow-hidden border border-white/10 shadow-2xl bg-[#050505] ${cat.aspect} w-full`}>
-                          <img src={cat.visual} alt="VFX 1" className="w-full h-full object-cover" />
-                        </div>
-                        <div className={`relative rounded-xl overflow-hidden border border-white/10 shadow-2xl bg-[#050505] ${cat.aspect} w-full`}>
-                          <video src="https://res.cloudinary.com/dbu9kzomq/video/upload/v1770514765/PA_WEB_PA_uwlsof.mp4" autoPlay muted loop playsInline className="w-full h-full object-cover" />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* TEXTOS CENTRADOS EN MÓVIL */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10 items-start text-center lg:text-left">
-                        {cat.items.map((item, i) => (
-                          <FadeIn key={i} delay={i * 30} className="flex flex-col items-center lg:items-start w-full">
-                            <div className="flex flex-col items-center lg:items-start gap-4 group">
-                              <div className="shrink-0 w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-purple-600 transition-all duration-300">
-                                <item.icon className="w-6 h-6 text-white" />
-                              </div>
-                              <div className="flex flex-col items-center lg:items-start">
-                                <h3 className="text-base sm:text-lg font-black text-white mb-2 uppercase tracking-tight leading-none text-center lg:text-left">{item.name}</h3>
-                                <p className="text-gray-500 text-xs sm:text-sm font-light leading-relaxed text-center lg:text-left">{item.desc}</p>
-                              </div>
-                            </div>
-                          </FadeIn>
-                        ))}
-                    </div>
-                  </div>
-                </div>
+          {variant !== 'platinum' && categories.map((cat) => (
+            <div key={cat.id} id={cat.id} className="pt-10 mb-10">
+              {cat.title && (
+                <FadeIn>
+                  <h2 className="text-3xl sm:text-5xl font-black text-white uppercase tracking-tighter mb-8 inline-block relative">
+                    {cat.title}
+                    <div className="absolute -bottom-2 left-0 w-24 h-1 bg-purple-600" />
+                  </h2>
+                </FadeIn>
               )}
 
-              <div className="mt-0 pt-4">
-                <FadeIn>
-                  <div className="flex items-center justify-center lg:justify-start gap-5 mb-2 border-b border-white/10 pb-2">
-                    <Palette className="w-8 h-8 text-purple-500" />
-                    <h2 className="text-2xl sm:text-6xl font-black text-white uppercase tracking-tighter">{t('bundle.color_title')}</h2>
+              <div className="flex flex-col gap-12 sm:gap-16">
+                <div className="w-full">
+                  <div className="text-[6px] sm:text-[8px] text-white/30 font-black uppercase text-left tracking-widest w-full mb-3">@PESALU</div>
+                  <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:gap-10">
+                    <div className={`relative rounded-xl overflow-hidden border border-white/10 shadow-2xl bg-[#050505] ${cat.aspect} w-full`}>
+                      <img src={cat.visual} alt="VFX 1" className="w-full h-full object-cover" />
+                    </div>
+                    <div className={`relative rounded-xl overflow-hidden border border-white/10 shadow-2xl bg-[#050505] ${cat.aspect} w-full`}>
+                      <video src="https://res.cloudinary.com/dbu9kzomq/video/upload/v1770687966/sdwq2dewdwqew_fh4dw5.mp4" autoPlay muted loop playsInline className="w-full h-full object-cover" />
+                    </div>
                   </div>
-                </FadeIn>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-12">
-                  <FadeIn><BeforeAfterSlider beforeImage="https://res.cloudinary.com/dbu9kzomq/image/upload/v1769797197/2_SIN_COLOR_vwa1ek.png" afterImage="https://res.cloudinary.com/dbu9kzomq/image/upload/v1769797198/2_COLOR_pb66sw.png"/></FadeIn>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-3 items-start text-center lg:text-left">
+                    {cat.items.map((item, i) => (
+                      <FadeIn key={i} delay={i * 30} className="flex flex-col items-center lg:items-start w-full">
+                        <div className="flex flex-col items-center lg:items-start gap-1.5 group">
+                          <div className="shrink-0 w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-purple-600 transition-all duration-300">
+                            <item.icon className="w-4.5 h-4.5 text-white" />
+                          </div>
+                          <div className="flex flex-col items-center lg:items-start">
+                            <h3 className="text-[13px] sm:text-base font-black text-white mb-0.5 uppercase tracking-tight leading-none text-center lg:text-left">{item.name}</h3>
+                            <p className="text-gray-500 text-[10px] sm:text-xs font-light leading-snug text-center lg:text-left max-w-[210px]">{item.desc}</p>
+                          </div>
+                        </div>
+                      </FadeIn>
+                    ))}
                 </div>
               </div>
-            </React.Fragment>
+            </div>
           ))}
+
+          {/* COLOR SECTION */}
+          <div className={`mt-10 pt-4 ${variant === 'platinum' ? 'mb-20' : ''}`}>
+            <FadeIn>
+              <div className="flex items-center justify-center lg:justify-start gap-5 mb-8 border-b border-white/10 pb-4">
+                <Palette className="w-10 h-10 text-purple-500" />
+                <h2 className="text-3xl sm:text-6xl font-black text-white uppercase tracking-tighter">
+                  {variant === 'platinum' ? 'DEMO DE LOS PLATINUM LUTs' : t('bundle.color_title')}
+                </h2>
+              </div>
+            </FadeIn>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 max-w-7xl mx-auto">
+              <FadeIn>
+                <div className="relative rounded-[2rem] overflow-hidden shadow-[0_0_50px_rgba(168,85,247,0.1)]">
+                   <BeforeAfterSlider 
+                     beforeImage="https://res.cloudinary.com/dbu9kzomq/image/upload/v1769797395/1_SIN_COLORR_duqhlg.png" 
+                     afterImage="https://res.cloudinary.com/dbu9kzomq/image/upload/v1769797395/1_COLORR_pys6wd.png"
+                   />
+                </div>
+              </FadeIn>
+              <FadeIn delay={100}>
+                <div className="relative rounded-[2rem] overflow-hidden shadow-[0_0_50px_rgba(168,85,247,0.1)]">
+                   <BeforeAfterSlider 
+                     beforeImage="https://res.cloudinary.com/dbu9kzomq/image/upload/v1769797197/2_SIN_COLOR_vwa1ek.png" 
+                     afterImage="https://res.cloudinary.com/dbu9kzomq/image/upload/v1769797198/2_COLOR_pb66sw.png"
+                   />
+                </div>
+              </FadeIn>
+            </div>
+          </div>
         </div>
 
         <div className="mt-16 sm:mt-24 max-w-4xl mx-auto px-4">
@@ -445,7 +497,12 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
         <FadeIn delay={200} className="mt-32 text-center">
            <div className="bg-gradient-to-br from-purple-900/40 to-black border border-white/10 rounded-[3rem] p-10 sm:p-32 shadow-2xl">
              <h2 className="text-3xl sm:text-8xl font-black text-white uppercase tracking-tighter mb-8 leading-[0.85]">{t('bundle.cta_ready')} <br /> <span className="text-purple-500 italic">{t('bundle.cta_level')}</span></h2>
-             <button className="bg-[#22c55e] hover:bg-[#16a34a] text-white shadow-[0_0_50px_rgba(34,197,94,0.6)] px-8 py-6 text-lg sm:text-3xl rounded-full font-black uppercase tracking-tighter flex items-center justify-center gap-4 mx-auto transition-all">{t('bundle.cta_btn')} <ChevronRight className="w-8 h-8" /></button>
+             <button 
+               onClick={handleCtaBuy}
+               className="bg-[#22c55e] hover:bg-[#16a34a] text-white shadow-[0_0_50px_rgba(34,197,94,0.6)] px-8 py-6 text-lg sm:text-3xl rounded-full font-black uppercase tracking-tighter flex items-center justify-center gap-4 mx-auto transition-all active:scale-95"
+             >
+               {t('bundle.cta_btn')} <ChevronRight className="w-8 h-8" />
+             </button>
            </div>
         </FadeIn>
       </div>
