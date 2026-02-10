@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es" style="scroll-behavior: smooth;">
   <head>
@@ -17,18 +16,18 @@
       t.src=v;s=b.getElementsByTagName(e)[0];
       s.parentNode.insertBefore(t,s)}(window, document,'script',
       'https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', '1626378492120533');
+      fbq('init', '1594983758216504');
       fbq('track', 'PageView');
       
       // Evento ViewContent automático al cargar
       fbq('track', 'ViewContent', {
-        content_type: 'product_group',
-        content_name: 'Catálogo VFX 2026'
+        content_name: 'Catálogo de Packs VFX',
+        content_type: 'product_group'
       });
     </script>
     <noscript>
       <img height="1" width="1" style="display:none" 
-           src="https://www.facebook.com/tr?id=1626378492120533&ev=PageView&noscript=1"/>
+           src="https://www.facebook.com/tr?id=1594983758216504&ev=PageView&noscript=1"/>
     </noscript>
     <!-- End Meta Pixel Code -->
 
@@ -235,62 +234,68 @@
   <body>
     <div id="root"></div>
 
-    <!-- Script de Seguimiento AddToCart Dinámico -->
+    <!-- Script de Seguimiento AddToCart Dinámico (Optimizado) -->
     <script>
       (function() {
-        // Función para limpiar precios
+        // Función para limpiar precios y devolver un float puro
         function parseCurrency(str) {
           if (!str) return 0;
-          // Elimina $, USD y cualquier caracter que no sea número o punto
-          var cleaned = str.replace(/USD|\$|\s/g, '').replace(',', '.');
+          // Elimina $, USD, espacios y cualquier letra, convierte coma en punto
+          var cleaned = str.replace(/[^\d.,]/g, '').replace(',', '.');
           return parseFloat(cleaned) || 0;
         }
 
-        // Listener global de clics
+        // Listener global de clics para capturar la intención de compra
         document.addEventListener('click', function(e) {
-          // Buscamos si el clic fue en un botón que diga "AGREGAR" o "ADD"
           var target = e.target;
           var button = target.closest('button');
           
           if (button) {
             var btnText = button.innerText.toUpperCase();
+            // Escucha botones de AGREGAR (Tienda) o ADD (Inglés)
             if (btnText.indexOf('AGREGAR') > -1 || btnText.indexOf('ADD') > -1) {
               
-              // Intentamos encontrar el contenedor del producto para extraer info
-              // Buscamos la card más cercana (.group o similar)
-              var container = button.closest('.group') || button.closest('div[class*="bg-white/"]');
+              // 1. Encontrar el contenedor del producto (card o sección)
+              // Buscamos hacia arriba el contenedor más cercano que agrupe la info
+              var container = button.closest('.group') || 
+                              button.closest('div[class*="bg-white/"]') || 
+                              button.closest('div[class*="bg-[#050408]"]') ||
+                              button.closest('.lg\\:col-span-4'); // Para UltraWorkflow
               
               if (container) {
-                // Título: Suele estar en un h1, h2 o h3
+                // 2. Extraer Título (h1, h2 o h3 dentro del contenedor)
                 var titleEl = container.querySelector('h1, h2, h3');
-                var title = titleEl ? titleEl.innerText : 'Producto Desconocido';
+                var title = titleEl ? titleEl.innerText : 'Producto Pack VFX';
                 
-                // Precio: Buscamos el elemento que contenga el precio actual (usualmente emerald o similar)
-                // Buscamos un texto que contenga "$" pero que no sea el tachado (line-through)
-                var priceEl = container.querySelector('.text-emerald-500, .text-5xl, .text-xl, span:not(.line-through)');
-                // Refinamos búsqueda de precio si el anterior es muy genérico
-                var allSpans = container.querySelectorAll('span');
+                // 3. Extraer Precio (buscamos el valor monetario que NO esté tachado)
                 var priceText = "";
+                var allSpans = container.querySelectorAll('span');
                 
-                for(var i=0; i < allSpans.length; i++) {
-                  if(allSpans[i].innerText.indexOf('$') > -1 && !allSpans[i].classList.contains('line-through')) {
-                    priceText = allSpans[i].innerText;
-                    break;
+                // Prioridad 1: Buscar spans con color de precio (emerald)
+                var emeraldPrice = container.querySelector('.text-emerald-500');
+                if (emeraldPrice) {
+                  priceText = emeraldPrice.innerText;
+                } else {
+                  // Prioridad 2: Buscar cualquier span que tenga "$" y no sea line-through
+                  for(var i=0; i < allSpans.length; i++) {
+                    var text = allSpans[i].innerText;
+                    if(text.indexOf('$') > -1 && !allSpans[i].classList.contains('line-through') && !allSpans[i].closest('.line-through')) {
+                      priceText = text;
+                      break;
+                    }
                   }
                 }
 
-                if (!priceText && priceEl) priceText = priceEl.innerText;
-
                 var finalPrice = parseCurrency(priceText);
 
-                // Disparo de evento a Meta
+                // 4. Disparo de evento a Meta Pixel
                 fbq('track', 'AddToCart', {
                   content_name: title.trim(),
                   value: finalPrice,
                   currency: 'USD'
                 });
                 
-                console.log('Meta Pixel: AddToCart tracked', { name: title.trim(), value: finalPrice });
+                console.log('Meta Pixel AddToCart:', { name: title.trim(), value: finalPrice });
               }
             }
           }
