@@ -206,9 +206,9 @@ export const AboutUs: React.FC = () => {
         {/* Discord Community Section */}
         <FadeIn delay={400}>
           <div className="mt-32 relative">
-            <div className="absolute -inset-20 bg-purple-600/10 blur-[100px] rounded-full opacity-50 pointer-events-none" />
-            <div className="relative bg-white/[0.03] border border-white/10 rounded-[2.5rem] p-10 sm:p-20 overflow-hidden text-center">
-              <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-[#5865F2]/10 border border-[#5865F2]/30 text-[#5865F2] text-xs font-black uppercase tracking-widest mb-10 animate-pulse">
+            <div className="absolute -inset-20 bg-[#5865F2]/20 blur-[100px] rounded-full opacity-50 pointer-events-none" />
+            <div className="relative bg-[#5865F2]/10 border border-[#5865F2]/30 rounded-[2.5rem] p-10 sm:p-20 overflow-hidden text-center shadow-[0_0_50px_rgba(88,101,242,0.15)]">
+              <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-[#5865F2]/20 border border-[#5865F2]/40 text-[#5865F2] text-xs font-black uppercase tracking-widest mb-10 animate-pulse">
                 <DiscordIcon className="w-5 h-5" />
                 Discord VIP Community
               </div>
@@ -226,8 +226,8 @@ export const AboutUs: React.FC = () => {
                   rel="noopener noreferrer"
                   className="group relative"
                 >
-                  <div className="absolute -inset-1 bg-[#5865F2] rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
-                  <button className="relative px-12 py-5 sm:py-6 rounded-full bg-[#5865F2] hover:bg-[#4752C4] text-white font-black text-lg sm:text-2xl uppercase tracking-tighter shadow-2xl transition-all hover:scale-105 active:scale-95 flex items-center gap-4">
+                  <div className="absolute -inset-1 bg-[#5865F2] rounded-full blur-xl opacity-40 group-hover:opacity-60 transition-opacity"></div>
+                  <button className="relative px-12 py-5 sm:py-6 rounded-full bg-white hover:bg-gray-100 text-[#5865F2] font-black text-lg sm:text-2xl uppercase tracking-tighter shadow-2xl transition-all hover:scale-105 active:scale-95 flex items-center gap-4">
                     UNIRSE AHORA <ArrowRight className="w-6 h-6 sm:w-8 h-8 group-hover:translate-x-2 transition-transform" />
                   </button>
                 </a>

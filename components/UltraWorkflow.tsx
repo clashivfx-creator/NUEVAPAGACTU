@@ -76,10 +76,19 @@ export const UltraWorkflow: React.FC = () => {
                   "margin-bottom": "15px",
                   "text-shadow": "0 0 10px rgba(34, 197, 94, 0.8), 0 0 20px rgba(34, 197, 94, 0.4)"
                 },
+                "discountText": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 10px rgba(34, 197, 94, 0.7)" },
+                "discountAmount": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 10px rgba(34, 197, 94, 0.7)" },
+                "discountIcon": { "fill": "#22c55e" },
                 "close": { "color": "#ffffff" }
               },
               "contents": { "notice": true },
               "text": { "notice": "¡AGREGA OTRO PRODUCTO CON 40% OFF!" }
+            },
+            "lineItem": {
+              "styles": {
+                "title": { "color": "#ffffff", "font-weight": "800" },
+                "discount": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 8px rgba(34, 197, 94, 0.5)" }
+              }
             }
           }
         });
@@ -150,7 +159,7 @@ export const UltraWorkflow: React.FC = () => {
 
                 {/* Price Section */}
                 <div className="flex items-center gap-4 mb-8">
-                  <span className="text-gray-600 line-through text-xl font-bold">$50</span>
+                  <span className="text-gray-600 line-through textxl font-bold">$50</span>
                   <span className="text-5xl sm:text-6xl font-black text-white tracking-tighter drop-shadow-[0_0_20px_rgba(139,92,246,0.6)]">
                     $39,99
                   </span>

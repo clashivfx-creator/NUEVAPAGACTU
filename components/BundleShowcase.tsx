@@ -131,7 +131,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
         name: t('product.platinum_name'),
         oldPrice: '590',
         newPrice: '9',
-        image: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770349061/6h765hn7_wxxjol.png',
+        image: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770735767/Gemini_Generated_Image_415qgo415qgo415q_0-00-00-00_ddzyye.png',
         resourcesLabel: t('bundle.resources_platinum'),
         reviewsCount: '236',
         isBestSeller: true
@@ -143,7 +143,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
       name: t('product.ultimate_name'),
       oldPrice: '299.99',
       newPrice: '29.99',
-      image: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770687573/aaaaaaaaaxa_0-00-00-00_w2uo0s.png',
+      image: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770737015/aaaaaaaaaxa_0-00-00-00_.00_00_00_00.Imagen_fija001_hmnkuf.png',
       resourcesLabel: t('bundle.resources_count'),
       reviewsCount: '374',
       isBestSeller: true
@@ -206,9 +206,9 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
                   "text-shadow": "0 0 10px rgba(34, 197, 94, 0.8), 0 0 20px rgba(34, 197, 94, 0.4)" 
                 },
                 "currency": { "color": "#ffffff" },
-                "discountText": { "color": "#ffffff", "font-weight": "900" },
-                "discountAmount": { "color": "#ffffff", "font-weight": "900" },
-                "discountIcon": { "fill": "#ffffff" }
+                "discountText": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 10px rgba(34, 197, 94, 0.7)" },
+                "discountAmount": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 10px rgba(34, 197, 94, 0.7)" },
+                "discountIcon": { "fill": "#22c55e" }
               },
               "contents": { "title": true, "note": false, "footer": true, "notice": true },
               "text": {
@@ -223,7 +223,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
               "styles": {
                 "title": { "color": "#ffffff", "font-weight": "800" },
                 "price": { "color": "#ffffff", "font-weight": "900" },
-                "discount": { "color": "#ffffff", "font-weight": "900" },
+                "discount": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 8px rgba(34, 197, 94, 0.5)" },
                 "quantity": { "color": "#ffffff", "font-weight": "900" },
                 "quantityIncrement": { "color": "#ffffff", "border-color": "#ffffff" },
                 "quantityDecrement": { "color": "#ffffff", "border-color": "#ffffff" },
@@ -491,11 +491,16 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
           {variant === 'elite' && (
             <div className="mt-20 pt-10">
               <FadeIn>
-                <div className="flex items-center justify-center lg:justify-start gap-5 mb-8 border-b border-white/10 pb-4">
+                <div className="flex flex-col lg:flex-row items-center justify-center lg:justify-start gap-5 mb-8 border-b border-white/10 pb-4">
                   <Volume2 className="w-10 h-10 text-emerald-500" />
-                  <h2 className="text-3xl sm:text-6xl font-black text-white uppercase tracking-tighter">
-                    {t('sfx.title')}
-                  </h2>
+                  <div className="flex flex-col">
+                    <h2 className="text-3xl sm:text-6xl font-black text-white uppercase tracking-tighter leading-none">
+                      {t('sfx.title')}
+                    </h2>
+                    <p className="text-[10px] sm:text-xs font-black text-emerald-400 uppercase tracking-[0.2em] mt-2 text-center lg:text-left">
+                      {t('sfx.folders')}
+                    </p>
+                  </div>
                 </div>
               </FadeIn>
               <FadeIn delay={100}>

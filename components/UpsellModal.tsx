@@ -59,8 +59,8 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose }) => 
                   "contents": { "title": false }, 
                   "styles": { 
                     "cart": { "background-color": "#000000" },
-                    "discountText": { "color": "#22c55e", "font-weight": "900" },
-                    "discountAmount": { "color": "#22c55e", "font-weight": "900" },
+                    "discountText": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 10px rgba(34, 197, 94, 0.7)" },
+                    "discountAmount": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 10px rgba(34, 197, 94, 0.7)" },
                     "discountIcon": { "fill": "#22c55e" },
                     "subtotal": { "color": "#ffffff", "font-weight": "900" }
                   } 
@@ -69,7 +69,7 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose }) => 
                   "styles": {
                     "title": { "color": "#ffffff" },
                     "price": { "color": "#22c55e", "font-weight": "900" },
-                    "discount": { "color": "#22c55e", "font-weight": "900" },
+                    "discount": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 8px rgba(34, 197, 94, 0.5)" },
                     "quantity": { "color": "#ffffff", "font-weight": "900" },
                     "quantityIncrement": { "color": "#ffffff", "border-color": "#ffffff" },
                     "quantityDecrement": { "color": "#ffffff", "border-color": "#ffffff" }

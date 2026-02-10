@@ -52,15 +52,15 @@ export const CommercialStore: React.FC = () => {
       name: t('product.ultimate_name'), 
       oldPrice: '299.99', 
       newPrice: '29.99', 
-      mediaUrl: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770687573/aaaaaaaaaxa_0-00-00-00_w2uo0s.png', 
+      mediaUrl: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770737015/aaaaaaaaaxa_0-00-00-00_.00_00_00_00.Imagen_fija001_hmnkuf.png', 
       isVideo: false, 
       link: 'https://clashivfx.myshopify.com/products/2026-ultimate-editing-pack', 
       isBestSeller: true, 
       customAction: 'elite' 
     },
-    { id: 'platinum-luts', shopifyId: '8480949338287', nodeId: 'product-component-1770349141842', name: t('product.platinum_name'), oldPrice: '590', newPrice: '9', mediaUrl: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770349061/6h765hn7_wxxjol.png', isVideo: false, link: 'https://clashivfx.myshopify.com/products/platinum-luts-pack', isBestSeller: true, customAction: 'platinum' },
+    { id: 'platinum-luts', shopifyId: '8480949338287', nodeId: 'product-component-1770349141842', name: t('product.platinum_name'), oldPrice: '590', newPrice: '9', mediaUrl: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770735767/Gemini_Generated_Image_415qgo415qgo415q_0-00-00-00_ddzyye.png', isVideo: false, link: 'https://clashivfx.myshopify.com/products/platinum-luts-pack', isBestSeller: true, customAction: 'platinum' },
+    { id: 'pack-avanzado', shopifyId: '8170902323375', nodeId: 'product-component-1770243396499', name: t('product.advanced_name'), oldPrice: '79.99', newPrice: '19.99', mediaUrl: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787956/PACK_AVANZADO_krghxs.gif', isVideo: false, link: 'https://clashivfx.myshopify.com/products/pack-de-efectos-esenciales', isBestSeller: true, customAction: 'detail', description: t('product.advanced_desc') },
     { id: 'reel-editable', shopifyId: '8239170584751', nodeId: 'product-component-1770348980660', name: t('product.reel_name'), oldPrice: '49.99', newPrice: '19.99', mediaUrl: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770334329/ssstik.io__clashivfx_1765467778171_sdxohb.gif', isVideo: false, link: 'https://clashivfx.myshopify.com/products/reel-editable-proyecto', customAction: 'detail', description: t('product.reel_desc') },
-    { id: 'pack-avanzado', shopifyId: '8170902323375', nodeId: 'product-component-1770243396499', name: t('product.advanced_name'), oldPrice: '79.99', newPrice: '19.99', mediaUrl: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787956/PACK_AVANZADO_krghxs.gif', isVideo: false, link: 'https://clashivfx.myshopify.com/products/pack-de-efectos-esenciales', customAction: 'detail', description: t('product.advanced_desc') },
     { id: 'mixed-media', shopifyId: '8211512656047', nodeId: 'product-component-1770243459634', name: t('product.mixed_name'), oldPrice: '49.99', newPrice: '14.99', mediaUrl: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787956/mixmedia_xcb5po.gif', isVideo: false, link: 'https://clashivfx.myshopify.com/products/proyecto-mixed-media', customAction: 'detail', description: t('product.mixed_desc') },
     { id: 'yeat-project-renamed', shopifyId: '8448020152495', nodeId: 'product-component-yeat-renamed', name: t('product.yeat_name'), oldPrice: '49.99', newPrice: '19.99', mediaUrl: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787949/YEAT_oqvxyf.gif', isVideo: false, link: 'https://clashivfx.myshopify.com/products/proyecto-mixed-media-copia', customAction: 'detail', description: t('product.yeat_desc') },
     { id: 'shakes', shopifyId: '8476755034287', nodeId: 'product-component-1770243514859', name: t('product.shakes_name'), oldPrice: '49.99', newPrice: '9.99', mediaUrl: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787949/SHAKES_dimjeh.gif', isVideo: false, link: 'https://clashivfx.myshopify.com/products/shakes', customAction: 'detail', description: t('product.shakes_desc') },
@@ -93,9 +93,9 @@ export const CommercialStore: React.FC = () => {
             "margin-bottom": "20px",
             "text-shadow": "0 0 10px rgba(34, 197, 94, 0.8), 0 0 20px rgba(34, 197, 94, 0.4)"
           },
-          "discountText": { "color": "#ffffff", "font-weight": "900" },
-          "discountAmount": { "color": "#ffffff", "font-weight": "900" },
-          "discountIcon": { "fill": "#ffffff" }
+          "discountText": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 10px rgba(34, 197, 94, 0.7)" },
+          "discountAmount": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 10px rgba(34, 197, 94, 0.7)" },
+          "discountIcon": { "fill": "#22c55e" }
         },
         "contents": { "title": true, "note": false, "footer": true, "button": true, "notice": true },
         "text": { "total": "SUBTOTAL", "title": "CARRITO", "button": "PAGAR AHORA", "notice": "¡AGREGA OTRO PRODUCTO CON 40% OFF!" }
@@ -104,7 +104,7 @@ export const CommercialStore: React.FC = () => {
         "styles": {
           "title": { "color": "#ffffff", "font-weight": "800" },
           "price": { "color": "#ffffff", "font-weight": "900" },
-          "discount": { "color": "#ffffff", "font-weight": "900" },
+          "discount": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 8px rgba(34, 197, 94, 0.5)" },
           "quantity": { "color": "#ffffff", "font-weight": "900" },
           "quantityIncrement": { "color": "#ffffff", "border-color": "#ffffff" },
           "quantityDecrement": { "color": "#ffffff", "border-color": "#ffffff" },
@@ -190,7 +190,7 @@ export const CommercialStore: React.FC = () => {
             </FadeIn>
           ))}
         </div>
-        <FadeIn delay={400}><div className="mt-32 sm:mt-48 relative"><div className="absolute -inset-20 bg-white/5 blur-[100px] rounded-full opacity-50 pointer-events-none" /><div className="relative bg-white/[0.03] border border-white/10 rounded-[2.5rem] p-10 sm:p-20 overflow-hidden text-center"><div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-white/5 border border-white/20 text-white text-xs font-black uppercase tracking-widest mb-10 animate-pulse"><DiscordIcon className="w-5 h-5" />Discord VIP Community</div><h2 className="text-3xl sm:text-6xl font-black text-white tracking-tighter uppercase mb-6 leading-[0.9]">{t('store.community')}</h2><p className="text-gray-400 text-base sm:text-xl font-light max-w-3xl mx-auto mb-12 leading-relaxed">{t('store.community_desc')}</p><div className="flex flex-col items-center gap-6"><a href="https://discord.com/invite/zEcFPBqy6s" target="_blank" rel="noopener noreferrer" className="group relative"><div className="absolute -inset-1 bg-white rounded-full blur-xl opacity-10 group-hover:opacity-20 transition-opacity"></div><button className="relative px-12 py-5 sm:py-6 rounded-full bg-white hover:bg-gray-200 text-black font-black text-lg sm:text-2xl uppercase tracking-tighter shadow-2xl transition-all hover:scale-105 active:scale-95 flex items-center gap-4">UNIRSE AHORA <ArrowRight className="w-6 h-6 sm:w-8 h-8 group-hover:translate-x-2 transition-transform" /></button></a></div></div></div></FadeIn>
+        <FadeIn delay={400}><div className="mt-32 sm:mt-48 relative"><div className="absolute -inset-20 bg-[#5865F2]/20 blur-[100px] rounded-full opacity-50 pointer-events-none" /><div className="relative bg-[#5865F2]/10 border border-[#5865F2]/30 rounded-[2.5rem] p-10 sm:p-20 overflow-hidden text-center shadow-[0_0_50px_rgba(88,101,242,0.15)]"><div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-[#5865F2]/20 border border-[#5865F2]/40 text-[#5865F2] text-xs font-black uppercase tracking-widest mb-10 animate-pulse"><DiscordIcon className="w-5 h-5" />Discord VIP Community</div><h2 className="text-3xl sm:text-6xl font-black text-white tracking-tighter uppercase mb-6 leading-[0.9]">{t('store.community')}</h2><p className="text-gray-400 text-base sm:text-xl font-light max-w-3xl mx-auto mb-12 leading-relaxed">{t('store.community_desc')}</p><div className="flex flex-col items-center gap-6"><a href="https://discord.com/invite/zEcFPBqy6s" target="_blank" rel="noopener noreferrer" className="group relative"><div className="absolute -inset-1 bg-[#5865F2] rounded-full blur-xl opacity-40 group-hover:opacity-60 transition-opacity"></div><button className="relative px-12 py-5 sm:py-6 rounded-full bg-white hover:bg-gray-100 text-[#5865F2] font-black text-lg sm:text-2xl uppercase tracking-tighter shadow-2xl transition-all hover:scale-105 active:scale-95 flex items-center gap-4">UNIRSE AHORA <ArrowRight className="w-6 h-6 sm:w-8 h-8 group-hover:translate-x-2 transition-transform" /></button></a></div></div></div></FadeIn>
       </div>
     </div>
   );

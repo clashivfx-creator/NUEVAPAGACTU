@@ -42,6 +42,9 @@ export const ProductDetailView: React.FC = () => {
                     "margin-bottom": "15px",
                     "text-shadow": "0 0 10px rgba(34, 197, 94, 0.8), 0 0 20px rgba(34, 197, 94, 0.4)"
                   },
+                  "discountText": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 10px rgba(34, 197, 94, 0.7)" },
+                  "discountAmount": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 10px rgba(34, 197, 94, 0.7)" },
+                  "discountIcon": { "fill": "#22c55e" },
                   "close": { "color": "#ffffff" }
                 },
                 "contents": { "notice": true },
@@ -51,6 +54,7 @@ export const ProductDetailView: React.FC = () => {
                 "styles": { 
                   "title": { "color": "#ffffff", "font-weight": "800" }, 
                   "price": { "color": "#ffffff" }, 
+                  "discount": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 8px rgba(34, 197, 94, 0.5)" },
                   "quantity": { "color": "#ffffff" }, 
                   "quantityIncrement": { "color": "#ffffff", "border-color": "#ffffff" }, 
                   "quantityDecrement": { "color": "#ffffff", "border-color": "#ffffff" },
