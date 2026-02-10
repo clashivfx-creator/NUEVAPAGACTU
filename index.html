@@ -2,11 +2,8 @@
 <html lang="es" style="scroll-behavior: smooth;">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ClashiVFX | Ofertas Exclusivas</title>
-    <meta name="description" content="Catálogo exclusivo de recursos para editores con descuentos de hasta el 85%." />
     
-    <!-- Meta Pixel Code -->
+    <!-- Meta Pixel Code (Priority Load) -->
     <script>
       !function(f,b,e,v,n,t,s)
       {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -18,8 +15,6 @@
       'https://connect.facebook.net/en_US/fbevents.js');
       fbq('init', '1594983758216504');
       fbq('track', 'PageView');
-      
-      // Evento ViewContent automático al cargar
       fbq('track', 'ViewContent', {
         content_name: 'Catálogo de Packs VFX',
         content_type: 'product_group'
@@ -31,6 +26,10 @@
     </noscript>
     <!-- End Meta Pixel Code -->
 
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ClashiVFX | Ofertas Exclusivas</title>
+    <meta name="description" content="Catálogo exclusivo de recursos para editores con descuentos de hasta el 85%." />
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -237,46 +236,36 @@
     <!-- Script de Seguimiento AddToCart Dinámico (Optimizado) -->
     <script>
       (function() {
-        // Función para limpiar precios y devolver un float puro
         function parseCurrency(str) {
           if (!str) return 0;
-          // Elimina $, USD, espacios y cualquier letra, convierte coma en punto
           var cleaned = str.replace(/[^\d.,]/g, '').replace(',', '.');
           return parseFloat(cleaned) || 0;
         }
 
-        // Listener global de clics para capturar la intención de compra
         document.addEventListener('click', function(e) {
           var target = e.target;
           var button = target.closest('button');
           
           if (button) {
             var btnText = button.innerText.toUpperCase();
-            // Escucha botones de AGREGAR (Tienda) o ADD (Inglés)
             if (btnText.indexOf('AGREGAR') > -1 || btnText.indexOf('ADD') > -1) {
               
-              // 1. Encontrar el contenedor del producto (card o sección)
-              // Buscamos hacia arriba el contenedor más cercano que agrupe la info
               var container = button.closest('.group') || 
                               button.closest('div[class*="bg-white/"]') || 
                               button.closest('div[class*="bg-[#050408]"]') ||
-                              button.closest('.lg\\:col-span-4'); // Para UltraWorkflow
+                              button.closest('.lg\\:col-span-4');
               
               if (container) {
-                // 2. Extraer Título (h1, h2 o h3 dentro del contenedor)
                 var titleEl = container.querySelector('h1, h2, h3');
                 var title = titleEl ? titleEl.innerText : 'Producto Pack VFX';
                 
-                // 3. Extraer Precio (buscamos el valor monetario que NO esté tachado)
                 var priceText = "";
                 var allSpans = container.querySelectorAll('span');
-                
-                // Prioridad 1: Buscar spans con color de precio (emerald)
                 var emeraldPrice = container.querySelector('.text-emerald-500');
+                
                 if (emeraldPrice) {
                   priceText = emeraldPrice.innerText;
                 } else {
-                  // Prioridad 2: Buscar cualquier span que tenga "$" y no sea line-through
                   for(var i=0; i < allSpans.length; i++) {
                     var text = allSpans[i].innerText;
                     if(text.indexOf('$') > -1 && !allSpans[i].classList.contains('line-through') && !allSpans[i].closest('.line-through')) {
@@ -288,14 +277,14 @@
 
                 var finalPrice = parseCurrency(priceText);
 
-                // 4. Disparo de evento a Meta Pixel
-                fbq('track', 'AddToCart', {
-                  content_name: title.trim(),
-                  value: finalPrice,
-                  currency: 'USD'
-                });
-                
-                console.log('Meta Pixel AddToCart:', { name: title.trim(), value: finalPrice });
+                if (typeof fbq === 'function') {
+                  fbq('track', 'AddToCart', {
+                    content_name: title.trim(),
+                    value: finalPrice,
+                    currency: 'USD'
+                  });
+                  console.log('Meta Pixel Tracked AddToCart:', { name: title.trim(), value: finalPrice });
+                }
               }
             }
           }
