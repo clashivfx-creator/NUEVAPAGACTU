@@ -1,4 +1,3 @@
-
 import React, { useEffect, useContext } from 'react';
 import { X, Zap, Flame, Sparkles } from 'lucide-react';
 import { FadeIn } from './ui/FadeIn';
@@ -41,6 +40,20 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose }) => 
               moneyFormat: '%24%7B%7Bamount%7D%7D',
               options: {
                 "product": {
+                  "events": {
+                    "addVariantToCart": (product: any) => {
+                      const title = product.model.title;
+                      const price = product.model.selectedVariant.price.amount;
+                      if (typeof (window as any).fbq === 'function') {
+                        (window as any).fbq('track', 'AddToCart', {
+                          content_name: title,
+                          value: parseFloat(price),
+                          currency: 'USD'
+                        });
+                        console.log('Shopify Upsell Hook: AddToCart tracked ->', title, price);
+                      }
+                    }
+                  },
                   "styles": {
                     "button": {
                       "font-family": "Manrope, sans-serif",

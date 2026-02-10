@@ -1,4 +1,3 @@
-
 import React, { useRef, useState, useContext, useEffect } from 'react';
 import { FadeIn } from './ui/FadeIn';
 import { Star, CheckCircle2, Zap } from 'lucide-react';
@@ -43,6 +42,20 @@ export const UltraWorkflow: React.FC = () => {
           id: shopifyProductId, node: node, moneyFormat: '%24%7B%7Bamount%7D%7D',
           options: {
             "product": {
+              "events": {
+                "addVariantToCart": (product: any) => {
+                  const title = product.model.title;
+                  const price = product.model.selectedVariant.price.amount;
+                  if (typeof (window as any).fbq === 'function') {
+                    (window as any).fbq('track', 'AddToCart', {
+                      content_name: title,
+                      value: parseFloat(price),
+                      currency: 'USD'
+                    });
+                    console.log('Shopify Workflow Hook: AddToCart tracked ->', title, price);
+                  }
+                }
+              },
               "styles": { 
                 "button": { 
                   "font-family": "Manrope, sans-serif", 
