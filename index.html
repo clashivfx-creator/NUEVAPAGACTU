@@ -6,6 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ClashiVFX | Ofertas Exclusivas</title>
     <meta name="description" content="Catálogo exclusivo de recursos para editores con descuentos de hasta el 85%." />
+    
+    <!-- Meta Pixel Code -->
+    <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '1626378492120533');
+      fbq('track', 'PageView');
+      
+      // Evento ViewContent automático al cargar
+      fbq('track', 'ViewContent', {
+        content_type: 'product_group',
+        content_name: 'Catálogo VFX 2026'
+      });
+    </script>
+    <noscript>
+      <img height="1" width="1" style="display:none" 
+           src="https://www.facebook.com/tr?id=1626378492120533&ev=PageView&noscript=1"/>
+    </noscript>
+    <!-- End Meta Pixel Code -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -208,6 +234,69 @@
 </head>
   <body>
     <div id="root"></div>
+
+    <!-- Script de Seguimiento AddToCart Dinámico -->
+    <script>
+      (function() {
+        // Función para limpiar precios
+        function parseCurrency(str) {
+          if (!str) return 0;
+          // Elimina $, USD y cualquier caracter que no sea número o punto
+          var cleaned = str.replace(/USD|\$|\s/g, '').replace(',', '.');
+          return parseFloat(cleaned) || 0;
+        }
+
+        // Listener global de clics
+        document.addEventListener('click', function(e) {
+          // Buscamos si el clic fue en un botón que diga "AGREGAR" o "ADD"
+          var target = e.target;
+          var button = target.closest('button');
+          
+          if (button) {
+            var btnText = button.innerText.toUpperCase();
+            if (btnText.indexOf('AGREGAR') > -1 || btnText.indexOf('ADD') > -1) {
+              
+              // Intentamos encontrar el contenedor del producto para extraer info
+              // Buscamos la card más cercana (.group o similar)
+              var container = button.closest('.group') || button.closest('div[class*="bg-white/"]');
+              
+              if (container) {
+                // Título: Suele estar en un h1, h2 o h3
+                var titleEl = container.querySelector('h1, h2, h3');
+                var title = titleEl ? titleEl.innerText : 'Producto Desconocido';
+                
+                // Precio: Buscamos el elemento que contenga el precio actual (usualmente emerald o similar)
+                // Buscamos un texto que contenga "$" pero que no sea el tachado (line-through)
+                var priceEl = container.querySelector('.text-emerald-500, .text-5xl, .text-xl, span:not(.line-through)');
+                // Refinamos búsqueda de precio si el anterior es muy genérico
+                var allSpans = container.querySelectorAll('span');
+                var priceText = "";
+                
+                for(var i=0; i < allSpans.length; i++) {
+                  if(allSpans[i].innerText.indexOf('$') > -1 && !allSpans[i].classList.contains('line-through')) {
+                    priceText = allSpans[i].innerText;
+                    break;
+                  }
+                }
+
+                if (!priceText && priceEl) priceText = priceEl.innerText;
+
+                var finalPrice = parseCurrency(priceText);
+
+                // Disparo de evento a Meta
+                fbq('track', 'AddToCart', {
+                  content_name: title.trim(),
+                  value: finalPrice,
+                  currency: 'USD'
+                });
+                
+                console.log('Meta Pixel: AddToCart tracked', { name: title.trim(), value: finalPrice });
+              }
+            }
+          }
+        }, true);
+      })();
+    </script>
   <script type="module" src="/index.tsx"></script>
 </body>
 </html>
