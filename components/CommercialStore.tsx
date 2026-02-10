@@ -27,7 +27,7 @@ const ProductMedia: React.FC<{ url: string; isVideo: boolean; alt: string }> = (
   if (isVideo) {
     return (
       <div className="relative w-full h-full bg-[#0a0a0c]">
-        <video videoRef={videoRef} src={url} autoPlay muted loop playsInline className={`w-full h-full object-cover transition-opacity duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'}`} onLoadedData={() => setIsLoaded(true)} onError={() => setHasError(true)} />
+        <video ref={videoRef} src={url} autoPlay muted loop playsInline className={`w-full h-full object-cover transition-opacity duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'}`} onLoadedData={() => setIsLoaded(true)} onError={() => setHasError(true)} />
       </div>
     );
   }
