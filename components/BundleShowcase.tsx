@@ -248,7 +248,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
     {
       id: 'vfx',
       title: variant === 'platinum' ? '' : t('vfx.title_main'),
-      items: variant === 'platinum' ? [] : [
+      items: [
         { icon: Tv, name: 'CRT', desc: t('vfx.crt') },
         { icon: Sparkles, name: 'Film Burns', desc: t('vfx.burns') },
         { icon: Flame, name: 'Fuego', desc: t('vfx.fire') },
@@ -257,7 +257,10 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
         { icon: Zap, name: 'Glitches', desc: t('vfx.glitch') },
         { icon: Layout, name: 'Overlays', desc: t('vfx.all') }
       ],
-      visual: variant === 'platinum' ? "" : "https://res.cloudinary.com/dbu9kzomq/image/upload/v1769800502/ghidd_pag_pewc99.gif",
+      visuals: [
+        { type: 'image', url: "https://res.cloudinary.com/dbu9kzomq/image/upload/v1769800502/ghidd_pag_pewc99.gif" },
+        { type: 'video', url: "https://res.cloudinary.com/dbu9kzomq/video/upload/v1770687966/sdwq2dewdwqew_fh4dw5.mp4" }
+      ],
       aspect: "aspect-[9/16]"
     }
   ];
@@ -343,7 +346,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
                 <div className="w-full lg:w-[62%] aspect-[5/4] sm:aspect-square lg:aspect-auto relative bg-black border-r border-white/5 overflow-hidden">
                   <img src={productData.image} alt={productData.name} className="w-full h-full object-cover lg:object-contain bg-black transition-transform duration-700 hover:scale-[1.01]" />
                 </div>
-                {/* Lado de información: Eliminamos overflow-hidden para evitar recortes */}
+                {/* Lado de información */}
                 <div className="w-full lg:w-[38%] p-6 sm:p-10 lg:p-6 xl:p-8 flex flex-col justify-center relative group overflow-visible">
                   <h2 className="text-[10px] sm:text-xs lg:text-[11px] xl:text-[12px] font-black text-white uppercase tracking-tight mb-4 text-center lg:text-left drop-shadow-xl opacity-80">
                     {variant === 'platinum' ? t('product.platinum_name') : t('bundle.title_main')}
@@ -381,7 +384,6 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
                        <CountdownTimer />
                     </div>
                     
-                    {/* Contenedor del botón con min-height para evitar recortes por el iframe de Shopify */}
                     <div id={productData.nodeId} className="w-full min-h-[64px] flex flex-col justify-center -mt-2 lg:mt-0"></div>
                     
                     {variant === 'elite' && (
@@ -418,7 +420,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
           </div>
         </div>
       </div>
-      {/* Resto del componente se mantiene igual... */}
+
       <div className="container mx-auto px-4 max-w-7xl mt-2 sm:mt-4">
         {variant !== 'platinum' && (
           <FadeIn className="mb-10 text-center">
@@ -434,36 +436,38 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
             <div key={cat.id} id={cat.id} className="pt-10 mb-10">
               {cat.title && (
                 <FadeIn>
-                  <h2 className="text-3xl sm:text-5xl font-black text-white uppercase tracking-tighter mb-8 inline-block relative">
+                  <h2 className="text-3xl sm:text-5xl font-black text-white uppercase tracking-tighter mb-12 inline-block relative">
                     {cat.title}
                     <div className="absolute -bottom-2 left-0 w-24 h-1 bg-purple-600" />
                   </h2>
                 </FadeIn>
               )}
 
-              <div className="flex flex-col gap-12 sm:gap-16">
-                <div className="w-full">
-                  <div className="text-[6px] sm:text-[8px] text-white/30 font-black uppercase text-left tracking-widest w-full mb-3">@PESALU</div>
-                  <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:gap-10">
-                    <div className={`relative rounded-xl overflow-hidden border border-white/10 shadow-2xl bg-[#050505] ${cat.aspect} w-full`}>
-                      <img src={cat.visual} alt="VFX 1" className="w-full h-full object-cover" />
+              <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-start">
+                {/* LADO IZQUIERDO: VISUALES (MÁS PEQUEÑOS Y ORDENADOS) */}
+                <div className="w-full lg:w-[55%] flex flex-col gap-3">
+                  <div className="text-[6px] sm:text-[8px] text-white/30 font-black uppercase text-left tracking-widest w-full mb-1">@PESALU</div>
+                  <div className="grid grid-cols-2 gap-4 sm:gap-6">
+                    <div className={`relative rounded-xl overflow-hidden border border-white/10 shadow-2xl bg-[#050505] ${cat.aspect} w-full transition-transform hover:scale-[1.02] duration-500`}>
+                      <img src={cat.visuals[0].url} alt="VFX Example 1" className="w-full h-full object-cover" />
                     </div>
-                    <div className={`relative rounded-xl overflow-hidden border border-white/10 shadow-2xl bg-[#050505] ${cat.aspect} w-full`}>
-                      <video src="https://res.cloudinary.com/dbu9kzomq/video/upload/v1770687966/sdwq2dewdwqew_fh4dw5.mp4" autoPlay muted loop playsInline className="w-full h-full object-cover" />
+                    <div className={`relative rounded-xl overflow-hidden border border-white/10 shadow-2xl bg-[#050505] ${cat.aspect} w-full transition-transform hover:scale-[1.02] duration-500`}>
+                      <video src={cat.visuals[1].url} autoPlay muted loop playsInline className="w-full h-full object-cover" />
                     </div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-3 items-start text-center lg:text-left">
+                {/* LADO DERECHO: TEXTOS DESCRIPTIVOS */}
+                <div className="w-full lg:w-[45%] grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-6 lg:pt-10">
                     {cat.items.map((item, i) => (
                       <FadeIn key={i} delay={i * 30} className="flex flex-col items-center lg:items-start w-full">
-                        <div className="flex flex-col items-center lg:items-start gap-1.5 group">
+                        <div className="flex flex-col items-center lg:items-start gap-2 group">
                           <div className="shrink-0 w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-purple-600 transition-all duration-300">
                             <item.icon className="w-4.5 h-4.5 text-white" />
                           </div>
                           <div className="flex flex-col items-center lg:items-start">
-                            <h3 className="text-[13px] sm:text-base font-black text-white mb-0.5 uppercase tracking-tight leading-none text-center lg:text-left">{item.name}</h3>
-                            <p className="text-gray-500 text-[10px] sm:text-xs font-light leading-snug text-center lg:text-left max-w-[210px]">{item.desc}</p>
+                            <h3 className="text-[14px] sm:text-base font-black text-white mb-0.5 uppercase tracking-tight leading-none text-center lg:text-left">{item.name}</h3>
+                            <p className="text-gray-500 text-[10px] sm:text-[11px] font-light leading-snug text-center lg:text-left max-w-[210px]">{item.desc}</p>
                           </div>
                         </div>
                       </FadeIn>
