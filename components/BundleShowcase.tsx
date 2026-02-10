@@ -453,13 +453,18 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
           ))}
 
           {/* COLOR SECTION */}
-          <div className={`mt-10 pt-4 ${variant === 'platinum' ? 'mb-20' : ''}`}>
+          <div className="mt-10 pt-4">
             <FadeIn>
-              <div className="flex items-center justify-center lg:justify-start gap-5 mb-8 border-b border-white/10 pb-4">
+              <div className="flex flex-col lg:flex-row items-center justify-center lg:justify-start gap-5 mb-8 border-b border-white/10 pb-4">
                 <Palette className="w-10 h-10 text-purple-500" />
-                <h2 className="text-3xl sm:text-6xl font-black text-white uppercase tracking-tighter">
-                  {variant === 'platinum' ? 'DEMO DE LOS PLATINUM LUTs' : t('bundle.color_title')}
-                </h2>
+                <div className="flex flex-col">
+                  <h2 className="text-3xl sm:text-6xl font-black text-white uppercase tracking-tighter leading-none">
+                    {variant === 'platinum' ? 'DEMO DE LOS PLATINUM LUTs' : t('bundle.color_title')}
+                  </h2>
+                  <p className="text-[10px] sm:text-xs font-black text-purple-400 uppercase tracking-[0.2em] mt-2 text-center lg:text-left">
+                    {variant === 'platinum' ? t('bundle.platinum_demo_subtitle') : ''}
+                  </p>
+                </div>
               </div>
             </FadeIn>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 max-w-7xl mx-auto">
@@ -481,6 +486,30 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
               </FadeIn>
             </div>
           </div>
+
+          {/* SFX SECTION - ONLY FOR ELITE PACK */}
+          {variant === 'elite' && (
+            <div className="mt-20 pt-10">
+              <FadeIn>
+                <div className="flex items-center justify-center lg:justify-start gap-5 mb-8 border-b border-white/10 pb-4">
+                  <Volume2 className="w-10 h-10 text-emerald-500" />
+                  <h2 className="text-3xl sm:text-6xl font-black text-white uppercase tracking-tighter">
+                    {t('sfx.title')}
+                  </h2>
+                </div>
+              </FadeIn>
+              <FadeIn delay={100}>
+                <div className="relative rounded-[2rem] overflow-hidden border border-white/10 bg-white/5 shadow-2xl group">
+                  <img 
+                    src="https://res.cloudinary.com/dbu9kzomq/image/upload/v1769810913/mjghkjmgjhmg_rc8xe5.png" 
+                    alt="Sound Effects Pack" 
+                    className="w-full h-auto object-cover transition-transform duration-1000 group-hover:scale-[1.02]"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 pointer-events-none" />
+                </div>
+              </FadeIn>
+            </div>
+          )}
         </div>
 
         <div className="mt-16 sm:mt-24 max-w-4xl mx-auto px-4">

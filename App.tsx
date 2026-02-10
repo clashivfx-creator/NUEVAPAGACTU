@@ -92,6 +92,7 @@ const translations = {
     'bundle.this_pack': ' LLEVAR TUS VÍDEOS AL SIGUIENTE NIVEL',
     'bundle.audio_quote': 'El audio es el 50% del video. No lo descuides.',
     'bundle.color_title': 'POSTPRODUCCIÓN DE NIVEL CINE (LUTs)',
+    'bundle.platinum_demo_subtitle': 'SON MÁS DE 500 LUTS PROFESIONALES CON ESTILOS DE TODO TIPO',
     'bundle.color_desc': 'Logra el look de los mejores vídeos musicales en segundos. LUTs optimizados para cámaras profesionales y smartphones.',
     'bundle.cta_ready': '¿LISTO PARA DIFERENCIARTE DE LA ',
     'bundle.cta_level': 'COMPETENCIA?',
@@ -139,7 +140,7 @@ const translations = {
     'product.workflow_desc': 'Optimiza todo tu flujo de trabajo en After Effects.',
     'sfx.title': 'DISEÑO SONORO (SFX)',
     'sfx.count': '+4000 EFECTOS DE SONIDO',
-    'sfx.folders': '63 CARPETAS CON EFECTOS DE SONIDOS',
+    'sfx.folders': '+70 CARPETAS CON MILES DE EFECTOS DE SONIDO',
     'vfx.title_main': 'VFX & Overlays para impacto total',
     'vfx.crt': 'Televisores antiguos, líneas de escaneo y estática.',
     'vfx.burns': 'Destellos de luz orgánicos para transiciones vintage.',
@@ -205,6 +206,7 @@ const translations = {
     'bundle.this_pack': ' TAKE YOUR VIDEOS TO THE NEXT LEVEL',
     'bundle.audio_quote': 'Audio is 50% of the video. Don\'t neglect it.',
     'bundle.color_title': 'CINEMA-LEVEL POST-PRODUCTION (LUTs)',
+    'bundle.platinum_demo_subtitle': 'OVER 500 PROFESSIONAL LUTs WITH ALL KINDS OF STYLES',
     'bundle.color_desc': 'Achieve the look of top music videos in seconds. Optimized LUTs for professional cameras and smartphones.',
     'bundle.cta_ready': 'READY TO STAND OUT FROM THE ',
     'bundle.cta_level': 'COMPETITION?',
@@ -252,7 +254,7 @@ const translations = {
     'product.workflow_desc': 'Optimize your entire workflow in After Effects.',
     'sfx.title': 'SOUND DESIGN (SFX)',
     'sfx.count': '+4000 SOUND EFFECTS',
-    'sfx.folders': '63 FOLDERS WITH SOUND EFFECTS',
+    'sfx.folders': '+70 FOLDERS WITH THOUSANDS OF SOUND EFFECTS',
     'vfx.title_main': 'VFX & Overlays for Total Impact',
     'vfx.crt': 'Retro TVs, scanlines and static overlays.',
     'vfx.burns': 'Organic film burns for vintage transitions.',
@@ -303,32 +305,28 @@ const App = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const NavButtons = ({ vertical = false, mobileNav = false }: { vertical?: boolean, mobileNav?: boolean }) => (
-    <div className={`flex ${vertical ? 'flex-col gap-6 items-start' : 'items-center justify-center gap-2 sm:gap-10'} px-2 h-full`}>
+  const NavButtons = () => (
+    <div className="flex items-center justify-center gap-4 sm:gap-10 px-2 h-full">
       <button 
         onClick={() => handleSetTab('about')}
-        className={`${mobileNav ? 'text-[8px]' : 'text-[9px] sm:text-xs'} font-bold tracking-[0.1em] sm:tracking-[0.2em] uppercase transition-all whitespace-nowrap ${activeTab === 'about' ? 'text-purple-500 opacity-100 scale-105' : 'text-white opacity-40 hover:opacity-100'}`}
+        className={`text-[9px] sm:text-xs font-black tracking-[0.15em] sm:tracking-[0.2em] uppercase transition-all whitespace-nowrap ${activeTab === 'about' ? 'text-purple-500 opacity-100 scale-105' : 'text-white opacity-40 hover:opacity-100'}`}
       >
         {t('nav.about')}
       </button>
       <button 
         onClick={() => handleSetTab('products')}
-        className={`relative flex flex-col items-center justify-center group/nav ${mobileNav ? 'text-[8px]' : 'text-[9px] sm:text-xs'} font-bold tracking-[0.1em] sm:tracking-[0.2em] uppercase transition-all whitespace-nowrap h-full ${activeTab === 'products' ? 'text-purple-500 opacity-100 scale-105' : 'text-white opacity-40 hover:opacity-100'}`}
+        className={`relative flex flex-col items-center justify-center group/nav text-[9px] sm:text-xs font-black tracking-[0.15em] sm:tracking-[0.2em] uppercase transition-all whitespace-nowrap h-full`}
       >
-        <span className="leading-none">{t('nav.products')}</span>
-        <span className="absolute top-[68%] left-1/2 -translate-x-1/2 text-[5.5px] sm:text-[6.5px] text-amber-500 font-black animate-pulse whitespace-nowrap tracking-tighter uppercase pointer-events-none">
+        <span className={`leading-none ${activeTab === 'products' ? 'text-purple-500 opacity-100 scale-105' : 'text-white opacity-40 group-hover/nav:opacity-100'}`}>
+          {t('nav.products')}
+        </span>
+        <span className="absolute top-[68%] left-1/2 -translate-x-1/2 text-[5.5px] sm:text-[6.5px] text-amber-500 font-black animate-pulse whitespace-nowrap tracking-tighter uppercase pointer-events-none drop-shadow-[0_0_10px_rgba(245,158,11,1)] opacity-100 z-10">
           {t('nav.bestseller')}
         </span>
       </button>
       <button 
-        onClick={() => handleSetTab('platinum')}
-        className={`${mobileNav ? 'text-[8px]' : 'text-[9px] sm:text-xs'} font-bold tracking-[0.1em] sm:tracking-[0.2em] uppercase transition-all whitespace-nowrap ${activeTab === 'platinum' ? 'text-purple-500 opacity-100 scale-105' : 'text-white opacity-40 hover:opacity-100'} ${vertical || mobileNav ? '' : 'hidden lg:block'}`}
-      >
-        {t('nav.platinum')}
-      </button>
-      <button 
         onClick={() => handleSetTab('store')}
-        className={`${mobileNav ? 'text-[8px]' : 'text-[9px] sm:text-xs'} font-bold tracking-[0.1em] sm:tracking-[0.2em] uppercase transition-all whitespace-nowrap px-2 py-1 rounded-md ${activeTab === 'store' ? 'text-purple-500 bg-purple-500/10' : 'text-white opacity-40 hover:opacity-100'}`}
+        className={`text-[9px] sm:text-xs font-black tracking-[0.15em] sm:tracking-[0.2em] uppercase transition-all whitespace-nowrap px-2 py-1 rounded-md ${activeTab === 'store' ? 'text-purple-500 bg-purple-500/10' : 'text-white opacity-40 hover:opacity-100'}`}
       >
         {t('nav.store')}
       </button>
@@ -344,18 +342,19 @@ const App = () => {
         <SocialFloatingButtons />
         
         <nav className="fixed top-0 left-0 w-full z-[100] bg-black/40 backdrop-blur-2xl border-b border-white/5">
-          <div className="container mx-auto px-4 sm:px-6 h-16 md:h-20 flex items-center justify-between">
+          <div className="container mx-auto px-4 sm:px-6 h-16 md:h-20 flex items-center">
             
-            <div className="hidden lg:flex flex-1 justify-start items-center gap-4">
-              <span className="text-[10px] font-black opacity-20 tracking-[0.3em]">CLASHIVFX</span>
+            {/* Espaciador Izquierdo para equilibrar el botón de Discord y centrar el menú */}
+            <div className="flex-1 flex justify-start items-center">
+               <span className="hidden lg:block text-[10px] font-black opacity-20 tracking-[0.3em] uppercase">CLASHIVFX</span>
             </div>
 
-            <div className="flex-1 flex items-center justify-center h-full">
-              <div className="flex items-center justify-center w-full h-full">
-                <NavButtons mobileNav={true} />
-              </div>
+            {/* Menú Principal Centrado */}
+            <div className="flex-[2] flex items-center justify-center h-full">
+               <NavButtons />
             </div>
 
+            {/* Acciones Derecha (Discord) */}
             <div className="flex-1 flex justify-end items-center gap-2 sm:gap-3">
               <a 
                 href="https://discord.com/invite/zEcFPBqy6s" 
