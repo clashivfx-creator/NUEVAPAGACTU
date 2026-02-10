@@ -141,7 +141,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
       shopifyId: '8476233466031',
       nodeId: 'product-component-1770244709884',
       name: t('product.ultimate_name'),
-      oldPrice: '299.99',
+      oldPrice: '690',
       newPrice: '29.99',
       image: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770737015/aaaaaaaaaxa_0-00-00-00_.00_00_00_00.Imagen_fija001_hmnkuf.png',
       resourcesLabel: t('bundle.resources_count'),
@@ -338,12 +338,13 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
             </FadeIn>
 
             {/* Main Product Card */}
-            <FadeIn delay={200} className="w-full max-w-7xl lg:max-w-4xl mx-auto px-4 lg:px-0 mb-3 sm:mb-4">
+            <FadeIn delay={200} className="w-full max-w-7xl lg:max-w-5xl mx-auto px-4 lg:px-0 mb-3 sm:mb-4">
               <div className="bg-white/[0.03] border border-white/10 rounded-[2rem] lg:rounded-[2.5rem] overflow-hidden shadow-2xl flex flex-col lg:flex-row items-stretch">
-                <div className="w-full lg:w-[65%] aspect-[5/4] sm:aspect-square lg:aspect-auto relative bg-black border-r border-white/5 overflow-hidden">
+                <div className="w-full lg:w-[62%] aspect-[5/4] sm:aspect-square lg:aspect-auto relative bg-black border-r border-white/5 overflow-hidden">
                   <img src={productData.image} alt={productData.name} className="w-full h-full object-cover lg:object-contain bg-black transition-transform duration-700 hover:scale-[1.01]" />
                 </div>
-                <div className="w-full lg:w-[35%] p-6 sm:p-10 lg:p-6 xl:p-8 flex flex-col justify-center relative group">
+                {/* Lado de información: Eliminamos overflow-hidden para evitar recortes */}
+                <div className="w-full lg:w-[38%] p-6 sm:p-10 lg:p-6 xl:p-8 flex flex-col justify-center relative group overflow-visible">
                   <h2 className="text-[10px] sm:text-xs lg:text-[11px] xl:text-[12px] font-black text-white uppercase tracking-tight mb-4 text-center lg:text-left drop-shadow-xl opacity-80">
                     {variant === 'platinum' ? t('product.platinum_name') : t('bundle.title_main')}
                   </h2>
@@ -369,16 +370,36 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
 
                   <div className="flex flex-col items-center lg:items-start gap-2 w-full">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-emerald-500 text-5xl sm:text-5xl xl:text-6xl font-black tracking-tighter leading-none">${productData.newPrice}</span>
-                      <span className="text-gray-500 line-through text-[10px] font-bold opacity-50">${productData.oldPrice}</span>
+                      <span className="text-emerald-500 text-6xl sm:text-5xl xl:text-7xl font-black tracking-tighter leading-none drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]">${productData.newPrice}</span>
+                      <span className={`line-through text-[10px] font-black ${variant === 'elite' ? 'text-red-600 drop-shadow-[0_0_8px_rgba(220,38,38,0.8)]' : 'text-gray-500 opacity-50'}`}>
+                        ${productData.oldPrice}
+                      </span>
                     </div>
                     
-                    <div className="mt-1 flex items-center gap-1.5">
+                    <div className="mt-0 lg:mt-1 flex items-center gap-1.5">
                        <Clock className="w-2.5 h-2.5 text-emerald-500 animate-pulse" />
                        <CountdownTimer />
                     </div>
                     
-                    <div id={productData.nodeId} className="w-full"></div>
+                    {/* Contenedor del botón con min-height para evitar recortes por el iframe de Shopify */}
+                    <div id={productData.nodeId} className="w-full min-h-[64px] flex flex-col justify-center -mt-2 lg:mt-0"></div>
+                    
+                    {variant === 'elite' && (
+                      <div className="mt-3 lg:mt-5 flex flex-col items-center lg:items-start gap-2.5 border-t border-white/5 pt-4 w-full">
+                        <div className="flex items-center gap-2">
+                          <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
+                          <span className="text-[7.5px] sm:text-[9px] font-black text-emerald-500 uppercase tracking-[0.2em] drop-shadow-[0_0_8px_rgba(16,185,129,0.3)]">
+                            DESCARGA ÚNICA
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 group/premium">
+                          <Zap className="w-2.5 h-2.5 text-purple-500 group-hover:scale-125 transition-transform" />
+                          <span className="text-[7.5px] sm:text-[9px] font-black uppercase tracking-[0.2em] text-shimmer">
+                            ACTUALIZACIONES DE POR VIDA
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -397,7 +418,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
           </div>
         </div>
       </div>
-
+      {/* Resto del componente se mantiene igual... */}
       <div className="container mx-auto px-4 max-w-7xl mt-2 sm:mt-4">
         {variant !== 'platinum' && (
           <FadeIn className="mb-10 text-center">

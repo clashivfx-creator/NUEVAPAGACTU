@@ -83,9 +83,12 @@ export const ProductDetailView: React.FC = () => {
           <FadeIn className="w-full"><div className="relative aspect-square rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl bg-[#050505]"><img src={selectedProduct.mediaUrl} alt={selectedProduct.name} className="w-full h-full object-cover" /></div></FadeIn>
           <FadeIn delay={100} className="flex flex-col h-full justify-center">
             <h1 className="text-4xl sm:text-7xl font-black text-white uppercase tracking-tighter mb-4 italic">{selectedProduct.name}</h1>
-            <div className="flex items-baseline gap-4 mb-8"><span className="text-emerald-500 text-5xl sm:text-6xl font-black tracking-tighter">${selectedProduct.newPrice} USD</span><span className="text-gray-600 line-through text-lg font-bold">${selectedProduct.oldPrice} USD</span></div>
-            <div className="p-8 rounded-3xl bg-white/[0.03] border border-white/10 mb-10"><div className="text-gray-300 text-lg font-medium leading-relaxed italic mb-6 whitespace-pre-line">{selectedProduct.description}</div><div className="space-y-4"><div className="flex items-center gap-4 text-gray-400"><Laptop className="w-5 h-5 text-purple-500" /><span className="text-sm font-bold uppercase tracking-tight">{t('detail.winmac')}</span></div><div className="flex items-center gap-4 text-gray-400"><Monitor className="w-5 h-5 text-purple-500" /><span className="text-sm font-bold uppercase tracking-tight">{t('detail.software')}</span></div></div></div>
-            <div id={`detail-shopify-node-${selectedProduct.id}`} className="w-full"></div>
+            <div className="flex items-baseline gap-4 mb-4 lg:mb-8">
+              <span className="text-emerald-500 text-6xl sm:text-6xl font-black tracking-tighter">${selectedProduct.newPrice} USD</span>
+              <span className="text-gray-600 line-through text-lg font-bold">${selectedProduct.oldPrice} USD</span>
+            </div>
+            <div className="p-8 rounded-3xl bg-white/[0.03] border border-white/10 mb-6 lg:mb-10"><div className="text-gray-300 text-lg font-medium leading-relaxed italic mb-6 whitespace-pre-line">{selectedProduct.description}</div><div className="space-y-4"><div className="flex items-center gap-4 text-gray-400"><Laptop className="w-5 h-5 text-purple-500" /><span className="text-sm font-bold uppercase tracking-tight">{t('detail.winmac')}</span></div><div className="flex items-center gap-4 text-gray-400"><Monitor className="w-5 h-5 text-purple-500" /><span className="text-sm font-bold uppercase tracking-tight">{t('detail.software')}</span></div></div></div>
+            <div id={`detail-shopify-node-${selectedProduct.id}`} className="w-full -mt-2 lg:mt-0"></div>
           </FadeIn>
         </div>
       </div>

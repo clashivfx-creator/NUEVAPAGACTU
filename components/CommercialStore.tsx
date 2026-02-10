@@ -50,7 +50,7 @@ export const CommercialStore: React.FC = () => {
       shopifyId: '8476233466031', 
       nodeId: 'product-component-ultimate-2026', 
       name: t('product.ultimate_name'), 
-      oldPrice: '299.99', 
+      oldPrice: '690', 
       newPrice: '29.99', 
       mediaUrl: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770737015/aaaaaaaaaxa_0-00-00-00_.00_00_00_00.Imagen_fija001_hmnkuf.png', 
       isVideo: false, 
@@ -182,7 +182,14 @@ export const CommercialStore: React.FC = () => {
                   </div>
                   <div className="mt-4 sm:mt-6 text-center lg:text-left">
                     <h3 className="text-white font-black text-[12px] sm:text-lg mb-2 tracking-tight uppercase leading-tight group-hover:text-white transition-colors">{product.name}</h3>
-                    <div className="flex flex-col lg:flex-row items-center lg:items-baseline gap-1 lg:gap-3 mb-4"><span className="text-gray-500 line-through text-[10px] sm:text-base font-bold">${product.oldPrice} USD</span><span className="text-white text-sm sm:text-2xl font-black tracking-tighter">${product.newPrice} USD</span></div>
+                    <div className="flex flex-col lg:flex-row items-center lg:items-baseline gap-1 lg:gap-3 mb-1 lg:mb-4">
+                      <span className="text-red-600 line-through text-[10px] sm:text-base font-black drop-shadow-[0_0_8px_rgba(220,38,38,0.8)]">
+                        ${product.oldPrice} USD
+                      </span>
+                      <span className="text-emerald-500 text-xl sm:text-2xl font-black tracking-tighter drop-shadow-[0_0_10px_rgba(16,185,129,0.7)]">
+                        ${product.newPrice} USD
+                      </span>
+                    </div>
                     <div id={product.nodeId} className="w-full" onClick={(e) => e.stopPropagation()}></div>
                   </div>
                 </div>
