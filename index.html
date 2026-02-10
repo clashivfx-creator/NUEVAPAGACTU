@@ -235,6 +235,94 @@
     </noscript>
     
     <div id="root"></div>
+
+    <!-- Script de Seguimiento AddToCart Dinámico (Optimizado y Robusto) -->
+    <script>
+      (function() {
+        console.log('PIXEL ADD-TO-CART LISTENER ACTIVADO - MODO ROBUSTO');
+        
+        // Limpieza de moneda
+        function parseCurrency(str) {
+          if (!str) return 0;
+          // Limpia todo excepto números, puntos y comas
+          var cleaned = str.replace(/[^\d.,]/g, '').replace(',', '.');
+          // Maneja casos con múltiples puntos/comas si existieran
+          return parseFloat(cleaned) || 0;
+        }
+
+        // Búsqueda dinámica de precio ignorando tachados
+        function findPriceInContainer(container) {
+          var elements = container.querySelectorAll('span, p, div');
+          for (var i = 0; i < elements.length; i++) {
+            var el = elements[i];
+            var text = el.innerText;
+            if (text.indexOf('$') > -1) {
+              // Verificar si el elemento o sus padres tienen línea tachada
+              var style = window.getComputedStyle(el);
+              var isStruck = style.textDecoration.indexOf('line-through') > -1 || 
+                             el.closest('.line-through') || 
+                             el.closest('s') || 
+                             el.closest('del');
+              
+              if (!isStruck) {
+                return text;
+              }
+            }
+          }
+          return "";
+        }
+
+        // Listener global en fase de captura para no bloquear otros eventos
+        document.addEventListener('click', function(e) {
+          var button = e.target.closest('button');
+          if (!button) return;
+
+          var btnText = (button.innerText || button.textContent).toUpperCase();
+          
+          // Detectar cualquier variante de "AGREGAR" o "ADD"
+          if (btnText.indexOf('AGREGAR') > -1 || btnText.indexOf('ADD') > -1) {
+            console.log('Botón detectado, buscando datos...');
+            
+            // 1. Encontrar el contenedor de producto más cercano
+            var container = button.closest('.group') || 
+                            button.closest('div[class*="bg-white/"]') || 
+                            button.closest('div[class*="bg-[#"]') ||
+                            button.closest('div[class*="rounded-"]') ||
+                            button.closest('.lg\\:col-span-4');
+
+            if (container) {
+              // 2. Extraer Nombre (Encabezado más cercano)
+              var titleEl = container.querySelector('h1, h2, h3');
+              var title = titleEl ? titleEl.innerText.trim() : 'Producto Packs VFX';
+              
+              // 3. Extraer Precio (Lógica dinámica de búsqueda de $)
+              var priceRaw = findPriceInContainer(container);
+              var finalPrice = parseCurrency(priceRaw);
+
+              console.log('Datos encontrados:', {
+                nombre: title,
+                precio_raw: priceRaw,
+                precio_final: finalPrice
+              });
+
+              // 4. Enviar a Meta Pixel si fbq existe
+              if (typeof fbq === 'function') {
+                fbq('track', 'AddToCart', {
+                  content_name: title,
+                  value: finalPrice,
+                  currency: 'USD'
+                });
+                console.log('Evento AddToCart enviado exitosamente.');
+              } else {
+                console.warn('Meta Pixel (fbq) no detectado en el momento del clic.');
+              }
+            } else {
+              console.warn('No se pudo encontrar el contenedor del producto para el botón clicado.');
+            }
+          }
+        }, true); // Fase de captura para máxima prioridad
+      })();
+    </script>
   <script type="module" src="/index.tsx"></script>
 </body>
 </html>

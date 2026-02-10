@@ -1,3 +1,4 @@
+
 import React, { useContext, useState, useEffect, useMemo, useRef } from 'react';
 import { FadeIn } from './ui/FadeIn';
 import { 
@@ -168,21 +169,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
           moneyFormat: '%24%7B%7Bamount%7D%7D',
           options: {
             "product": {
-              "events": { 
-                "addVariantToCart": (product: any) => {
-                  const title = product.model.title;
-                  const price = product.model.selectedVariant.price.amount;
-                  if (typeof (window as any).fbq === 'function') {
-                    (window as any).fbq('track', 'AddToCart', {
-                      content_name: title,
-                      value: parseFloat(price),
-                      currency: 'USD'
-                    });
-                    console.log('Shopify Showcase Hook: AddToCart tracked ->', title, price);
-                  }
-                },
-                "afterAddVariantToCart": () => window.dispatchEvent(new CustomEvent('openUpsellModal')) 
-              },
+              "events": { "afterAddVariantToCart": () => window.dispatchEvent(new CustomEvent('openUpsellModal')) },
               "styles": {
                 "button": {
                   "font-family": "Manrope, sans-serif",

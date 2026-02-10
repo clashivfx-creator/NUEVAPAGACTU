@@ -1,3 +1,4 @@
+
 import React, { useContext, useRef, useState, useEffect, useMemo } from 'react';
 import { FadeIn } from './ui/FadeIn';
 import { Flame, Star, ArrowRight, Award, ShoppingCart, Clock } from 'lucide-react';
@@ -119,21 +120,7 @@ export const CommercialStore: React.FC = () => {
               id: p.shopifyId, node: node, moneyFormat: '%24%7B%7Bamount%7D%7D',
               options: {
                 "product": {
-                  "events": { 
-                    "addVariantToCart": (product: any) => {
-                      const title = product.model.title;
-                      const price = product.model.selectedVariant.price.amount;
-                      if (typeof (window as any).fbq === 'function') {
-                        (window as any).fbq('track', 'AddToCart', {
-                          content_name: title,
-                          value: parseFloat(price),
-                          currency: 'USD'
-                        });
-                        console.log('Shopify Store Hook: AddToCart tracked ->', title, price);
-                      }
-                    },
-                    "afterAddVariantToCart": () => setIsCartVisible(true) 
-                  },
+                  "events": { "afterAddVariantToCart": () => setIsCartVisible(true) },
                   "styles": { "button": { "font-family": "Manrope, sans-serif", "font-weight": "900", "background-color": "#22c55e", "color": "#ffffff", "border-radius": "40px", "font-size": "13px", ":hover": { "background-color": "#16a34a" } } },
                   "contents": { "img": false, "title": false, "price": false },
                   "text": { "button": lang === 'es' ? "AGREGAR" : "ADD" }
