@@ -1,11 +1,11 @@
 
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" style="scroll-behavior: smooth;">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Top 1% Editores | VFX Formación</title>
-    <meta name="description" content="Formación exclusiva para editores ambiciosos." />
+    <title>ClashiVFX | Ofertas Exclusivas</title>
+    <meta name="description" content="Catálogo exclusivo de recursos para editores con descuentos de hasta el 85%." />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,58 +26,41 @@
               }
             },
             animation: {
+              'marquee': 'marquee 12s linear infinite',
+              'marquee-fast': 'marquee 3s linear infinite',
               'float-slow': 'float 20s ease-in-out infinite',
               'pulse-glow-violet': 'pulse-glow-violet 4s ease-in-out infinite',
-              'spin-slow': 'spin 12s linear infinite',
               'alert-breathe': 'alert-breathe 5s ease-in-out infinite',
-              'border-glow': 'border-glow 6s linear infinite',
-              'glow-scan': 'glow-scan 4s linear infinite',
-              'glow-drift': 'glow-drift 10s ease-in-out infinite',
-              'text-glow-pulse': 'text-glow-pulse 5s ease-in-out infinite',
               'warning-blink': 'warning-blink 1.5s ease-in-out infinite',
+              'red-glow': 'pulse-red-glow 1.5s ease-in-out infinite',
             },
             keyframes: {
-              float: {
-                '0%, 100%': { transform: 'translate(0, 0) scale(1)' },
-                '33%': { transform: 'translate(20px, -30px) scale(1.05)' },
-                '66%': { transform: 'translate(-15px, 15px) scale(0.95)' },
+              marquee: {
+                '0%': { transform: 'translateX(0)' },
+                '100%': { transform: 'translateX(-50%)' },
               },
-              'pulse-glow-violet': {
-                '0%, 100%': { boxShadow: '0 0 15px rgba(139, 92, 246, 0.2)' },
-                '50%': { boxShadow: '0 0 35px rgba(139, 92, 246, 0.4)' },
+              float: {
+                '0%, 100%': { transform: 'translate3d(0, 0, 0) scale(1)' },
+                '33%': { transform: 'translate3d(20px, -30px, 0) scale(1.05)' },
+                '66%': { transform: 'translate3d(-15px, 15px, 0) scale(0.95)' },
               },
               'alert-breathe': {
                 '0%, 100%': { transform: 'scale(1)', opacity: '1' },
                 '50%': { transform: 'scale(1.01)', opacity: '0.95' },
               },
-              'border-glow': {
-                '0%': { backgroundPosition: '0% 50%' },
-                '50%': { backgroundPosition: '100% 50%' },
-                '100%': { backgroundPosition: '0% 50%' },
-              },
-              'glow-scan': {
-                '0%': { left: '-100%' },
-                '100%': { left: '200%' }
-              },
-              'glow-drift': {
-                '0%, 100%': { transform: 'translate(0, 0)' },
-                '25%': { transform: 'translate(10px, -10px)' },
-                '50%': { transform: 'translate(-5px, 8px)' },
-                '75%': { transform: 'translate(8px, 5px)' }
-              },
-              'text-glow-pulse': {
-                '0%, 100%': { 
-                  textShadow: '0 0 8px rgba(139, 92, 246, 0.15)',
-                  transform: 'scale(1)'
-                },
-                '50%': { 
-                  textShadow: '0 0 20px rgba(139, 92, 246, 0.3)',
-                  transform: 'scale(1.01)'
-                },
-              },
               'warning-blink': {
                 '0%, 100%': { opacity: '1', filter: 'brightness(1)' },
                 '50%': { opacity: '0.8', filter: 'brightness(1.5)' },
+              },
+              'pulse-red-glow': {
+                '0%, 100%': { 
+                  textShadow: '0 0 4px #ef4444, 0 0 10px #ef4444',
+                  opacity: '1'
+                },
+                '50%': { 
+                  textShadow: '0 0 15px #ef4444, 0 0 25px #ef4444',
+                  opacity: '0.7'
+                }
               }
             }
           }
@@ -90,16 +73,75 @@
         background-color: #000000;
         color: #ffffff;
         -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
       }
 
-      /* --- ESTILOS REFINADOS --- */
+      /* Animación de Neón para el Carrito */
+      @keyframes neon-pulse-green {
+        0%, 100% { 
+          text-shadow: 0 0 5px #22c55e, 0 0 10px #22c55e;
+          transform: scale(1);
+        }
+        50% { 
+          text-shadow: 0 0 15px #22c55e, 0 0 25px #22c55e, 0 0 35px #16a34a;
+          transform: scale(1.05);
+        }
+      }
+
+      /* Animación de Neón Rojo para la Nav */
+      @keyframes pulse-red-glow {
+        0%, 100% { 
+          text-shadow: 0 0 5px #ef4444, 0 0 10px #ef4444;
+          color: #ef4444;
+          opacity: 1;
+        }
+        50% { 
+          text-shadow: 0 0 15px #ef4444, 0 0 25px #ef4444, 0 0 35px #b91c1c;
+          color: #f87171;
+          opacity: 0.8;
+        }
+      }
+      .animate-red-glow {
+        animation: pulse-red-glow 1.5s ease-in-out infinite;
+      }
+
+      /* PERFORMANCE OPTIMIZATIONS */
+      section {
+        content-visibility: auto;
+        contain-intrinsic-size: 1px 500px;
+      }
+
+      .will-change-transform {
+        will-change: transform;
+      }
+
       .text-shimmer {
         background: linear-gradient(120deg, #fff 0%, #a855f7 35%, #ec4899 65%, #fff 100%);
         background-size: 200% auto;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         animation: shimmer 5s linear infinite;
+        will-change: background-position;
       }
+
+      .text-gold-shimmer {
+        background: linear-gradient(120deg, #b45309 0%, #fbbf24 35%, #fef3c7 65%, #b45309 100%);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shimmer 5s linear infinite;
+        will-change: background-position;
+      }
+
+      .text-violet-shimmer {
+        background: linear-gradient(120deg, #7c3aed 0%, #a78bfa 35%, #c4b5fd 65%, #7c3aed 100%);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shimmer 5s linear infinite;
+        will-change: background-position;
+      }
+
       @keyframes shimmer { to { background-position: 200% center; } }
       
       .gold-white-btn {
@@ -107,58 +149,14 @@
         color: black;
         box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
         transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        transform: translateZ(0);
       }
       .gold-white-btn:hover {
         background: #ffffff;
-        transform: translateY(-2px);
+        transform: translate3d(0, -2px, 0);
         box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
       }
 
-      .text-gradient {
-        background: linear-gradient(135deg, #a855f7, #ec4899);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-      .text-gradient-yellow {
-        background: linear-gradient(135deg, #facc15, #f97316);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-      .gold-shine {
-        background: linear-gradient(to right, #fde047, #f97316, #fde047);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-size: 200% auto;
-        animation: shimmer 6s linear infinite;
-      }
-
-      .icon-rainbow-neon {
-        filter: drop-shadow(0 0 3px rgba(168, 85, 247, 0.3));
-      }
-      
-      .glass-panel {
-        background: rgba(255, 255, 255, 0.02);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-      }
-
-      .text-glow-white { text-shadow: 0 0 15px rgba(255, 255, 255, 0.2); }
-
-      .reveal-hidden { 
-        opacity: 0; 
-        transform: translateY(15px); 
-        filter: blur(10px); 
-      }
-      .reveal-visible { 
-        opacity: 1; 
-        transform: translateY(0); 
-        filter: blur(0); 
-        transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
-                    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
-                    filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-
-      /* BOTÓN PREMIUM DESDE CERO: 3D, VIOLETA A GRIS, SIN SOMBRA AL PULSAR */
       .btn-premium-3d {
         background: linear-gradient(135deg, #5b21b6 0%, #1f2937 100%);
         color: #ffffff;
@@ -169,54 +167,36 @@
         position: relative;
         padding: 1.25rem 2.5rem;
         border: 1px solid rgba(139, 92, 246, 0.4);
-        /* Efecto 3D (Borde inferior grueso) */
         box-shadow: 
           0 8px 0px #2e1065, 
           0 15px 30px rgba(0, 0, 0, 0.6),
           0 0 25px rgba(139, 92, 246, 0.3);
-        transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 0.75rem;
+        transform: translateZ(0);
       }
 
       .btn-premium-3d:hover {
-        transform: translateY(-2px);
+        transform: translate3d(0, -2px, 0);
         box-shadow: 
           0 10px 0px #2e1065, 
           0 20px 40px rgba(0, 0, 0, 0.7),
           0 0 40px rgba(139, 92, 246, 0.5);
-        border-color: rgba(139, 92, 246, 0.6);
       }
 
-      /* Efecto de pulsación - Se quitan las sombras según pedido */
       .btn-premium-3d:active {
-        transform: translateY(8px);
+        transform: translate3d(0, 8px, 0);
         box-shadow: 0 0 0px transparent !important;
-        border-color: rgba(139, 92, 246, 0.2);
       }
-
-      /* Brillo interno sutil */
-      .btn-premium-3d::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        border-radius: 9999px;
-        background: linear-gradient(to bottom, rgba(255,255,255,0.1), transparent);
-        pointer-events: none;
-      }
-
-      /* Hide horizontal scroll */
-      body { overflow-x: hidden; }
     </style>
     <script type="importmap">
     {
       "imports": {
+        "three": "https://esm.sh/three@0.170.0",
         "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
         "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
         "react/": "https://esm.sh/react@^19.2.3/",

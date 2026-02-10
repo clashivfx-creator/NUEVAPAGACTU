@@ -33,7 +33,7 @@ export const LimitedPacks: React.FC = () => {
               <div className="relative overflow-hidden rounded-[1.4rem] sm:rounded-[2.45rem] z-10 flex flex-col bg-[#050505]">
                 <div className="flex flex-col lg:flex-row w-full">
                   <div className="w-full lg:w-1/2 p-3">
-                    <div className="relative aspect-[4/5] w-full bg-black rounded-2xl sm:rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl">
+                    <div className="relative aspect-video w-full bg-black rounded-2xl sm:rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl">
                       <iframe
                         width="100%"
                         height="100%"
@@ -72,7 +72,7 @@ export const LimitedPacks: React.FC = () => {
                     </div>
 
                     <div className="mt-auto">
-                      <a href="https://e08ff1-xx.myshopify.com/products/pack-de-efectos-esenciales" target="_blank" rel="noopener noreferrer" className="block w-full">
+                      <a href="https://clashivfx.myshopify.com/products/pack-de-efectos-esenciales" target="_blank" rel="noopener noreferrer" className="block w-full">
                         <button className="w-full flex items-center justify-center gap-3 px-6 sm:px-8 py-4 sm:py-5 rounded-full text-black font-bold text-base sm:text-lg bg-white transition-all shadow-xl">
                           <ShoppingCart className="w-5 sm:w-6 h-5 sm:h-6" />
                           {t('packs.btn')}
