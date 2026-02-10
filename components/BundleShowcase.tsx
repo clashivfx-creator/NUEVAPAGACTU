@@ -338,12 +338,12 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
             </FadeIn>
 
             {/* Main Product Card */}
-            <FadeIn delay={200} className="w-full max-w-7xl mx-auto px-4 lg:px-0 mb-3 sm:mb-4">
+            <FadeIn delay={200} className="w-full max-w-7xl lg:max-w-4xl mx-auto px-4 lg:px-0 mb-3 sm:mb-4">
               <div className="bg-white/[0.03] border border-white/10 rounded-[2rem] lg:rounded-[2.5rem] overflow-hidden shadow-2xl flex flex-col lg:flex-row items-stretch">
-                <div className="w-full lg:w-[72%] aspect-[5/4] sm:aspect-square lg:aspect-auto relative bg-black border-r border-white/5 overflow-hidden">
+                <div className="w-full lg:w-[65%] aspect-[5/4] sm:aspect-square lg:aspect-auto relative bg-black border-r border-white/5 overflow-hidden">
                   <img src={productData.image} alt={productData.name} className="w-full h-full object-cover lg:object-contain bg-black transition-transform duration-700 hover:scale-[1.01]" />
                 </div>
-                <div className="w-full lg:w-[28%] p-6 sm:p-10 lg:p-6 xl:p-8 flex flex-col justify-center relative group">
+                <div className="w-full lg:w-[35%] p-6 sm:p-10 lg:p-6 xl:p-8 flex flex-col justify-center relative group">
                   <h2 className="text-[10px] sm:text-xs lg:text-[11px] xl:text-[12px] font-black text-white uppercase tracking-tight mb-4 text-center lg:text-left drop-shadow-xl opacity-80">
                     {variant === 'platinum' ? t('product.platinum_name') : t('bundle.title_main')}
                   </h2>
