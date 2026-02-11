@@ -138,7 +138,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
     }
     return {
       shopifyId: '8476233466031',
-      nodeId: 'product-component-1770753509135',
+      nodeId: 'product-component-1770244709884',
       name: t('product.ultimate_name'),
       oldPrice: '690',
       newPrice: '29.99',
@@ -170,37 +170,27 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
             "product": {
               "events": { 
                 "addVariantToCart": (product: any) => {
-                  // LÓGICA DE TRACKING DEL SNIPPET
+                  const title = product?.model?.title || 'Producto Showcase';
+                  const price = product?.model?.selectedVariant?.price?.amount || '0';
+                  
                   if (typeof (window as any).fbq === 'function') {
-                    const model = product.model;
-                    const price = model.selectedVariant.price.amount || model.selectedVariant.price; 
-                    
                     (window as any).fbq('track', 'AddToCart', {
-                      content_name: model.title,
+                      content_name: title,
                       value: parseFloat(price),
                       currency: 'USD'
                     });
-                    console.log('✅ Pixel AddToCart enviado:', model.title, price);
-                  } else {
-                    console.warn('Pixel no detectado al intentar agregar al carrito');
+                    console.log('Meta Pixel: AddToCart tracked ->', title, price);
                   }
                 },
                 "afterAddVariantToCart": () => window.dispatchEvent(new CustomEvent('openUpsellModal')) 
               },
               "styles": {
-                "product": {
-                  "@media (min-width: 601px)": {
-                    "max-width": "100%",
-                    "margin-left": "0px",
-                    "margin-bottom": "0px"
-                  }
-                },
                 "button": {
                   "font-family": "Manrope, sans-serif",
                   "font-weight": "900",
                   "font-size": "13px",
-                  "padding-top": "14px",
-                  "padding-bottom": "14px",
+                  "padding-top": "10px",
+                  "padding-bottom": "10px",
                   "border-radius": "40px",
                   "background-color": "#22c55e",
                   "color": "#ffffff",
@@ -208,39 +198,36 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
                 }
               },
               "contents": { "img": false, "title": false, "price": false },
-              "text": { "button": "AGREGAR" }
+              "text": { "button": lang === 'es' ? "AGREGAR AL CARRITO" : "ADD TO CART" }
             },
             "cart": {
               "styles": {
-                "title": { "color": "#fffafa" },
-                "header": { "color": "#fffafa" },
-                "lineItems": { "color": "#fffafa" },
-                "subtotalText": { "color": "#fffafa" },
-                "subtotal": { "color": "#fffafa" },
-                "notice": { "color": "#fffafa" },
-                "currency": { "color": "#fffafa" },
-                "close": { "color": "#fffafa", ":hover": { "color": "#fffafa" } },
-                "empty": { "color": "#fffafa" },
-                "noteDescription": { "color": "#fffafa" },
-                "discountText": { "color": "#fffafa" },
-                "discountIcon": { "fill": "#fffafa" },
-                "discountAmount": { "color": "#fffafa" },
                 "cart": { "background-color": "#000000", "box-shadow": "0 0 50px rgba(0,0,0,0.8)" },
-                "footer": { "background-color": "#000000", "border-top": "1px solid rgba(255,255,255,0.15)" },
-                "button": { 
-                  "font-family": "Manrope, sans-serif", 
+                "header": { "background-color": "#000000", "color": "#ffffff", "padding-top": "30px", "padding-bottom": "15px" },
+                "title": { "color": "#ffffff", "font-family": "Manrope, sans-serif", "font-weight": "900", "font-size": "11px", "text-transform": "uppercase", "text-shadow": "none" },
+                "footer": { "background-color": "#000000", "color": "#ffffff", "border-top": "1px solid rgba(255,255,255,0.15)", "padding-top": "24px" },
+                "button": { "font-family": "Manrope, sans-serif", "font-weight": "900", "font-size": "18px", "background-color": "#22c55e", "color": "#ffffff", "border-radius": "14px", ":hover": { "background-color": "#16a34a" } },
+                "close": { "color": "#ffffff" },
+                "empty": { "color": "#ffffff" },
+                "subtotalText": { "color": "#ffffff" },
+                "subtotal": { "color": "#ffffff", "font-weight": "900", "font-size": "18px" },
+                "notice": { 
+                  "color": "#22c55e", 
                   "font-weight": "900", 
-                  "font-size": "18px", 
-                  "background-color": "#22c55e", 
-                  "color": "#ffffff", 
-                  "border-radius": "14px", 
-                  ":hover": { "background-color": "#16a34a" } 
-                }
+                  "font-size": "14px", 
+                  "text-align": "center", 
+                  "margin-bottom": "20px", 
+                  "text-shadow": "0 0 10px rgba(34, 197, 94, 0.8), 0 0 20px rgba(34, 197, 94, 0.4)" 
+                },
+                "currency": { "color": "#ffffff" },
+                "discountText": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 10px rgba(34, 197, 94, 0.7)" },
+                "discountAmount": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 10px rgba(34, 197, 94, 0.7)" },
+                "discountIcon": { "fill": "#22c55e" }
               },
               "contents": { "title": true, "note": false, "footer": true, "notice": true },
               "text": {
-                "total": "Subtotal",
-                "button": "Checkout",
+                "total": "SUBTOTAL",
+                "button": lang === 'es' ? "PAGAR AHORA" : "CHECKOUT",
                 "title": "CARRITO",
                 "notice": "¡AGREGA OTRO PRODUCTO CON 40% OFF!",
                 "empty": lang === 'es' ? "Tu carrito está vacío" : "Your cart is empty"
@@ -248,16 +235,13 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
             },
             "lineItem": {
               "styles": {
-                "variantTitle": { "color": "#fffafa" },
-                "title": { "color": "#fffafa", "font-weight": "800" },
-                "price": { "color": "#fffafa", "font-weight": "900" },
-                "fullPrice": { "color": "#fffafa" },
-                "discount": { "color": "#fffafa", "font-weight": "900" },
-                "discountIcon": { "fill": "#fffafa" },
-                "quantity": { "color": "#fffafa", "font-weight": "900" },
-                "quantityIncrement": { "color": "#fffafa", "border-color": "#fffafa" },
-                "quantityDecrement": { "color": "#fffafa", "border-color": "#fffafa" },
-                "quantityInput": { "color": "#fffafa", "border-color": "#fffafa", "background": "transparent" }
+                "title": { "color": "#ffffff", "font-weight": "800" },
+                "price": { "color": "#ffffff", "font-weight": "900" },
+                "discount": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 8px rgba(34, 197, 94, 0.5)" },
+                "quantity": { "color": "#ffffff", "font-weight": "900" },
+                "quantityIncrement": { "color": "#ffffff", "border-color": "#ffffff" },
+                "quantityDecrement": { "color": "#ffffff", "border-color": "#ffffff" },
+                "quantityInput": { "color": "#ffffff", "background": "transparent" }
               }
             }
           }
