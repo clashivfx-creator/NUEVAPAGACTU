@@ -1,7 +1,7 @@
 
 import React, { useContext, useRef, useState, useEffect, useMemo } from 'react';
 import { FadeIn } from './ui/FadeIn';
-import { Flame, Star, ArrowRight, Award, ShoppingCart, Clock } from 'lucide-react';
+import { Flame, Star, ArrowRight } from 'lucide-react';
 import { LanguageContext } from '../App';
 import { CountdownTimer } from './BundleShowcase';
 
@@ -43,8 +43,6 @@ const DiscordIcon = ({ className }: { className?: string }) => (
 
 export const CommercialStore: React.FC = () => {
   const { t, lang, setActiveTab } = useContext(LanguageContext);
-  const [isCartVisible, setIsCartVisible] = useState(false);
-
   const checkoutIdRef = useRef<string | null>(null);
   const checkoutUrlRef = useRef<string | null>(null);
   const products = useMemo<Product[]>(() => [
@@ -115,7 +113,6 @@ export const CommercialStore: React.FC = () => {
     if (typeof (window as any).fbq === 'function') {
       (window as any).fbq('track', 'AddToCart', { content_name: product.name, value: parseFloat(product.newPrice), currency: 'USD' });
     }
-    setIsCartVisible(true);
     window.dispatchEvent(new CustomEvent('openUpsellModal', { detail: { productId: product.shopifyId } }));
     addToCartViaAPI(product.shopifyId).catch(() => {});
   };
@@ -133,14 +130,6 @@ export const CommercialStore: React.FC = () => {
 
   return (
     <div className="bg-black min-h-screen pb-24">
-      <div className={`fixed bottom-0 left-0 w-full z-[120] p-4 bg-black/80 backdrop-blur-xl border-t border-white/10 transition-all duration-250 ${isCartVisible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0 pointer-events-none'}`}>
-        <div className="container mx-auto max-w-7xl flex items-center justify-between gap-4">
-           <div className="flex items-center gap-4">
-              <p className="text-gray-400 font-bold text-xs sm:text-sm uppercase">{t('store.auto_discounts')}</p>
-           </div>
-           <button onClick={handleCustomCheckout} className="px-10 py-4 bg-white hover:bg-gray-200 text-black font-black uppercase tracking-tighter rounded-full transition-all flex items-center gap-3 shadow-[0_0_20px_rgba(255,255,255,0.2)]">{t('store.pay_now')} <ArrowRight className="w-5 h-5" /></button>
-        </div>
-      </div>
       <div className="bg-red-600 py-4 overflow-hidden relative border-y border-red-500/50 shadow-[0_0_30px_rgba(239,68,68,0.3)]"><div className="flex justify-center sm:whitespace-nowrap sm:animate-marquee"><div className="flex items-center gap-10 mx-6"><span className="text-white text-sm sm:text-xl font-black tracking-tighter uppercase italic flex items-center gap-3"><Flame className="w-5 h-5 sm:w-7 sm:h-7 fill-current animate-pulse" /> {t('store.banner')}</span></div></div></div>
       <div className="flex flex-col items-center mt-8 sm:mt-12"><p className="text-white/40 text-[10px] font-black uppercase tracking-[0.3em] mb-3">{t('store.ends_in')}</p><CountdownTimer /></div>
       <div className="container mx-auto px-4 sm:px-8 max-w-7xl mt-12 sm:mt-24">
