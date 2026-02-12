@@ -24,7 +24,9 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose }) => 
       { id: '8277720498351', node: 'upsell-4', name: 'Título 3D' }
     ];
 
+    let cancelled = false;
     const initShopify = () => {
+      if (cancelled) return;
       if (!window.ShopifyBuy || !window.ShopifyBuy.UI) return;
       const client = window.ShopifyBuy.buildClient({
         domain: 'e08ff1-xx.myshopify.com',
@@ -32,6 +34,7 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose }) => 
       });
 
       window.ShopifyBuy.UI.onReady(client).then((ui: any) => {
+        if (cancelled) return;
         upsellProducts.forEach(p => {
           const node = document.getElementById(p.node);
           if (node && !node.hasAttribute('data-shopify-initialized')) {
@@ -112,6 +115,16 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose }) => 
     };
 
     loadScript();
+    return () => {
+      cancelled = true;
+      upsellProducts.forEach(p => {
+        const node = document.getElementById(p.node);
+        if (node) {
+          node.innerHTML = '';
+          node.removeAttribute('data-shopify-initialized');
+        }
+      });
+    };
   }, [isOpen, lang]);
 
   if (!isOpen) return null;

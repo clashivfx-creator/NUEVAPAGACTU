@@ -8,14 +8,18 @@ export const ProductDetailView: React.FC = () => {
   const { t, lang, setActiveTab, selectedProduct } = useContext(LanguageContext);
   useEffect(() => {
     if (!selectedProduct) return;
+    let cancelled = false;
+    const nodeId = `detail-shopify-node-${selectedProduct.id}`;
     const scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
     const ShopifyBuyInit = () => {
+      if (cancelled) return;
       if (!window.ShopifyBuy || !window.ShopifyBuy.UI) return;
-      const node = document.getElementById(`detail-shopify-node-${selectedProduct.id}`);
+      const node = document.getElementById(nodeId);
       if (node) {
         node.innerHTML = '';
         const client = window.ShopifyBuy.buildClient({ domain: 'e08ff1-xx.myshopify.com', storefrontAccessToken: '64026182325df844d6b96ce1f55661c5' });
         window.ShopifyBuy.UI.onReady(client).then((ui: any) => {
+          if (cancelled) return;
           ui.createComponent('product', {
             id: selectedProduct.shopifyId, node: node, moneyFormat: '%24%7B%7Bamount%7D%7D',
             options: {
@@ -83,6 +87,11 @@ export const ProductDetailView: React.FC = () => {
       document.head.appendChild(script); script.onload = ShopifyBuyInit;
     };
     loadScript();
+    return () => {
+      cancelled = true;
+      const node = document.getElementById(nodeId);
+      if (node) node.innerHTML = '';
+    };
   }, [selectedProduct, lang, t]);
   if (!selectedProduct) { setActiveTab('store'); return null; }
   return (

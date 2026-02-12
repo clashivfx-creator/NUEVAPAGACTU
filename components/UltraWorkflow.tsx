@@ -31,14 +31,17 @@ export const UltraWorkflow: React.FC = () => {
   const videoAspect = "aspect-[1366/766]";
 
   useEffect(() => {
+    let cancelled = false;
     const scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
     const ShopifyBuyInit = () => {
+      if (cancelled) return;
       if (!window.ShopifyBuy || !window.ShopifyBuy.UI) return;
       const node = document.getElementById(shopifyNodeId);
       if (!node) return;
       node.innerHTML = '';
       const client = window.ShopifyBuy.buildClient({ domain: 'e08ff1-xx.myshopify.com', storefrontAccessToken: '64026182325df844d6b96ce1f55661c5' });
       window.ShopifyBuy.UI.onReady(client).then((ui: any) => {
+        if (cancelled) return;
         ui.createComponent('product', {
           id: shopifyProductId, node: node, moneyFormat: '%24%7B%7Bamount%7D%7D',
           options: {
@@ -111,6 +114,11 @@ export const UltraWorkflow: React.FC = () => {
       document.head.appendChild(script); script.onload = ShopifyBuyInit;
     };
     loadScript();
+    return () => {
+      cancelled = true;
+      const node = document.getElementById(shopifyNodeId);
+      if (node) node.innerHTML = '';
+    };
   }, [lang]);
 
   const features = [
