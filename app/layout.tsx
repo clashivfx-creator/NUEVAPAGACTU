@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Manrope, Inter } from "next/font/google";
-import "./globals.css";
 import Script from "next/script";
+import "./globals.css";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -16,15 +16,22 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "ClashiVFX | Ofertas Exclusivas",
+  title: "ClashiVFX - Herramientas de Nivel Industria para Editores",
   description:
-    "Catalogo exclusivo de recursos para editores con descuentos de hasta el 85%.",
+    "Packs de VFX, LUTs, SFX y recursos profesionales usados en producciones de alto nivel. Descarga instantánea.",
+  openGraph: {
+    title: "ClashiVFX - Herramientas de Nivel Industria",
+    description:
+      "Recursos profesionales de edición usados en producciones de Rauw Alejandro, Duki, Emilia Mernes y más.",
+    type: "website",
+  },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   themeColor: "#000000",
+  userScalable: false,
 };
 
 export default function RootLayout({
@@ -33,9 +40,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es" style={{ scrollBehavior: "smooth" }}>
+    <html lang="es" className={`${manrope.variable} ${inter.variable}`}>
       <head>
-        {/* Meta Pixel Code */}
         <Script id="meta-pixel" strategy="afterInteractive">
           {`
             !function(f,b,e,v,n,t,s)
@@ -47,7 +53,6 @@ export default function RootLayout({
             s.parentNode.insertBefore(t,s)}(window, document,'script',
             'https://connect.facebook.net/en_US/fbevents.js');
             fbq('init', '1594983758216504');
-            console.log('META PIXEL INICIALIZADO CORRECTAMENTE');
             fbq('track', 'PageView');
             fbq('track', 'ViewContent', {
               content_name: 'Catálogo VFX',
@@ -55,62 +60,7 @@ export default function RootLayout({
             });
           `}
         </Script>
-
-        {/* AddToCart Tracking Script */}
-        <Script id="add-to-cart-tracker" strategy="afterInteractive">
-          {`
-            (function() {
-              console.log('PIXEL ADD-TO-CART LISTENER ACTIVADO - MODO ROBUSTO');
-              function parseCurrency(str) {
-                if (!str) return 0;
-                var cleaned = str.replace(/[^\\d.,]/g, '').replace(',', '.');
-                return parseFloat(cleaned) || 0;
-              }
-              function findPriceInContainer(container) {
-                var elements = container.querySelectorAll('span, p, div');
-                for (var i = 0; i < elements.length; i++) {
-                  var el = elements[i];
-                  var text = el.innerText;
-                  if (text.indexOf('$') > -1) {
-                    var style = window.getComputedStyle(el);
-                    var isStruck = style.textDecoration.indexOf('line-through') > -1 || 
-                                   el.closest('.line-through') || 
-                                   el.closest('s') || 
-                                   el.closest('del');
-                    if (!isStruck) return text;
-                  }
-                }
-                return "";
-              }
-              document.addEventListener('click', function(e) {
-                var button = e.target.closest('button');
-                if (!button) return;
-                var btnText = (button.innerText || button.textContent).toUpperCase();
-                if (btnText.indexOf('AGREGAR') > -1 || btnText.indexOf('ADD') > -1) {
-                  console.log('Boton detectado, buscando datos...');
-                  var container = button.closest('.group') || 
-                                  button.closest('div[class*="bg-white/"]') || 
-                                  button.closest('div[class*="bg-[#"]') ||
-                                  button.closest('div[class*="rounded-"]') ||
-                                  button.closest('.lg\\\\:col-span-4');
-                  if (container) {
-                    var titleEl = container.querySelector('h1, h2, h3');
-                    var title = titleEl ? titleEl.innerText.trim() : 'Producto Packs VFX';
-                    var priceRaw = findPriceInContainer(container);
-                    var finalPrice = parseCurrency(priceRaw);
-                    console.log('Datos encontrados:', { nombre: title, precio_raw: priceRaw, precio_final: finalPrice });
-                    if (typeof fbq === 'function') {
-                      fbq('track', 'AddToCart', { content_name: title, value: finalPrice, currency: 'USD' });
-                      console.log('Evento AddToCart enviado exitosamente.');
-                    }
-                  }
-                }
-              }, true);
-            })();
-          `}
-        </Script>
         <noscript>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             height="1"
             width="1"
@@ -120,9 +70,7 @@ export default function RootLayout({
           />
         </noscript>
       </head>
-      <body className={`${manrope.variable} ${inter.variable} font-sans`}>
-        {children}
-      </body>
+      <body className="font-sans antialiased">{children}</body>
     </html>
   );
 }
