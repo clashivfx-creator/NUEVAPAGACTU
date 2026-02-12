@@ -44,6 +44,9 @@ const DiscordIcon = ({ className }: { className?: string }) => (
 export const CommercialStore: React.FC = () => {
   const { t, lang, setActiveTab } = useContext(LanguageContext);
   const [isCartVisible, setIsCartVisible] = useState(false);
+
+  const checkoutIdRef = useRef<string | null>(null);
+  const checkoutUrlRef = useRef<string | null>(null);
   const products = useMemo<Product[]>(() => [
     { 
       id: 'ultimate-2026', 
@@ -68,65 +71,71 @@ export const CommercialStore: React.FC = () => {
     { id: 'ultraworkflow', shopifyId: '8473627754671', nodeId: 'product-component-1770243547561', name: t('product.workflow_name'), oldPrice: '50.00', newPrice: '39.99', mediaUrl: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787944/ultraworkflow_ocxa8x.gif', isVideo: false, link: 'https://e08ff1-xx.myshopify.com/products/pack-avanzado-copia-1', customAction: 'ultra', description: t('product.workflow_desc') }
   ], [lang, t]);
 
-  useEffect(() => {
-    let cancelled = false;
-    const scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
-    const ShopifyBuyInit = () => {
-      if (cancelled || !window.ShopifyBuy || !window.ShopifyBuy.UI) return;
-      const client = window.ShopifyBuy.buildClient({ domain: 'e08ff1-xx.myshopify.com', storefrontAccessToken: '64026182325df844d6b96ce1f55661c5' });
-      window.ShopifyBuy.UI.onReady(client).then((ui: any) => {
-        if (cancelled) return;
-        products.forEach(p => {
-          const node = document.getElementById(p.nodeId);
-          if (node) {
-            node.innerHTML = '';
-            ui.createComponent('product', {
-              id: p.shopifyId, node: node, moneyFormat: '%24%7B%7Bamount%7D%7D',
-              options: {
-                "product": {
-                  "events": {
-                    "addVariantToCart": (product: any) => {
-                      const title = product?.model?.title || p.name;
-                      const price = product?.model?.selectedVariant?.price?.amount || p.newPrice;
-                      console.log('[v0] Shopify addVariantToCart fired:', { title, price });
-                      if (typeof (window as any).fbq === 'function') {
-                        (window as any).fbq('track', 'AddToCart', { content_name: title, value: parseFloat(price), currency: 'USD' });
-                      }
-                    },
-                    "afterAddVariantToCart": () => {
-                      console.log('[v0] afterAddVariantToCart fired for:', p.name);
-                      setIsCartVisible(true);
-                      window.dispatchEvent(new CustomEvent('openUpsellModal', { detail: { productId: p.shopifyId } }));
-                    }
-                  },
-                  "styles": { "button": { "font-family": "Manrope, sans-serif", "font-weight": "900", "background-color": "#22c55e", "color": "#ffffff", "border-radius": "40px", "font-size": "13px", ":hover": { "background-color": "#16a34a" } } },
-                  "contents": { "img": false, "title": false, "price": false },
-                  "text": { "button": lang === 'es' ? "AGREGAR" : "ADD" }
-                }
-              }
-            });
-          }
-        });
-      });
-    };
-    const loadScript = () => {
-      const existing = document.querySelector(`script[src="${scriptURL}"]`);
-      if (existing) { if (window.ShopifyBuy && window.ShopifyBuy.UI) ShopifyBuyInit(); else existing.addEventListener('load', ShopifyBuyInit); return; }
-      const script = document.createElement('script'); script.async = true; script.src = scriptURL; script.crossOrigin = "anonymous";
-      (document.head || document.body).appendChild(script);
-      script.onload = ShopifyBuyInit;
-    };
-    loadScript();
-    return () => {
-      cancelled = true;
-      products.forEach(p => {
-        const node = document.getElementById(p.nodeId);
-        if (node) node.innerHTML = '';
-      });
-    };
-  }, [lang, products]);
+  const STOREFRONT_URL = 'https://e08ff1-xx.myshopify.com/api/2024-01/graphql.json';
+  const STOREFRONT_TOKEN = '64026182325df844d6b96ce1f55661c5';
 
-  const handleCustomCheckout = () => window.dispatchEvent(new CustomEvent('customCheckoutTrigger'));
+  const storefrontFetch = async (query: string, variables: Record<string, any> = {}) => {
+    const res = await fetch(STOREFRONT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Shopify-Storefront-Access-Token': STOREFRONT_TOKEN },
+      body: JSON.stringify({ query, variables }),
+    });
+    return res.json();
+  };
+
+  const addToCartViaAPI = async (shopifyId: string) => {
+    try {
+      // 1. Get the first variant GID
+      const productGid = `gid://shopify/Product/${shopifyId}`;
+      const prodResult = await storefrontFetch(`
+        query getProduct($id: ID!) { node(id: $id) { ... on Product { variants(first: 1) { edges { node { id } } } } } }
+      `, { id: productGid });
+      console.log('[v0] Storefront product fetch result:', JSON.stringify(prodResult));
+      const variantId = prodResult?.data?.node?.variants?.edges?.[0]?.node?.id;
+      if (!variantId) { console.log('[v0] No variant found for', shopifyId); return; }
+
+      // 2. Create or add to checkout
+      if (!checkoutIdRef.current) {
+        const createResult = await storefrontFetch(`
+          mutation checkoutCreate($input: CheckoutCreateInput!) { checkoutCreate(input: $input) { checkout { id webUrl } userErrors { field message } } }
+        `, { input: { lineItems: [{ variantId, quantity: 1 }] } });
+        console.log('[v0] Checkout create result:', JSON.stringify(createResult));
+        const checkout = createResult?.data?.checkoutCreate?.checkout;
+        if (checkout) {
+          checkoutIdRef.current = checkout.id;
+          checkoutUrlRef.current = checkout.webUrl;
+          console.log('[v0] Checkout created:', checkout.webUrl);
+        }
+      } else {
+        const addResult = await storefrontFetch(`
+          mutation checkoutLineItemsAdd($checkoutId: ID!, $lineItems: [CheckoutLineItemInput!]!) { checkoutLineItemsAdd(checkoutId: $checkoutId, lineItems: $lineItems) { checkout { id webUrl } userErrors { field message } } }
+        `, { checkoutId: checkoutIdRef.current, lineItems: [{ variantId, quantity: 1 }] });
+        console.log('[v0] Checkout add result:', JSON.stringify(addResult));
+        const checkout = addResult?.data?.checkoutLineItemsAdd?.checkout;
+        if (checkout) checkoutUrlRef.current = checkout.webUrl;
+      }
+    } catch (err) {
+      console.log('[v0] addToCartViaAPI error:', err);
+    }
+  };
+
+  const handleAddToCart = (product: Product) => {
+    console.log('[v0] handleAddToCart called for:', product.name, 'shopifyId:', product.shopifyId);
+    // Fire Meta Pixel immediately
+    if (typeof (window as any).fbq === 'function') {
+      (window as any).fbq('track', 'AddToCart', { content_name: product.name, value: parseFloat(product.newPrice), currency: 'USD' });
+    }
+    // Show cart bar + upsell modal instantly
+    setIsCartVisible(true);
+    window.dispatchEvent(new CustomEvent('openUpsellModal', { detail: { productId: product.shopifyId } }));
+    // Add to Shopify checkout in background via Storefront API (no SDK, no iframes)
+    addToCartViaAPI(product.shopifyId).catch(() => {});
+  };
+
+  const handleCustomCheckout = () => {
+    if (checkoutUrlRef.current) window.open(checkoutUrlRef.current, '_blank');
+    else window.dispatchEvent(new CustomEvent('customCheckoutTrigger'));
+  };
   const handleProductClick = (product: Product) => {
     if (product.customAction === 'elite') setActiveTab('products');
     else if (product.customAction === 'platinum') setActiveTab('platinum');
@@ -173,7 +182,12 @@ export const CommercialStore: React.FC = () => {
                         ${product.newPrice} USD
                       </span>
                     </div>
-                    <div id={product.nodeId} className="w-full min-h-[50px]" onClick={(e) => e.stopPropagation()}></div>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleAddToCart(product); }}
+                      className="w-full py-3 sm:py-4 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white font-black text-[11px] sm:text-[13px] uppercase tracking-wider rounded-full transition-all duration-200 shadow-[0_0_20px_rgba(34,197,94,0.3)]"
+                    >
+                      {lang === 'es' ? 'AGREGAR' : 'ADD'}
+                    </button>
                   </div>
                 </div>
               </div>
