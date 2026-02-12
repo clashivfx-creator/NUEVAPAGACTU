@@ -49,12 +49,20 @@
   }
 }
 
+html {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
 body {
   font-family: var(--font-manrope), var(--font-inter), 'Manrope', 'Inter', sans-serif;
   background-color: #000000;
   color: #ffffff;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  overflow-y: auto;
+  min-height: 100vh;
 }
 
 /* Neon Cart Animation */
