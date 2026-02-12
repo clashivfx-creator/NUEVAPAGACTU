@@ -185,7 +185,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
                     console.log('Meta Pixel: AddToCart tracked ->', title, price);
                   }
                 },
-                "afterAddVariantToCart": () => window.dispatchEvent(new CustomEvent('openUpsellModal', { detail: { productId: productData.shopifyId } })) 
+                "afterAddVariantToCart": () => window.dispatchEvent(new CustomEvent('openUpsellModal')) 
               },
               "styles": {
                 "button": {
@@ -480,7 +480,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
                 </div>
 
                 {/* LADO DERECHO: TEXTOS DESCRIPTIVOS */}
-                <div className="w-full lg:w-[45%] grid grid-cols-2 gap-x-4 sm:gap-x-6 gap-y-4 sm:gap-y-6 lg:pt-10">
+                <div className="w-full lg:w-[45%] grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-6 lg:pt-10">
                     {cat.items.map((item, i) => (
                       <FadeIn key={i} delay={i * 30} className="flex flex-col items-center lg:items-start w-full">
                         <div className="flex flex-col items-center lg:items-start gap-2 group">

@@ -132,10 +132,7 @@ export const CommercialStore: React.FC = () => {
                         (window as any).fbq('track', 'AddToCart', { content_name: title, value: parseFloat(price), currency: 'USD' });
                       }
                     },
-                    "afterAddVariantToCart": () => {
-                      setIsCartVisible(true);
-                      window.dispatchEvent(new CustomEvent('openUpsellModal', { detail: { productId: p.shopifyId } }));
-                    }
+                    "afterAddVariantToCart": () => setIsCartVisible(true)
                   },
                   "styles": { "button": { "font-family": "Manrope, sans-serif", "font-weight": "900", "background-color": "#22c55e", "color": "#ffffff", "border-radius": "40px", "font-size": "13px", ":hover": { "background-color": "#16a34a" } } },
                   "contents": { "img": false, "title": false, "price": false },

@@ -272,7 +272,6 @@ const App = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>('products');
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [showUpsell, setShowUpsell] = useState(false);
-  const [upsellExcludeId, setUpsellExcludeId] = useState<string | null>(null);
 
   useEffect(() => {
     window.goToStore = () => {
@@ -280,10 +279,7 @@ const App = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    const handleOpenUpsell = (e: Event) => {
-      const customEvent = e as CustomEvent;
-      const excludeId = customEvent?.detail?.productId || null;
-      setUpsellExcludeId(excludeId);
+    const handleOpenUpsell = () => {
       setTimeout(() => setShowUpsell(true), 500);
     };
 
@@ -395,7 +391,7 @@ const App = () => {
         </main>
         <Footer />
 
-        <UpsellModal isOpen={showUpsell} onClose={() => setShowUpsell(false)} excludeProductId={upsellExcludeId} />
+        <UpsellModal isOpen={showUpsell} onClose={() => setShowUpsell(false)} />
       </div>
     </LanguageContext.Provider>
   );

@@ -54,9 +54,6 @@ export const UltraWorkflow: React.FC = () => {
                   if (typeof (window as any).fbq === 'function') {
                     (window as any).fbq('track', 'AddToCart', { content_name: title, value: parseFloat(price), currency: 'USD' });
                   }
-                },
-                "afterAddVariantToCart": () => {
-                  window.dispatchEvent(new CustomEvent('openUpsellModal', { detail: { productId: shopifyProductId } }));
                 }
               },
               "styles": { 
