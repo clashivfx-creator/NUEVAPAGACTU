@@ -32,6 +32,9 @@ export const ProductDetailView: React.FC = () => {
                     if (typeof (window as any).fbq === 'function') {
                       (window as any).fbq('track', 'AddToCart', { content_name: title, value: parseFloat(price), currency: 'USD' });
                     }
+                  },
+                  "afterAddVariantToCart": () => {
+                    window.dispatchEvent(new CustomEvent('openUpsellModal', { detail: { productId: selectedProduct.shopifyId } }));
                   }
                 },
                 "styles": { "button": { "font-family": "Manrope, sans-serif", "font-weight": "900", "font-size": "18px", "padding": "24px", "border-radius": "50px", "background-color": "#22c55e", "color": "#ffffff", "width": "100%", ":hover": { "background-color": "#16a34a" } } },

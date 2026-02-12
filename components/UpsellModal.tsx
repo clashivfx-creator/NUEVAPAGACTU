@@ -1,30 +1,49 @@
 
-import React, { useEffect, useContext } from 'react';
-import { X, Zap, Flame, Sparkles } from 'lucide-react';
-import { FadeIn } from './ui/FadeIn';
+import React, { useEffect, useContext, useState, useMemo } from 'react';
+import { X, Zap, Flame, Clock, ShoppingCart } from 'lucide-react';
 import { LanguageContext } from '../App';
 
 interface UpsellModalProps {
   isOpen: boolean;
   onClose: () => void;
+  excludeProductId?: string | null;
 }
 
-export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose }) => {
-  const { lang } = useContext(LanguageContext);
+const ALL_PRODUCTS = [
+  { shopifyId: '8476233466031', name: '2026 Ultimate Editing Pack', nameKey: 'product.ultimate_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770737015/aaaaaaaaaxa_0-00-00-00_.00_00_00_00.Imagen_fija001_hmnkuf.png', oldPrice: '690', newPrice: '29.99' },
+  { shopifyId: '8480949338287', name: 'PLATINUM LUTs PACK', nameKey: 'product.platinum_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770735767/Gemini_Generated_Image_415qgo415qgo415q_0-00-00-00_ddzyye.png', oldPrice: '590', newPrice: '9' },
+  { shopifyId: '8170902323375', name: 'PACK AVANZADO', nameKey: 'product.advanced_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787956/PACK_AVANZADO_krghxs.gif', oldPrice: '79.99', newPrice: '19.99' },
+  { shopifyId: '8239170584751', name: 'REEL EDITABLE', nameKey: 'product.reel_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770334329/ssstik.io__clashivfx_1765467778171_sdxohb.gif', oldPrice: '49.99', newPrice: '19.99' },
+  { shopifyId: '8211512656047', name: 'MIXED MEDIA', nameKey: 'product.mixed_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787956/mixmedia_xcb5po.gif', oldPrice: '49.99', newPrice: '14.99' },
+  { shopifyId: '8448020152495', name: 'YEAT PROJECT', nameKey: 'product.yeat_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787949/YEAT_oqvxyf.gif', oldPrice: '49.99', newPrice: '19.99' },
+  { shopifyId: '8476755034287', name: 'SHAKES', nameKey: 'product.shakes_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787949/SHAKES_dimjeh.gif', oldPrice: '49.99', newPrice: '9.99' },
+  { shopifyId: '8277720498351', name: 'TITULO 3D', nameKey: 'product.title3d_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787941/TITULO_xecwfj.gif', oldPrice: '19.99', newPrice: '4.99' },
+  { shopifyId: '8473627754671', name: 'ULTRAWORKFLOW', nameKey: 'product.workflow_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787944/ultraworkflow_ocxa8x.gif', oldPrice: '50.00', newPrice: '39.99' },
+];
 
+export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose, excludeProductId }) => {
+  const { lang, t } = useContext(LanguageContext);
+  const [countdown, setCountdown] = useState(120);
+
+  const filteredProducts = useMemo(() => {
+    return ALL_PRODUCTS.filter(p => p.shopifyId !== excludeProductId);
+  }, [excludeProductId]);
+
+  // Countdown timer for urgency
+  useEffect(() => {
+    if (!isOpen) { setCountdown(120); return; }
+    const timer = setInterval(() => {
+      setCountdown(prev => (prev <= 0 ? 0 : prev - 1));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [isOpen]);
+
+  // Shopify buttons
   useEffect(() => {
     if (!isOpen) return;
-
-    const scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
-    
-    const upsellProducts = [
-      { id: '8211512656047', node: 'upsell-1', name: 'Mixed Media' },
-      { id: '8448020152495', node: 'upsell-2', name: 'Yeat Project' },
-      { id: '8476755034287', node: 'upsell-3', name: 'Shakes' },
-      { id: '8277720498351', node: 'upsell-4', name: 'Título 3D' }
-    ];
-
     let cancelled = false;
+    const scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
+
     const initShopify = () => {
       if (cancelled) return;
       if (!window.ShopifyBuy || !window.ShopifyBuy.UI) return;
@@ -35,11 +54,12 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose }) => 
 
       window.ShopifyBuy.UI.onReady(client).then((ui: any) => {
         if (cancelled) return;
-        upsellProducts.forEach(p => {
-          const node = document.getElementById(p.node);
+        filteredProducts.forEach((p, idx) => {
+          const nodeId = `upsell-dynamic-${idx}`;
+          const node = document.getElementById(nodeId);
           if (node && !node.hasAttribute('data-shopify-initialized')) {
             ui.createComponent('product', {
-              id: p.id,
+              id: p.shopifyId,
               node: node,
               moneyFormat: '%24%7B%7Bamount%7D%7D',
               options: {
@@ -48,10 +68,12 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose }) => 
                     "addVariantToCart": (product: any) => {
                       const title = product?.model?.title || p.name;
                       const price = product?.model?.selectedVariant?.price?.amount || '0';
-                      console.log('[v0] Meta Pixel AddToCart (Upsell):', { content_name: title, value: price });
                       if (typeof (window as any).fbq === 'function') {
                         (window as any).fbq('track', 'AddToCart', { content_name: title, value: parseFloat(price), currency: 'USD' });
                       }
+                    },
+                    "afterAddVariantToCart": () => {
+                      onClose();
                     }
                   },
                   "styles": {
@@ -60,23 +82,23 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose }) => 
                       "font-weight": "900",
                       "background-color": "#22c55e",
                       "border-radius": "40px",
-                      "font-size": "12px",
-                      "padding": "10px 20px",
+                      "font-size": "11px",
+                      "padding": "10px 16px",
                       ":hover": { "background-color": "#16a34a" }
                     }
                   },
                   "contents": { "img": false, "title": false, "price": false },
-                  "text": { "button": lang === 'es' ? "AGREGAR" : "ADD" }
+                  "text": { "button": lang === 'es' ? "AGREGAR -40%" : "ADD -40%" }
                 },
-                "cart": { 
-                  "contents": { "title": false }, 
-                  "styles": { 
+                "cart": {
+                  "contents": { "title": false },
+                  "styles": {
                     "cart": { "background-color": "#000000" },
                     "discountText": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 10px rgba(34, 197, 94, 0.7)" },
                     "discountAmount": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 10px rgba(34, 197, 94, 0.7)" },
                     "discountIcon": { "fill": "#22c55e" },
                     "subtotal": { "color": "#ffffff", "font-weight": "900" }
-                  } 
+                  }
                 },
                 "lineItem": {
                   "styles": {
@@ -99,11 +121,8 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose }) => 
     const loadScript = () => {
       const existing = document.querySelector(`script[src="${scriptURL}"]`);
       if (existing) {
-        if (window.ShopifyBuy && window.ShopifyBuy.UI) {
-          initShopify();
-        } else {
-          existing.addEventListener('load', initShopify);
-        }
+        if (window.ShopifyBuy && window.ShopifyBuy.UI) initShopify();
+        else existing.addEventListener('load', initShopify);
         return;
       }
       const script = document.createElement('script');
@@ -114,84 +133,103 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose }) => 
       script.onload = initShopify;
     };
 
-    loadScript();
+    // Small delay to ensure DOM nodes are rendered
+    const timer = setTimeout(loadScript, 100);
     return () => {
       cancelled = true;
-      upsellProducts.forEach(p => {
-        const node = document.getElementById(p.node);
+      clearTimeout(timer);
+      filteredProducts.forEach((_, idx) => {
+        const node = document.getElementById(`upsell-dynamic-${idx}`);
         if (node) {
           node.innerHTML = '';
           node.removeAttribute('data-shopify-initialized');
         }
       });
     };
-  }, [isOpen, lang]);
+  }, [isOpen, lang, filteredProducts, onClose]);
 
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 z-[2000] flex items-center justify-center px-4">
-      <div className="absolute inset-0 bg-black/95 backdrop-blur-md" onClick={onClose} />
-      
-      <FadeIn className="relative w-full max-w-5xl bg-[#0a0a0c] border border-red-500/30 rounded-[2.5rem] overflow-hidden shadow-[0_0_100px_rgba(239,68,68,0.2)]">
-        {/* Decorative corner glows */}
-        <div className="absolute -top-24 -left-24 w-48 h-48 bg-red-600/20 blur-[80px] rounded-full" />
-        <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-emerald-600/10 blur-[80px] rounded-full" />
+  const minutes = Math.floor(countdown / 60);
+  const seconds = countdown % 60;
 
-        <button 
+  return (
+    <div className="fixed inset-0 z-[2000] flex items-center justify-center px-3 sm:px-4">
+      <div className="absolute inset-0 bg-black/95 backdrop-blur-md" onClick={onClose} />
+
+      <div className="relative w-full max-w-5xl bg-[#0a0a0c] border border-red-500/30 rounded-2xl sm:rounded-[2.5rem] overflow-hidden shadow-[0_0_100px_rgba(239,68,68,0.2)] max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-300">
+        {/* Decorative glows */}
+        <div className="absolute -top-24 -left-24 w-48 h-48 bg-red-600/20 blur-[80px] rounded-full pointer-events-none" />
+        <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-emerald-600/10 blur-[80px] rounded-full pointer-events-none" />
+
+        <button
           onClick={onClose}
-          className="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors z-50 p-2"
+          className="absolute top-4 right-4 sm:top-6 sm:right-6 text-gray-500 hover:text-white transition-colors z-50 p-2"
+          aria-label="Cerrar"
         >
-          <X className="w-8 h-8" />
+          <X className="w-6 h-6 sm:w-8 sm:h-8" />
         </button>
 
-        <div className="p-8 sm:p-14">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-red-600/20 border border-red-500/40 text-red-500 text-xs font-black uppercase tracking-[0.3em] mb-6 animate-pulse">
-              <Flame className="w-4 h-4 fill-current" />
-              OFERTA RELÁMPAGO
+        <div className="p-5 sm:p-10 lg:p-14">
+          {/* Header */}
+          <div className="text-center mb-6 sm:mb-10">
+            {/* Flash badge */}
+            <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 rounded-full bg-red-600/20 border border-red-500/40 text-red-500 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] mb-4 sm:mb-6 animate-pulse">
+              <Flame className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" />
+              {lang === 'es' ? 'OFERTA RELAMPAGO' : 'FLASH SALE'}
+              <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" />
             </div>
-            <h2 className="text-3xl sm:text-5xl font-black text-white uppercase tracking-tighter leading-none mb-4">
-              {lang === 'es' ? '¡AGREGA UN PRODUCTO MÁS Y RECIBE' : 'ADD ONE MORE PRODUCT AND GET'} <br/>
-              <span className="text-emerald-500 text-5xl sm:text-7xl italic drop-shadow-[0_0_30px_rgba(34,197,94,0.4)]">30% DE DESCUENTO</span>
+
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white uppercase tracking-tighter leading-none mb-3 sm:mb-4">
+              {lang === 'es' ? 'AGREGA OTRO PRODUCTO AL' : 'ADD ANOTHER PRODUCT AT'} <br />
+              <span className="text-emerald-500 text-4xl sm:text-6xl lg:text-7xl italic drop-shadow-[0_0_30px_rgba(34,197,94,0.4)]">40% OFF</span>
             </h2>
-            <p className="text-gray-400 font-bold uppercase tracking-widest text-[10px] sm:text-sm">
-              {lang === 'es' ? 'Válido solo al combinar con el pack principal' : 'Valid only when combined with the main pack'}
-            </p>
+
+            {/* Countdown */}
+            <div className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-white/5 border border-white/10 mt-2">
+              <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-500 animate-pulse" />
+              <span className="text-white text-xs sm:text-sm font-black tracking-tight">
+                {lang === 'es' ? 'EXPIRA EN' : 'EXPIRES IN'}:
+              </span>
+              <span className="text-red-500 text-sm sm:text-lg font-black tabular-nums">
+                {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
+              </span>
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8">
-            {[
-              { id: 'upsell-1', name: 'Mixed Media', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787956/mixmedia_xcb5po.gif' },
-              { id: 'upsell-2', name: 'Yeat Project', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787949/YEAT_oqvxyf.gif' },
-              { id: 'upsell-3', name: 'Shakes', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787949/SHAKES_dimjeh.gif' },
-              { id: 'upsell-4', name: 'Título 3D', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787941/TITULO_xecwfj.gif' }
-            ].map((prod) => (
-              <div key={prod.id} className="bg-white/[0.03] border border-white/10 rounded-3xl p-5 flex flex-col items-center group hover:border-emerald-500/50 transition-all hover:-translate-y-1">
-                <div className="relative aspect-square w-full rounded-2xl overflow-hidden mb-5">
-                  <img src={prod.img} alt={prod.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                  <div className="absolute top-3 right-3 bg-red-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase shadow-xl">
-                    -30%
+          {/* Products Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+            {filteredProducts.map((prod, idx) => (
+              <div key={prod.shopifyId} className="bg-white/[0.03] border border-white/10 rounded-xl sm:rounded-2xl p-3 sm:p-4 flex flex-col items-center group hover:border-emerald-500/50 transition-all hover:-translate-y-1">
+                <div className="relative aspect-square w-full rounded-lg sm:rounded-xl overflow-hidden mb-3 sm:mb-4">
+                  <img src={prod.img} alt={t(prod.nameKey)} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  <div className="absolute top-2 right-2 bg-red-600 text-white text-[8px] sm:text-[10px] font-black px-2 sm:px-3 py-0.5 sm:py-1 rounded-full uppercase shadow-xl animate-pulse">
+                    -40%
                   </div>
                 </div>
-                <h3 className="text-xs sm:text-sm font-black text-white uppercase mb-4 text-center truncate w-full">
-                  {prod.name}
+                <h3 className="text-[10px] sm:text-xs font-black text-white uppercase mb-1 text-center truncate w-full">
+                  {t(prod.nameKey)}
                 </h3>
-                <div id={prod.id} className="w-full flex justify-center" />
+                <div className="flex items-baseline gap-1.5 mb-3">
+                  <span className="text-gray-600 line-through text-[9px] sm:text-[10px] font-bold">${prod.oldPrice}</span>
+                  <span className="text-emerald-500 text-sm sm:text-base font-black">${prod.newPrice}</span>
+                </div>
+                <div id={`upsell-dynamic-${idx}`} className="w-full flex justify-center" />
               </div>
             ))}
           </div>
 
-          <div className="mt-12 pt-10 border-t border-white/5 text-center">
-            <button 
+          {/* Skip button */}
+          <div className="mt-8 sm:mt-12 pt-6 sm:pt-10 border-t border-white/5 text-center">
+            <button
               onClick={onClose}
-              className="group flex items-center gap-2 mx-auto text-gray-500 hover:text-white text-[10px] font-bold uppercase tracking-[0.2em] transition-colors"
+              className="group flex items-center gap-2 mx-auto text-gray-600 hover:text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.15em] sm:tracking-[0.2em] transition-colors"
             >
-              {lang === 'es' ? 'NO GRACIAS, QUIERO PAGAR EL PRECIO COMPLETO' : 'NO THANKS, I WANT TO PAY FULL PRICE'}
+              {lang === 'es' ? 'NO GRACIAS, CONTINUAR SIN DESCUENTO' : 'NO THANKS, CONTINUE WITHOUT DISCOUNT'}
             </button>
           </div>
         </div>
-      </FadeIn>
+      </div>
     </div>
   );
 };
