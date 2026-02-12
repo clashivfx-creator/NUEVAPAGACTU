@@ -242,9 +242,6 @@ export const AboutUs: React.FC = () => {
 
         {/* Final Branding Block */}
         <FadeIn className="text-center pt-24 border-t border-white/5 mt-24">
-           <p className="text-gray-600 text-[8px] font-black uppercase tracking-[0.4em] mb-4">
-             CLASHIVFX SYSTEMS • ESTABLECIDO EN 2019
-           </p>
            <h3 className="text-xl sm:text-4xl font-black text-white/5 uppercase tracking-[0.3em]">
              EL ESTÁNDAR ES <span className="text-white/15 italic">LA PERFECCIÓN</span>
            </h3>
