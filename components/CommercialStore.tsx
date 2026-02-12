@@ -69,8 +69,10 @@ export const CommercialStore: React.FC = () => {
   ], [lang, t]);
 
   useEffect(() => {
+    let cancelled = false;
     const scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
     const ShopifyBuyInit = () => {
+      if (cancelled) return;
       if (!window.ShopifyBuy || !window.ShopifyBuy.UI) return;
       const client = window.ShopifyBuy.buildClient({ domain: 'e08ff1-xx.myshopify.com', storefrontAccessToken: '64026182325df844d6b96ce1f55661c5' });
       const cartOptions = {
@@ -112,6 +114,7 @@ export const CommercialStore: React.FC = () => {
         }
       };
       window.ShopifyBuy.UI.onReady(client).then((ui: any) => {
+        if (cancelled) return;
         products.forEach(p => {
           const node = document.getElementById(p.nodeId);
           if (node) {
@@ -120,7 +123,17 @@ export const CommercialStore: React.FC = () => {
               id: p.shopifyId, node: node, moneyFormat: '%24%7B%7Bamount%7D%7D',
               options: {
                 "product": {
-                  "events": { "afterAddVariantToCart": () => setIsCartVisible(true) },
+                  "events": {
+                    "addVariantToCart": (product: any) => {
+                      const title = product?.model?.title || 'Producto Store';
+                      const price = product?.model?.selectedVariant?.price?.amount || '0';
+                      console.log('[v0] Meta Pixel AddToCart (Store):', { content_name: title, value: price });
+                      if (typeof (window as any).fbq === 'function') {
+                        (window as any).fbq('track', 'AddToCart', { content_name: title, value: parseFloat(price), currency: 'USD' });
+                      }
+                    },
+                    "afterAddVariantToCart": () => setIsCartVisible(true)
+                  },
                   "styles": { "button": { "font-family": "Manrope, sans-serif", "font-weight": "900", "background-color": "#22c55e", "color": "#ffffff", "border-radius": "40px", "font-size": "13px", ":hover": { "background-color": "#16a34a" } } },
                   "contents": { "img": false, "title": false, "price": false },
                   "text": { "button": lang === 'es' ? "AGREGAR" : "ADD" }
@@ -141,6 +154,13 @@ export const CommercialStore: React.FC = () => {
       script.onload = ShopifyBuyInit;
     };
     loadScript();
+    return () => {
+      cancelled = true;
+      products.forEach(p => {
+        const node = document.getElementById(p.nodeId);
+        if (node) node.innerHTML = '';
+      });
+    };
   }, [lang, products]);
 
   const handleCustomCheckout = () => window.dispatchEvent(new CustomEvent('customCheckoutTrigger'));

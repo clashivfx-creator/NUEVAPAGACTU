@@ -1,3 +1,4 @@
+"use client";
 
 import React, { useState, createContext, useEffect } from 'react';
 import { CommercialStore } from './components/CommercialStore';

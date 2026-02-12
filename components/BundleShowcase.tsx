@@ -150,8 +150,10 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
   }, [variant, lang, t]);
 
   useEffect(() => {
+    let cancelled = false;
     const scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
     const ShopifyBuyInit = () => {
+      if (cancelled) return;
       if (!window.ShopifyBuy || !window.ShopifyBuy.UI) return;
       const node = document.getElementById(productData.nodeId);
       if (!node) return;
@@ -161,6 +163,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
         storefrontAccessToken: '64026182325df844d6b96ce1f55661c5',
       });
       window.ShopifyBuy.UI.onReady(client).then((ui: any) => {
+        if (cancelled) return;
         uiRef.current = ui;
         ui.createComponent('product', {
           id: productData.shopifyId,
@@ -256,6 +259,11 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
       script.onload = ShopifyBuyInit;
     };
     loadScript();
+    return () => {
+      cancelled = true;
+      const node = document.getElementById(productData.nodeId);
+      if (node) node.innerHTML = '';
+    };
   }, [lang, variant, productData]);
 
   const categories = [

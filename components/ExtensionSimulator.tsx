@@ -193,7 +193,6 @@ export const ExtensionSimulator: React.FC = () => {
               title="Ultra V40 Extension Simulator"
               className="w-full h-full border-none bg-transparent"
               sandbox="allow-scripts"
-              allowTransparency={true}
             />
         </div>
       </FadeIn>

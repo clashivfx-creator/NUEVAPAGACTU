@@ -24,7 +24,9 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose }) => 
       { id: '8277720498351', node: 'upsell-4', name: 'Título 3D' }
     ];
 
+    let cancelled = false;
     const initShopify = () => {
+      if (cancelled) return;
       if (!window.ShopifyBuy || !window.ShopifyBuy.UI) return;
       const client = window.ShopifyBuy.buildClient({
         domain: 'e08ff1-xx.myshopify.com',
@@ -32,6 +34,7 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose }) => 
       });
 
       window.ShopifyBuy.UI.onReady(client).then((ui: any) => {
+        if (cancelled) return;
         upsellProducts.forEach(p => {
           const node = document.getElementById(p.node);
           if (node && !node.hasAttribute('data-shopify-initialized')) {
@@ -41,6 +44,16 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose }) => 
               moneyFormat: '%24%7B%7Bamount%7D%7D',
               options: {
                 "product": {
+                  "events": {
+                    "addVariantToCart": (product: any) => {
+                      const title = product?.model?.title || p.name;
+                      const price = product?.model?.selectedVariant?.price?.amount || '0';
+                      console.log('[v0] Meta Pixel AddToCart (Upsell):', { content_name: title, value: price });
+                      if (typeof (window as any).fbq === 'function') {
+                        (window as any).fbq('track', 'AddToCart', { content_name: title, value: parseFloat(price), currency: 'USD' });
+                      }
+                    }
+                  },
                   "styles": {
                     "button": {
                       "font-family": "Manrope, sans-serif",
@@ -102,6 +115,16 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose }) => 
     };
 
     loadScript();
+    return () => {
+      cancelled = true;
+      upsellProducts.forEach(p => {
+        const node = document.getElementById(p.node);
+        if (node) {
+          node.innerHTML = '';
+          node.removeAttribute('data-shopify-initialized');
+        }
+      });
+    };
   }, [isOpen, lang]);
 
   if (!isOpen) return null;
