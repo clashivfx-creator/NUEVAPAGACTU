@@ -18,6 +18,7 @@ import { Menu, X, Star } from 'lucide-react';
 declare global {
   interface Window {
     goToStore: () => void;
+    ShopifyBuy: any;
   }
 }
 
