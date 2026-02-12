@@ -34,6 +34,7 @@ export const ProductDetailView: React.FC = () => {
                     }
                   },
                   "afterAddVariantToCart": () => {
+                    console.log('[v0] ProductDetailView afterAddVariantToCart fired, productId:', selectedProduct.shopifyId);
                     window.dispatchEvent(new CustomEvent('openUpsellModal', { detail: { productId: selectedProduct.shopifyId } }));
                   }
                 },

@@ -185,7 +185,10 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
                     console.log('Meta Pixel: AddToCart tracked ->', title, price);
                   }
                 },
-                "afterAddVariantToCart": () => window.dispatchEvent(new CustomEvent('openUpsellModal', { detail: { productId: productData.shopifyId } })) 
+                "afterAddVariantToCart": () => {
+                  console.log('[v0] BundleShowcase afterAddVariantToCart fired, productId:', productData.shopifyId);
+                  window.dispatchEvent(new CustomEvent('openUpsellModal', { detail: { productId: productData.shopifyId } }));
+                } 
               },
               "styles": {
                 "button": {
