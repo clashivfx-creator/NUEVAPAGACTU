@@ -9,11 +9,7 @@ import {
 import { LanguageContext } from '../App';
 import { BeforeAfterSlider } from './ui/BeforeAfterSlider';
 
-declare global {
-  interface Window {
-    ShopifyBuy: any;
-  }
-}
+
 
 interface BundleShowcaseProps {
   variant: 'elite' | 'platinum';
@@ -120,7 +116,6 @@ const FAQItem = ({ question, answer }: { question: string, answer: string }) => 
 
 export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
   const { t, lang } = useContext(LanguageContext);
-  const uiRef = useRef<any>(null);
   const checkoutIdRef = useRef<string | null>(null);
   const checkoutUrlRef = useRef<string | null>(null);
 
@@ -201,125 +196,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
     addToCartViaAPI(productData.shopifyId).catch(() => {});
   };
 
-  useEffect(() => {
-    let cancelled = false;
-    const scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
-    const ShopifyBuyInit = () => {
-      if (cancelled) return;
-      if (!window.ShopifyBuy || !window.ShopifyBuy.UI) return;
-      const node = document.getElementById(productData.nodeId);
-      if (!node) return;
-      node.innerHTML = '';
-      const client = window.ShopifyBuy.buildClient({
-        domain: 'e08ff1-xx.myshopify.com',
-        storefrontAccessToken: '64026182325df844d6b96ce1f55661c5',
-      });
-      window.ShopifyBuy.UI.onReady(client).then((ui: any) => {
-        if (cancelled) return;
-        uiRef.current = ui;
-        ui.createComponent('product', {
-          id: productData.shopifyId,
-          node: node,
-          moneyFormat: '%24%7B%7Bamount%7D%7D',
-          options: {
-            "product": {
-              "events": { 
-                "addVariantToCart": (product: any) => {
-                  const title = product?.model?.title || 'Producto Showcase';
-                  const price = product?.model?.selectedVariant?.price?.amount || '0';
-                  
-                  if (typeof (window as any).fbq === 'function') {
-                    (window as any).fbq('track', 'AddToCart', {
-                      content_name: title,
-                      value: parseFloat(price),
-                      currency: 'USD'
-                    });
-                    console.log('Meta Pixel: AddToCart tracked ->', title, price);
-                  }
-                },
-                "afterAddVariantToCart": () => {
-                  console.log('[v0] BundleShowcase afterAddVariantToCart fired, productId:', productData.shopifyId);
-                  window.dispatchEvent(new CustomEvent('openUpsellModal', { detail: { productId: productData.shopifyId } }));
-                } 
-              },
-              "styles": {
-                "button": {
-                  "font-family": "Manrope, sans-serif",
-                  "font-weight": "900",
-                  "font-size": "13px",
-                  "padding-top": "10px",
-                  "padding-bottom": "10px",
-                  "border-radius": "40px",
-                  "background-color": "#22c55e",
-                  "color": "#ffffff",
-                  ":hover": { "background-color": "#16a34a" }
-                }
-              },
-              "contents": { "img": false, "title": false, "price": false },
-              "text": { "button": lang === 'es' ? "AGREGAR AL CARRITO" : "ADD TO CART" }
-            },
-            "cart": {
-              "styles": {
-                "cart": { "background-color": "#000000", "box-shadow": "0 0 50px rgba(0,0,0,0.8)" },
-                "header": { "background-color": "#000000", "color": "#ffffff", "padding-top": "30px", "padding-bottom": "15px" },
-                "title": { "color": "#ffffff", "font-family": "Manrope, sans-serif", "font-weight": "900", "font-size": "11px", "text-transform": "uppercase", "text-shadow": "none" },
-                "footer": { "background-color": "#000000", "color": "#ffffff", "border-top": "1px solid rgba(255,255,255,0.15)", "padding-top": "24px" },
-                "button": { "font-family": "Manrope, sans-serif", "font-weight": "900", "font-size": "18px", "background-color": "#22c55e", "color": "#ffffff", "border-radius": "14px", ":hover": { "background-color": "#16a34a" } },
-                "close": { "color": "#ffffff" },
-                "empty": { "color": "#ffffff" },
-                "subtotalText": { "color": "#ffffff" },
-                "subtotal": { "color": "#ffffff", "font-weight": "900", "font-size": "18px" },
-                "notice": { 
-                  "color": "#22c55e", 
-                  "font-weight": "900", 
-                  "font-size": "14px", 
-                  "text-align": "center", 
-                  "margin-bottom": "20px", 
-                  "text-shadow": "0 0 10px rgba(34, 197, 94, 0.8), 0 0 20px rgba(34, 197, 94, 0.4)" 
-                },
-                "currency": { "color": "#ffffff" },
-                "discountText": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 10px rgba(34, 197, 94, 0.7)" },
-                "discountAmount": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 10px rgba(34, 197, 94, 0.7)" },
-                "discountIcon": { "fill": "#22c55e" }
-              },
-              "contents": { "title": true, "note": false, "footer": true, "notice": true },
-              "text": {
-                "total": "SUBTOTAL",
-                "button": lang === 'es' ? "PAGAR AHORA" : "CHECKOUT",
-                "title": "CARRITO",
-                "notice": "¡AGREGA OTRO PRODUCTO CON 40% OFF!",
-                "empty": lang === 'es' ? "Tu carrito está vacío" : "Your cart is empty"
-              }
-            },
-            "lineItem": {
-              "styles": {
-                "title": { "color": "#ffffff", "font-weight": "800" },
-                "price": { "color": "#ffffff", "font-weight": "900" },
-                "discount": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 8px rgba(34, 197, 94, 0.5)" },
-                "quantity": { "color": "#ffffff", "font-weight": "900" },
-                "quantityIncrement": { "color": "#ffffff", "border-color": "#ffffff" },
-                "quantityDecrement": { "color": "#ffffff", "border-color": "#ffffff" },
-                "quantityInput": { "color": "#ffffff", "background": "transparent" }
-              }
-            }
-          }
-        });
-      });
-    };
-    const loadScript = () => {
-      const existing = document.querySelector(`script[src="${scriptURL}"]`);
-      if (existing) { if (window.ShopifyBuy && window.ShopifyBuy.UI) ShopifyBuyInit(); else existing.addEventListener('load', ShopifyBuyInit); return; }
-      const script = document.createElement('script'); script.async = true; script.src = scriptURL; script.crossOrigin = "anonymous";
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(script);
-      script.onload = ShopifyBuyInit;
-    };
-    loadScript();
-    return () => {
-      cancelled = true;
-      const node = document.getElementById(productData.nodeId);
-      if (node) node.innerHTML = '';
-    };
-  }, [lang, variant, productData]);
+
 
   const categories = [
     {
@@ -350,31 +227,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
     }, 100);
   };
 
-  const handleCtaBuy = async () => {
-    if (!uiRef.current) return;
-    
-    // IDs de variantes para agregar al carrito
-    const eliteVariantId = 'gid://shopify/ProductVariant/45803273158927';
-    const platinumVariantId = 'gid://shopify/ProductVariant/45826978513167';
-    const variantId = variant === 'platinum' ? platinumVariantId : eliteVariantId;
 
-    try {
-      // Intentamos agregar a través del componente de producto o directamente al carrito
-      const cart = uiRef.current.components.cart[0];
-      const productComp = uiRef.current.components.product.find((p: any) => p.id[0] === productData.shopifyId);
-      
-      if (productComp) {
-        await productComp.addVariantToCart({ id: variantId, quantity: 1 });
-      } else if (cart) {
-        await cart.addVariantToCart({ id: variantId, quantity: 1 });
-      }
-      
-      uiRef.current.components.cart[0]?.open();
-    } catch (e) {
-      console.error("Error adding to cart:", e);
-      document.getElementById(productData.nodeId)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  };
 
   const renderTagline = () => {
     const text = t('bundle.title_shimmer');
@@ -461,7 +314,12 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
                        <CountdownTimer />
                     </div>
                     
-                    <div id={productData.nodeId} className="w-full min-h-[64px] flex flex-col justify-center -mt-2 lg:mt-0"></div>
+                    <button
+                      onClick={handleAddToCart}
+                      className="w-full py-3 sm:py-4 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white font-black text-xs sm:text-sm uppercase tracking-wider rounded-full transition-all duration-200 shadow-[0_0_20px_rgba(34,197,94,0.3)] -mt-2 lg:mt-0"
+                    >
+                      {lang === 'es' ? 'AGREGAR AL CARRITO' : 'ADD TO CART'}
+                    </button>
                     
                     {variant === 'elite' && (
                       <div className="mt-3 lg:mt-5 flex flex-col items-center lg:items-start gap-2.5 border-t border-white/5 pt-4 w-full">
