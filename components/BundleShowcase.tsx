@@ -9,11 +9,7 @@ import {
 import { LanguageContext } from '../App';
 import { BeforeAfterSlider } from './ui/BeforeAfterSlider';
 
-declare global {
-  interface Window {
-    ShopifyBuy: any;
-  }
-}
+
 
 interface BundleShowcaseProps {
   variant: 'elite' | 'platinum';
@@ -119,8 +115,9 @@ const FAQItem = ({ question, answer }: { question: string, answer: string }) => 
 };
 
 export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
-  const { lang, t, setActiveTab } = useContext(LanguageContext);
-  const uiRef = useRef<any>(null);
+  const { t, lang, setActiveTab } = useContext(LanguageContext);
+  const checkoutIdRef = useRef<string | null>(null);
+  const checkoutUrlRef = useRef<string | null>(null);
 
   const productData = useMemo(() => {
     if (variant === 'platinum') {
@@ -149,122 +146,57 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
     };
   }, [variant, lang, t]);
 
-  useEffect(() => {
-    let cancelled = false;
-    const scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
-    const ShopifyBuyInit = () => {
-      if (cancelled) return;
-      if (!window.ShopifyBuy || !window.ShopifyBuy.UI) return;
-      const node = document.getElementById(productData.nodeId);
-      if (!node) return;
-      node.innerHTML = '';
-      const client = window.ShopifyBuy.buildClient({
-        domain: 'e08ff1-xx.myshopify.com',
-        storefrontAccessToken: '64026182325df844d6b96ce1f55661c5',
-      });
-      window.ShopifyBuy.UI.onReady(client).then((ui: any) => {
-        if (cancelled) return;
-        uiRef.current = ui;
-        ui.createComponent('product', {
-          id: productData.shopifyId,
-          node: node,
-          moneyFormat: '%24%7B%7Bamount%7D%7D',
-          options: {
-            "product": {
-              "events": { 
-                "addVariantToCart": (product: any) => {
-                  const title = product?.model?.title || 'Producto Showcase';
-                  const price = product?.model?.selectedVariant?.price?.amount || '0';
-                  
-                  if (typeof (window as any).fbq === 'function') {
-                    (window as any).fbq('track', 'AddToCart', {
-                      content_name: title,
-                      value: parseFloat(price),
-                      currency: 'USD'
-                    });
-                    console.log('Meta Pixel: AddToCart tracked ->', title, price);
-                  }
-                },
-                "afterAddVariantToCart": () => window.dispatchEvent(new CustomEvent('openUpsellModal', { detail: { productId: productData.shopifyId } })) 
-              },
-              "styles": {
-                "button": {
-                  "font-family": "Manrope, sans-serif",
-                  "font-weight": "900",
-                  "font-size": "13px",
-                  "padding-top": "10px",
-                  "padding-bottom": "10px",
-                  "border-radius": "40px",
-                  "background-color": "#22c55e",
-                  "color": "#ffffff",
-                  ":hover": { "background-color": "#16a34a" }
-                }
-              },
-              "contents": { "img": false, "title": false, "price": false },
-              "text": { "button": lang === 'es' ? "AGREGAR AL CARRITO" : "ADD TO CART" }
-            },
-            "cart": {
-              "styles": {
-                "cart": { "background-color": "#000000", "box-shadow": "0 0 50px rgba(0,0,0,0.8)" },
-                "header": { "background-color": "#000000", "color": "#ffffff", "padding-top": "30px", "padding-bottom": "15px" },
-                "title": { "color": "#ffffff", "font-family": "Manrope, sans-serif", "font-weight": "900", "font-size": "11px", "text-transform": "uppercase", "text-shadow": "none" },
-                "footer": { "background-color": "#000000", "color": "#ffffff", "border-top": "1px solid rgba(255,255,255,0.15)", "padding-top": "24px" },
-                "button": { "font-family": "Manrope, sans-serif", "font-weight": "900", "font-size": "18px", "background-color": "#22c55e", "color": "#ffffff", "border-radius": "14px", ":hover": { "background-color": "#16a34a" } },
-                "close": { "color": "#ffffff" },
-                "empty": { "color": "#ffffff" },
-                "subtotalText": { "color": "#ffffff" },
-                "subtotal": { "color": "#ffffff", "font-weight": "900", "font-size": "18px" },
-                "notice": { 
-                  "color": "#22c55e", 
-                  "font-weight": "900", 
-                  "font-size": "14px", 
-                  "text-align": "center", 
-                  "margin-bottom": "20px", 
-                  "text-shadow": "0 0 10px rgba(34, 197, 94, 0.8), 0 0 20px rgba(34, 197, 94, 0.4)" 
-                },
-                "currency": { "color": "#ffffff" },
-                "discountText": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 10px rgba(34, 197, 94, 0.7)" },
-                "discountAmount": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 10px rgba(34, 197, 94, 0.7)" },
-                "discountIcon": { "fill": "#22c55e" }
-              },
-              "contents": { "title": true, "note": false, "footer": true, "notice": true },
-              "text": {
-                "total": "SUBTOTAL",
-                "button": lang === 'es' ? "PAGAR AHORA" : "CHECKOUT",
-                "title": "CARRITO",
-                "notice": "¡AGREGA OTRO PRODUCTO CON 40% OFF!",
-                "empty": lang === 'es' ? "Tu carrito está vacío" : "Your cart is empty"
-              }
-            },
-            "lineItem": {
-              "styles": {
-                "title": { "color": "#ffffff", "font-weight": "800" },
-                "price": { "color": "#ffffff", "font-weight": "900" },
-                "discount": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 8px rgba(34, 197, 94, 0.5)" },
-                "quantity": { "color": "#ffffff", "font-weight": "900" },
-                "quantityIncrement": { "color": "#ffffff", "border-color": "#ffffff" },
-                "quantityDecrement": { "color": "#ffffff", "border-color": "#ffffff" },
-                "quantityInput": { "color": "#ffffff", "background": "transparent" }
-              }
-            }
-          }
-        });
-      });
-    };
-    const loadScript = () => {
-      const existing = document.querySelector(`script[src="${scriptURL}"]`);
-      if (existing) { if (window.ShopifyBuy && window.ShopifyBuy.UI) ShopifyBuyInit(); else existing.addEventListener('load', ShopifyBuyInit); return; }
-      const script = document.createElement('script'); script.async = true; script.src = scriptURL; script.crossOrigin = "anonymous";
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(script);
-      script.onload = ShopifyBuyInit;
-    };
-    loadScript();
-    return () => {
-      cancelled = true;
-      const node = document.getElementById(productData.nodeId);
-      if (node) node.innerHTML = '';
-    };
-  }, [lang, variant, productData]);
+  const STOREFRONT_URL = 'https://e08ff1-xx.myshopify.com/api/2024-01/graphql.json';
+  const STOREFRONT_TOKEN = '64026182325df844d6b96ce1f55661c5';
+
+  const storefrontFetch = async (query: string, variables: Record<string, any> = {}) => {
+    const res = await fetch(STOREFRONT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Shopify-Storefront-Access-Token': STOREFRONT_TOKEN },
+      body: JSON.stringify({ query, variables }),
+    });
+    return res.json();
+  };
+
+  const addToCartViaAPI = async (shopifyId: string) => {
+    try {
+      const productGid = `gid://shopify/Product/${shopifyId}`;
+      const prodResult = await storefrontFetch(`
+        query getProduct($id: ID!) { node(id: $id) { ... on Product { variants(first: 1) { edges { node { id } } } } } }
+      `, { id: productGid });
+      const variantId = prodResult?.data?.node?.variants?.edges?.[0]?.node?.id;
+      if (!variantId) return;
+
+      if (!checkoutIdRef.current) {
+        const createResult = await storefrontFetch(`
+          mutation checkoutCreate($input: CheckoutCreateInput!) { checkoutCreate(input: $input) { checkout { id webUrl } userErrors { field message } } }
+        `, { input: { lineItems: [{ variantId, quantity: 1 }] } });
+        const checkout = createResult?.data?.checkoutCreate?.checkout;
+        if (checkout) {
+          checkoutIdRef.current = checkout.id;
+          checkoutUrlRef.current = checkout.webUrl;
+        }
+      } else {
+        const addResult = await storefrontFetch(`
+          mutation checkoutLineItemsAdd($checkoutId: ID!, $lineItems: [CheckoutLineItemInput!]!) { checkoutLineItemsAdd(checkoutId: $checkoutId, lineItems: $lineItems) { checkout { id webUrl } userErrors { field message } } }
+        `, { checkoutId: checkoutIdRef.current, lineItems: [{ variantId, quantity: 1 }] });
+        const checkout = addResult?.data?.checkoutLineItemsAdd?.checkout;
+        if (checkout) checkoutUrlRef.current = checkout.webUrl;
+      }
+    } catch (err) {
+      console.log('[v0] BundleShowcase addToCartViaAPI error:', err);
+    }
+  };
+
+  const handleAddToCart = () => {
+    if (typeof (window as any).fbq === 'function') {
+      (window as any).fbq('track', 'AddToCart', { content_name: productData.name, value: parseFloat(productData.newPrice), currency: 'USD' });
+    }
+    window.dispatchEvent(new CustomEvent('openUpsellModal', { detail: { productId: productData.shopifyId } }));
+    addToCartViaAPI(productData.shopifyId).catch(() => {});
+  };
+
+
 
   const categories = [
     {
@@ -295,31 +227,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
     }, 100);
   };
 
-  const handleCtaBuy = async () => {
-    if (!uiRef.current) return;
-    
-    // IDs de variantes para agregar al carrito
-    const eliteVariantId = 'gid://shopify/ProductVariant/45803273158927';
-    const platinumVariantId = 'gid://shopify/ProductVariant/45826978513167';
-    const variantId = variant === 'platinum' ? platinumVariantId : eliteVariantId;
 
-    try {
-      // Intentamos agregar a través del componente de producto o directamente al carrito
-      const cart = uiRef.current.components.cart[0];
-      const productComp = uiRef.current.components.product.find((p: any) => p.id[0] === productData.shopifyId);
-      
-      if (productComp) {
-        await productComp.addVariantToCart({ id: variantId, quantity: 1 });
-      } else if (cart) {
-        await cart.addVariantToCart({ id: variantId, quantity: 1 });
-      }
-      
-      uiRef.current.components.cart[0]?.open();
-    } catch (e) {
-      console.error("Error adding to cart:", e);
-      document.getElementById(productData.nodeId)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  };
 
   const renderTagline = () => {
     const text = t('bundle.title_shimmer');
@@ -406,7 +314,12 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
                        <CountdownTimer />
                     </div>
                     
-                    <div id={productData.nodeId} className="w-full min-h-[64px] flex flex-col justify-center -mt-2 lg:mt-0"></div>
+                    <button
+                      onClick={handleAddToCart}
+                      className="w-full py-3 sm:py-4 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white font-black text-xs sm:text-sm uppercase tracking-wider rounded-full transition-all duration-200 shadow-[0_0_20px_rgba(34,197,94,0.3)] -mt-2 lg:mt-0"
+                    >
+                      {lang === 'es' ? 'AGREGAR AL CARRITO' : 'ADD TO CART'}
+                    </button>
                     
                     {variant === 'elite' && (
                       <div className="mt-3 lg:mt-5 flex flex-col items-center lg:items-start gap-2.5 border-t border-white/5 pt-4 w-full">
@@ -416,12 +329,12 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
                             DESCARGA ÚNICA
                           </span>
                         </div>
-                        <div className="flex items-center gap-2 group/premium">
-                          <Zap className="w-2.5 h-2.5 text-purple-500 group-hover:scale-125 transition-transform" />
-                          <span className="text-[7.5px] sm:text-[9px] font-black uppercase tracking-[0.2em] text-shimmer">
-                            ACTUALIZACIONES DE POR VIDA
-                          </span>
-                        </div>
+  <div className="flex items-center gap-2">
+  <Zap className="w-2.5 h-2.5 text-purple-500" />
+  <span className="text-[7.5px] sm:text-[9px] font-black uppercase tracking-[0.2em] text-purple-400">
+  ACTUALIZACIONES DE POR VIDA
+  </span>
+  </div>
                       </div>
                     )}
                   </div>
@@ -579,7 +492,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
            <div className="bg-gradient-to-br from-purple-900/40 to-black border border-white/10 rounded-[3rem] p-10 sm:p-32 shadow-2xl">
              <h2 className="text-3xl sm:text-8xl font-black text-white uppercase tracking-tighter mb-8 leading-[0.85]">{t('bundle.cta_ready')} <br /> <span className="text-purple-500 italic">{t('bundle.cta_level')}</span></h2>
              <button 
-               onClick={handleCtaBuy}
+               onClick={handleAddToCart}
                className="bg-[#22c55e] hover:bg-[#16a34a] text-white shadow-[0_0_50px_rgba(34,197,94,0.6)] px-8 py-6 text-lg sm:text-3xl rounded-full font-black uppercase tracking-tighter flex items-center justify-center gap-4 mx-auto transition-all active:scale-95"
              >
                {t('bundle.cta_btn')} <ChevronRight className="w-8 h-8" />

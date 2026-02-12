@@ -44,9 +44,9 @@ const DiscordIcon = ({ className }: { className?: string }) => (
 export const CommercialStore: React.FC = () => {
   const { t, lang, setActiveTab } = useContext(LanguageContext);
   const [isCartVisible, setIsCartVisible] = useState(false);
-  const [addingToCart, setAddingToCart] = useState<string | null>(null);
-  const shopifyClientRef = useRef<any>(null);
-  const shopifyCartRef = useRef<any>(null);
+
+  const checkoutIdRef = useRef<string | null>(null);
+  const checkoutUrlRef = useRef<string | null>(null);
   const products = useMemo<Product[]>(() => [
     { 
       id: 'ultimate-2026', 
@@ -71,58 +71,69 @@ export const CommercialStore: React.FC = () => {
     { id: 'ultraworkflow', shopifyId: '8473627754671', nodeId: 'product-component-1770243547561', name: t('product.workflow_name'), oldPrice: '50.00', newPrice: '39.99', mediaUrl: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787944/ultraworkflow_ocxa8x.gif', isVideo: false, link: 'https://e08ff1-xx.myshopify.com/products/pack-avanzado-copia-1', customAction: 'ultra', description: t('product.workflow_desc') }
   ], [lang, t]);
 
-  // Initialize Shopify client only (no iframes) for programmatic cart
-  useEffect(() => {
-    let cancelled = false;
-    const scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
-    const init = () => {
-      if (cancelled || !window.ShopifyBuy) return;
-      const client = window.ShopifyBuy.buildClient({ domain: 'e08ff1-xx.myshopify.com', storefrontAccessToken: '64026182325df844d6b96ce1f55661c5' });
-      shopifyClientRef.current = client;
-    };
-    const existing = document.querySelector(`script[src="${scriptURL}"]`);
-    if (existing) { if (window.ShopifyBuy) init(); else existing.addEventListener('load', init); }
-    else {
-      const script = document.createElement('script'); script.async = true; script.src = scriptURL; script.crossOrigin = "anonymous";
-      (document.head || document.body).appendChild(script);
-      script.onload = init;
-    }
-    return () => { cancelled = true; };
-  }, []);
+  const STOREFRONT_URL = 'https://e08ff1-xx.myshopify.com/api/2024-01/graphql.json';
+  const STOREFRONT_TOKEN = '64026182325df844d6b96ce1f55661c5';
 
-  const handleAddToCart = async (product: Product) => {
-    setAddingToCart(product.id);
+  const storefrontFetch = async (query: string, variables: Record<string, any> = {}) => {
+    const res = await fetch(STOREFRONT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Shopify-Storefront-Access-Token': STOREFRONT_TOKEN },
+      body: JSON.stringify({ query, variables }),
+    });
+    return res.json();
+  };
+
+  const addToCartViaAPI = async (shopifyId: string) => {
     try {
-      const client = shopifyClientRef.current;
-      if (!client) { window.open(product.link, '_blank'); return; }
-      // Fetch product and add first variant to a checkout
-      const shopifyProduct = await client.product.fetch('gid://shopify/Product/' + product.shopifyId);
-      const variant = shopifyProduct.variants[0];
-      let checkout = shopifyCartRef.current;
-      if (!checkout) {
-        checkout = await client.checkout.create();
-        shopifyCartRef.current = checkout;
+      // 1. Get the first variant GID
+      const productGid = `gid://shopify/Product/${shopifyId}`;
+      const prodResult = await storefrontFetch(`
+        query getProduct($id: ID!) { node(id: $id) { ... on Product { variants(first: 1) { edges { node { id } } } } } }
+      `, { id: productGid });
+      console.log('[v0] Storefront product fetch result:', JSON.stringify(prodResult));
+      const variantId = prodResult?.data?.node?.variants?.edges?.[0]?.node?.id;
+      if (!variantId) { console.log('[v0] No variant found for', shopifyId); return; }
+
+      // 2. Create or add to checkout
+      if (!checkoutIdRef.current) {
+        const createResult = await storefrontFetch(`
+          mutation checkoutCreate($input: CheckoutCreateInput!) { checkoutCreate(input: $input) { checkout { id webUrl } userErrors { field message } } }
+        `, { input: { lineItems: [{ variantId, quantity: 1 }] } });
+        console.log('[v0] Checkout create result:', JSON.stringify(createResult));
+        const checkout = createResult?.data?.checkoutCreate?.checkout;
+        if (checkout) {
+          checkoutIdRef.current = checkout.id;
+          checkoutUrlRef.current = checkout.webUrl;
+          console.log('[v0] Checkout created:', checkout.webUrl);
+        }
+      } else {
+        const addResult = await storefrontFetch(`
+          mutation checkoutLineItemsAdd($checkoutId: ID!, $lineItems: [CheckoutLineItemInput!]!) { checkoutLineItemsAdd(checkoutId: $checkoutId, lineItems: $lineItems) { checkout { id webUrl } userErrors { field message } } }
+        `, { checkoutId: checkoutIdRef.current, lineItems: [{ variantId, quantity: 1 }] });
+        console.log('[v0] Checkout add result:', JSON.stringify(addResult));
+        const checkout = addResult?.data?.checkoutLineItemsAdd?.checkout;
+        if (checkout) checkoutUrlRef.current = checkout.webUrl;
       }
-      checkout = await client.checkout.addLineItems(checkout.id, [{ variantId: variant.id, quantity: 1 }]);
-      shopifyCartRef.current = checkout;
-      // Fire Meta Pixel
-      const title = shopifyProduct.title || product.name;
-      const price = variant.price?.amount || product.newPrice;
-      if (typeof (window as any).fbq === 'function') {
-        (window as any).fbq('track', 'AddToCart', { content_name: title, value: parseFloat(price), currency: 'USD' });
-      }
-      setIsCartVisible(true);
-      window.dispatchEvent(new CustomEvent('openUpsellModal', { detail: { productId: product.shopifyId } }));
     } catch (err) {
-      window.open(product.link, '_blank');
-    } finally {
-      setAddingToCart(null);
+      console.log('[v0] addToCartViaAPI error:', err);
     }
   };
 
+  const handleAddToCart = (product: Product) => {
+    console.log('[v0] handleAddToCart called for:', product.name, 'shopifyId:', product.shopifyId);
+    // Fire Meta Pixel immediately
+    if (typeof (window as any).fbq === 'function') {
+      (window as any).fbq('track', 'AddToCart', { content_name: product.name, value: parseFloat(product.newPrice), currency: 'USD' });
+    }
+    // Show cart bar + upsell modal instantly
+    setIsCartVisible(true);
+    window.dispatchEvent(new CustomEvent('openUpsellModal', { detail: { productId: product.shopifyId } }));
+    // Add to Shopify checkout in background via Storefront API (no SDK, no iframes)
+    addToCartViaAPI(product.shopifyId).catch(() => {});
+  };
+
   const handleCustomCheckout = () => {
-    const checkout = shopifyCartRef.current;
-    if (checkout?.webUrl) window.open(checkout.webUrl, '_blank');
+    if (checkoutUrlRef.current) window.open(checkoutUrlRef.current, '_blank');
     else window.dispatchEvent(new CustomEvent('customCheckoutTrigger'));
   };
   const handleProductClick = (product: Product) => {
@@ -173,12 +184,9 @@ export const CommercialStore: React.FC = () => {
                     </div>
                     <button
                       onClick={(e) => { e.stopPropagation(); handleAddToCart(product); }}
-                      disabled={addingToCart === product.id}
-                      className="w-full py-3 sm:py-4 bg-emerald-500 hover:bg-emerald-600 active:scale-95 disabled:opacity-60 disabled:scale-100 text-white font-black text-[11px] sm:text-[13px] uppercase tracking-wider rounded-full transition-all duration-200 shadow-[0_0_20px_rgba(34,197,94,0.3)]"
+                      className="w-full py-3 sm:py-4 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white font-black text-[11px] sm:text-[13px] uppercase tracking-wider rounded-full transition-all duration-200 shadow-[0_0_20px_rgba(34,197,94,0.3)]"
                     >
-                      {addingToCart === product.id
-                        ? (lang === 'es' ? 'AGREGANDO...' : 'ADDING...')
-                        : (lang === 'es' ? 'AGREGAR' : 'ADD')}
+                      {lang === 'es' ? 'AGREGAR' : 'ADD'}
                     </button>
                   </div>
                 </div>

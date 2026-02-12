@@ -1,101 +1,59 @@
 
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useRef } from 'react';
 import { FadeIn } from './ui/FadeIn';
 import { ArrowLeft, Laptop, Monitor } from 'lucide-react';
 import { LanguageContext } from '../App';
 
 export const ProductDetailView: React.FC = () => {
   const { t, lang, setActiveTab, selectedProduct } = useContext(LanguageContext);
-  useEffect(() => {
-    if (!selectedProduct) return;
-    let cancelled = false;
-    const nodeId = `detail-shopify-node-${selectedProduct.id}`;
-    const scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
-    const ShopifyBuyInit = () => {
-      if (cancelled) return;
-      if (!window.ShopifyBuy || !window.ShopifyBuy.UI) return;
-      const node = document.getElementById(nodeId);
-      if (node) {
-        node.innerHTML = '';
-        const client = window.ShopifyBuy.buildClient({ domain: 'e08ff1-xx.myshopify.com', storefrontAccessToken: '64026182325df844d6b96ce1f55661c5' });
-        window.ShopifyBuy.UI.onReady(client).then((ui: any) => {
-          if (cancelled) return;
-          ui.createComponent('product', {
-            id: selectedProduct.shopifyId, node: node, moneyFormat: '%24%7B%7Bamount%7D%7D',
-            options: {
-              "product": {
-                "events": {
-                  "addVariantToCart": (product: any) => {
-                    const title = product?.model?.title || selectedProduct.name;
-                    const price = product?.model?.selectedVariant?.price?.amount || '0';
-                    console.log('[v0] Meta Pixel AddToCart (Detail):', { content_name: title, value: price });
-                    if (typeof (window as any).fbq === 'function') {
-                      (window as any).fbq('track', 'AddToCart', { content_name: title, value: parseFloat(price), currency: 'USD' });
-                    }
-                  },
-                  "afterAddVariantToCart": () => {
-                    window.dispatchEvent(new CustomEvent('openUpsellModal', { detail: { productId: selectedProduct.shopifyId } }));
-                  }
-                },
-                "styles": { "button": { "font-family": "Manrope, sans-serif", "font-weight": "900", "font-size": "18px", "padding": "24px", "border-radius": "50px", "background-color": "#22c55e", "color": "#ffffff", "width": "100%", ":hover": { "background-color": "#16a34a" } } },
-                "contents": { "img": false, "title": false, "price": false },
-                "text": { "button": t('detail.add') }
-              },
-              "cart": {
-                "styles": {
-                  "cart": { "background-color": "#000000" },
-                  "header": { "background-color": "#000000", "color": "#ffffff" },
-                  "title": { "color": "#ffffff" },
-                  "footer": { "background-color": "#000000", "color": "#ffffff", "border-top": "1px solid rgba(255,255,255,0.1)" },
-                  "button": { "background-color": "#22c55e", "color": "#ffffff", ":hover": { "background-color": "#16a34a" } },
-                  "subtotal": { "color": "#ffffff" },
-                  "subtotalText": { "color": "#ffffff" },
-                  "currency": { "color": "#ffffff" },
-                  "notice": { 
-                    "color": "#22c55e", 
-                    "font-weight": "900", 
-                    "font-size": "14px", 
-                    "text-align": "center", 
-                    "margin-bottom": "15px",
-                    "text-shadow": "0 0 10px rgba(34, 197, 94, 0.8), 0 0 20px rgba(34, 197, 94, 0.4)"
-                  },
-                  "discountText": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 10px rgba(34, 197, 94, 0.7)" },
-                  "discountAmount": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 10px rgba(34, 197, 94, 0.7)" },
-                  "discountIcon": { "fill": "#22c55e" },
-                  "close": { "color": "#ffffff" }
-                },
-                "contents": { "notice": true },
-                "text": { "notice": "¡AGREGA OTRO PRODUCTO CON 40% OFF!" }
-              },
-              "lineItem": { 
-                "styles": { 
-                  "title": { "color": "#ffffff", "font-weight": "800" }, 
-                  "price": { "color": "#ffffff" }, 
-                  "discount": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 8px rgba(34, 197, 94, 0.5)" },
-                  "quantity": { "color": "#ffffff" }, 
-                  "quantityIncrement": { "color": "#ffffff", "border-color": "#ffffff" }, 
-                  "quantityDecrement": { "color": "#ffffff", "border-color": "#ffffff" },
-                  "quantityInput": { "color": "#ffffff", "background": "transparent" }
-                } 
-              }
-            }
-          });
-        });
+  const checkoutIdRef = useRef<string | null>(null);
+  const checkoutUrlRef = useRef<string | null>(null);
+
+  const STOREFRONT_URL = 'https://e08ff1-xx.myshopify.com/api/2024-01/graphql.json';
+  const STOREFRONT_TOKEN = '64026182325df844d6b96ce1f55661c5';
+
+  const storefrontFetch = async (query: string, variables: Record<string, any> = {}) => {
+    const res = await fetch(STOREFRONT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Shopify-Storefront-Access-Token': STOREFRONT_TOKEN },
+      body: JSON.stringify({ query, variables }),
+    });
+    return res.json();
+  };
+
+  const addToCartViaAPI = async (shopifyId: string) => {
+    try {
+      const productGid = `gid://shopify/Product/${shopifyId}`;
+      const prodResult = await storefrontFetch(`
+        query getProduct($id: ID!) { node(id: $id) { ... on Product { variants(first: 1) { edges { node { id } } } } } }
+      `, { id: productGid });
+      const variantId = prodResult?.data?.node?.variants?.edges?.[0]?.node?.id;
+      if (!variantId) return;
+      if (!checkoutIdRef.current) {
+        const createResult = await storefrontFetch(`
+          mutation checkoutCreate($input: CheckoutCreateInput!) { checkoutCreate(input: $input) { checkout { id webUrl } userErrors { field message } } }
+        `, { input: { lineItems: [{ variantId, quantity: 1 }] } });
+        const checkout = createResult?.data?.checkoutCreate?.checkout;
+        if (checkout) { checkoutIdRef.current = checkout.id; checkoutUrlRef.current = checkout.webUrl; }
+      } else {
+        const addResult = await storefrontFetch(`
+          mutation checkoutLineItemsAdd($checkoutId: ID!, $lineItems: [CheckoutLineItemInput!]!) { checkoutLineItemsAdd(checkoutId: $checkoutId, lineItems: $lineItems) { checkout { id webUrl } userErrors { field message } } }
+        `, { checkoutId: checkoutIdRef.current, lineItems: [{ variantId, quantity: 1 }] });
+        const checkout = addResult?.data?.checkoutLineItemsAdd?.checkout;
+        if (checkout) checkoutUrlRef.current = checkout.webUrl;
       }
-    };
-    const loadScript = () => {
-      const existing = document.querySelector(`script[src="${scriptURL}"]`);
-      if (existing) { if (window.ShopifyBuy && window.ShopifyBuy.UI) ShopifyBuyInit(); else existing.addEventListener('load', ShopifyBuyInit); return; }
-      const script = document.createElement('script'); script.async = true; script.src = scriptURL; script.crossOrigin = "anonymous";
-      document.head.appendChild(script); script.onload = ShopifyBuyInit;
-    };
-    loadScript();
-    return () => {
-      cancelled = true;
-      const node = document.getElementById(nodeId);
-      if (node) node.innerHTML = '';
-    };
-  }, [selectedProduct, lang, t]);
+    } catch (err) {}
+  };
+
+  const handleAddToCart = () => {
+    if (!selectedProduct) return;
+    if (typeof (window as any).fbq === 'function') {
+      (window as any).fbq('track', 'AddToCart', { content_name: selectedProduct.name, value: parseFloat(selectedProduct.newPrice), currency: 'USD' });
+    }
+    window.dispatchEvent(new CustomEvent('openUpsellModal', { detail: { productId: selectedProduct.shopifyId } }));
+    addToCartViaAPI(selectedProduct.shopifyId).catch(() => {});
+  };
+
   if (!selectedProduct) { setActiveTab('store'); return null; }
   return (
     <div className="bg-black min-h-screen pb-32 pt-10 sm:pt-20">
@@ -110,7 +68,12 @@ export const ProductDetailView: React.FC = () => {
               <span className="text-gray-600 line-through text-lg font-bold">${selectedProduct.oldPrice} USD</span>
             </div>
             <div className="p-8 rounded-3xl bg-white/[0.03] border border-white/10 mb-6 lg:mb-10"><div className="text-gray-300 text-lg font-medium leading-relaxed italic mb-6 whitespace-pre-line">{selectedProduct.description}</div><div className="space-y-4"><div className="flex items-center gap-4 text-gray-400"><Laptop className="w-5 h-5 text-purple-500" /><span className="text-sm font-bold uppercase tracking-tight">{t('detail.winmac')}</span></div><div className="flex items-center gap-4 text-gray-400"><Monitor className="w-5 h-5 text-purple-500" /><span className="text-sm font-bold uppercase tracking-tight">{t('detail.software')}</span></div></div></div>
-            <div id={`detail-shopify-node-${selectedProduct.id}`} className="w-full -mt-2 lg:mt-0"></div>
+            <button
+              onClick={handleAddToCart}
+              className="w-full py-4 sm:py-5 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white font-black text-sm sm:text-lg uppercase tracking-wider rounded-full transition-all duration-200 shadow-[0_0_20px_rgba(34,197,94,0.3)]"
+            >
+              {lang === 'es' ? 'AGREGAR AL CARRITO' : 'ADD TO CART'}
+            </button>
           </FadeIn>
         </div>
       </div>
