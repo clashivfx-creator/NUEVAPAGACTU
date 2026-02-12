@@ -119,8 +119,10 @@ const FAQItem = ({ question, answer }: { question: string, answer: string }) => 
 };
 
 export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
-  const { lang, t, setActiveTab } = useContext(LanguageContext);
+  const { t, lang } = useContext(LanguageContext);
   const uiRef = useRef<any>(null);
+  const checkoutIdRef = useRef<string | null>(null);
+  const checkoutUrlRef = useRef<string | null>(null);
 
   const productData = useMemo(() => {
     if (variant === 'platinum') {
@@ -148,6 +150,56 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
       isBestSeller: true
     };
   }, [variant, lang, t]);
+
+  const STOREFRONT_URL = 'https://e08ff1-xx.myshopify.com/api/2024-01/graphql.json';
+  const STOREFRONT_TOKEN = '64026182325df844d6b96ce1f55661c5';
+
+  const storefrontFetch = async (query: string, variables: Record<string, any> = {}) => {
+    const res = await fetch(STOREFRONT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Shopify-Storefront-Access-Token': STOREFRONT_TOKEN },
+      body: JSON.stringify({ query, variables }),
+    });
+    return res.json();
+  };
+
+  const addToCartViaAPI = async (shopifyId: string) => {
+    try {
+      const productGid = `gid://shopify/Product/${shopifyId}`;
+      const prodResult = await storefrontFetch(`
+        query getProduct($id: ID!) { node(id: $id) { ... on Product { variants(first: 1) { edges { node { id } } } } } }
+      `, { id: productGid });
+      const variantId = prodResult?.data?.node?.variants?.edges?.[0]?.node?.id;
+      if (!variantId) return;
+
+      if (!checkoutIdRef.current) {
+        const createResult = await storefrontFetch(`
+          mutation checkoutCreate($input: CheckoutCreateInput!) { checkoutCreate(input: $input) { checkout { id webUrl } userErrors { field message } } }
+        `, { input: { lineItems: [{ variantId, quantity: 1 }] } });
+        const checkout = createResult?.data?.checkoutCreate?.checkout;
+        if (checkout) {
+          checkoutIdRef.current = checkout.id;
+          checkoutUrlRef.current = checkout.webUrl;
+        }
+      } else {
+        const addResult = await storefrontFetch(`
+          mutation checkoutLineItemsAdd($checkoutId: ID!, $lineItems: [CheckoutLineItemInput!]!) { checkoutLineItemsAdd(checkoutId: $checkoutId, lineItems: $lineItems) { checkout { id webUrl } userErrors { field message } } }
+        `, { checkoutId: checkoutIdRef.current, lineItems: [{ variantId, quantity: 1 }] });
+        const checkout = addResult?.data?.checkoutLineItemsAdd?.checkout;
+        if (checkout) checkoutUrlRef.current = checkout.webUrl;
+      }
+    } catch (err) {
+      console.log('[v0] BundleShowcase addToCartViaAPI error:', err);
+    }
+  };
+
+  const handleAddToCart = () => {
+    if (typeof (window as any).fbq === 'function') {
+      (window as any).fbq('track', 'AddToCart', { content_name: productData.name, value: parseFloat(productData.newPrice), currency: 'USD' });
+    }
+    window.dispatchEvent(new CustomEvent('openUpsellModal', { detail: { productId: productData.shopifyId } }));
+    addToCartViaAPI(productData.shopifyId).catch(() => {});
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -419,12 +471,12 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
                             DESCARGA ÚNICA
                           </span>
                         </div>
-                        <div className="flex items-center gap-2 group/premium">
-                          <Zap className="w-2.5 h-2.5 text-purple-500 group-hover:scale-125 transition-transform" />
-                          <span className="text-[7.5px] sm:text-[9px] font-black uppercase tracking-[0.2em] text-shimmer">
-                            ACTUALIZACIONES DE POR VIDA
-                          </span>
-                        </div>
+  <div className="flex items-center gap-2">
+  <Zap className="w-2.5 h-2.5 text-purple-500" />
+  <span className="text-[7.5px] sm:text-[9px] font-black uppercase tracking-[0.2em] text-purple-400">
+> ACTUALIZACIONES DE POR VIDA
+  </span>
+  </div>
                       </div>
                     )}
                   </div>
