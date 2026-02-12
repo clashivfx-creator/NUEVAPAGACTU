@@ -132,7 +132,7 @@ export const CommercialStore: React.FC = () => {
   };
 
   return (
-    <div className="bg-black min-h-screen pb-24 overflow-x-hidden">
+    <div className="bg-black min-h-screen pb-24">
       <div className={`fixed bottom-0 left-0 w-full z-[120] p-4 bg-black/80 backdrop-blur-xl border-t border-white/10 transition-all duration-500 ${isCartVisible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0 pointer-events-none'}`}>
         <div className="container mx-auto max-w-7xl flex items-center justify-between gap-4">
            <div className="flex items-center gap-4">
@@ -143,9 +143,9 @@ export const CommercialStore: React.FC = () => {
         </div>
       </div>
       <div className="bg-red-600 py-4 overflow-hidden relative border-y border-red-500/50 shadow-[0_0_30px_rgba(239,68,68,0.3)]"><div className="flex justify-center sm:whitespace-nowrap sm:animate-marquee"><div className="flex items-center gap-10 mx-6"><span className="text-white text-sm sm:text-xl font-black tracking-tighter uppercase italic flex items-center gap-3"><Flame className="w-5 h-5 sm:w-7 sm:h-7 fill-current animate-pulse" /> {t('store.banner')}</span></div></div></div>
-      <div className="flex flex-col items-center mt-8 sm:mt-12 touch-pan-y"><p className="text-white/40 text-[10px] font-black uppercase tracking-[0.3em] mb-3">{t('store.ends_in')}</p><CountdownTimer /></div>
-      <div className="container mx-auto px-4 sm:px-8 max-w-7xl mt-12 sm:mt-24 touch-pan-y">
-        <FadeIn><div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12 border-b border-white/10 pb-10 touch-pan-y"><div><h2 className="text-4xl sm:text-6xl font-black text-white tracking-tighter uppercase leading-none mb-4">{t('store.title')}</h2><p className="text-red-500 font-bold tracking-widest uppercase text-xs sm:text-sm animate-pulse">Ofertas por tiempo limitado • Actualización 2026</p></div><div className="flex flex-col gap-3"><div className="flex flex-wrap items-center gap-4"><div className="flex gap-0.5 sm:gap-1 text-amber-400">{[...Array(5)].map((_, i) => <Star key={i} className="w-5 h-5 sm:w-7 sm:h-7 fill-current drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]" />)}</div><div className="text-white text-sm sm:text-[1.1rem] leading-none"><span className="flex items-center gap-2"><span className="opacity-80">Rated</span> <span className="font-black text-white">4.9/5 Excellent</span> <span className="px-3 py-1 bg-white/10 border border-white/20 rounded-full font-black text-emerald-500 text-[10px] sm:text-xs uppercase">678 {t('store.reviews_verified')}</span></span></div></div></div></div></FadeIn>
+      <div className="flex flex-col items-center mt-8 sm:mt-12"><p className="text-white/40 text-[10px] font-black uppercase tracking-[0.3em] mb-3">{t('store.ends_in')}</p><CountdownTimer /></div>
+      <div className="container mx-auto px-4 sm:px-8 max-w-7xl mt-12 sm:mt-24">
+        <FadeIn><div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12 border-b border-white/10 pb-10"><div><h2 className="text-4xl sm:text-6xl font-black text-white tracking-tighter uppercase leading-none mb-4">{t('store.title')}</h2><p className="text-red-500 font-bold tracking-widest uppercase text-xs sm:text-sm animate-pulse">Ofertas por tiempo limitado • Actualización 2026</p></div><div className="flex flex-col gap-3"><div className="flex flex-wrap items-center gap-4"><div className="flex gap-0.5 sm:gap-1 text-amber-400">{[...Array(5)].map((_, i) => <Star key={i} className="w-5 h-5 sm:w-7 sm:h-7 fill-current drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]" />)}</div><div className="text-white text-sm sm:text-[1.1rem] leading-none"><span className="flex items-center gap-2"><span className="opacity-80">Rated</span> <span className="font-black text-white">4.9/5 Excellent</span> <span className="px-3 py-1 bg-white/10 border border-white/20 rounded-full font-black text-emerald-500 text-[10px] sm:text-xs uppercase">678 {t('store.reviews_verified')}</span></span></div></div></div></div></FadeIn>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-12 gap-x-4 sm:gap-10">
           {products.map((product, index) => (
             <div key={product.id + lang} className="relative group flex flex-col cursor-pointer" onClick={() => handleProductClick(product)}>
