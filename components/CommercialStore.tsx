@@ -133,11 +133,10 @@ export const CommercialStore: React.FC = () => {
 
   return (
     <div className="bg-black min-h-screen pb-24">
-      <div className={`fixed bottom-0 left-0 w-full z-[120] p-4 bg-black/80 backdrop-blur-xl border-t border-white/10 transition-all duration-500 ${isCartVisible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0 pointer-events-none'}`}>
+      <div className={`fixed bottom-0 left-0 w-full z-[120] p-4 bg-black/80 backdrop-blur-xl border-t border-white/10 transition-all duration-250 ${isCartVisible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0 pointer-events-none'}`}>
         <div className="container mx-auto max-w-7xl flex items-center justify-between gap-4">
            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center border border-white/20"><ShoppingCart className="w-6 h-6 text-white" /></div>
-              <div><p className="text-white font-black uppercase text-xs tracking-widest">{t('store.cart_notification')}</p><p className="text-gray-400 font-bold text-[10px] uppercase">{t('store.auto_discounts')}</p></div>
+              <p className="text-gray-400 font-bold text-xs sm:text-sm uppercase">{t('store.auto_discounts')}</p>
            </div>
            <button onClick={handleCustomCheckout} className="px-10 py-4 bg-white hover:bg-gray-200 text-black font-black uppercase tracking-tighter rounded-full transition-all flex items-center gap-3 shadow-[0_0_20px_rgba(255,255,255,0.2)]">{t('store.pay_now')} <ArrowRight className="w-5 h-5" /></button>
         </div>
