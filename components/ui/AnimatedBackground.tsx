@@ -1,6 +1,9 @@
+"use client";
 
 import React from 'react';
-import LiquidEther from './LiquidEther';
+import dynamic from 'next/dynamic';
+
+const LiquidEther = dynamic(() => import('./LiquidEther'), { ssr: false });
 
 export const AnimatedBackground: React.FC = () => {
   return (
