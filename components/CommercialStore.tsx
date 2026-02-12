@@ -44,7 +44,7 @@ const DiscordIcon = ({ className }: { className?: string }) => (
 export const CommercialStore: React.FC = () => {
   const { t, lang, setActiveTab } = useContext(LanguageContext);
   const [isCartVisible, setIsCartVisible] = useState(false);
-  const [addingToCart, setAddingToCart] = useState<string | null>(null);
+
   const shopifyClientRef = useRef<any>(null);
   const shopifyCartRef = useRef<any>(null);
   const products = useMemo<Product[]>(() => [
@@ -90,33 +90,27 @@ export const CommercialStore: React.FC = () => {
     return () => { cancelled = true; };
   }, []);
 
-  const handleAddToCart = async (product: Product) => {
-    setAddingToCart(product.id);
-    try {
-      const client = shopifyClientRef.current;
-      if (!client) { window.open(product.link, '_blank'); return; }
-      // Fetch product and add first variant to a checkout
-      const shopifyProduct = await client.product.fetch('gid://shopify/Product/' + product.shopifyId);
-      const variant = shopifyProduct.variants[0];
-      let checkout = shopifyCartRef.current;
-      if (!checkout) {
-        checkout = await client.checkout.create();
-        shopifyCartRef.current = checkout;
-      }
-      checkout = await client.checkout.addLineItems(checkout.id, [{ variantId: variant.id, quantity: 1 }]);
-      shopifyCartRef.current = checkout;
-      // Fire Meta Pixel
-      const title = shopifyProduct.title || product.name;
-      const price = variant.price?.amount || product.newPrice;
-      if (typeof (window as any).fbq === 'function') {
-        (window as any).fbq('track', 'AddToCart', { content_name: title, value: parseFloat(price), currency: 'USD' });
-      }
-      setIsCartVisible(true);
-      window.dispatchEvent(new CustomEvent('openUpsellModal', { detail: { productId: product.shopifyId } }));
-    } catch (err) {
-      window.open(product.link, '_blank');
-    } finally {
-      setAddingToCart(null);
+  const handleAddToCart = (product: Product) => {
+    // Fire Meta Pixel immediately
+    if (typeof (window as any).fbq === 'function') {
+      (window as any).fbq('track', 'AddToCart', { content_name: product.name, value: parseFloat(product.newPrice), currency: 'USD' });
+    }
+    // Show cart bar + upsell modal instantly (no wait)
+    setIsCartVisible(true);
+    window.dispatchEvent(new CustomEvent('openUpsellModal', { detail: { productId: product.shopifyId } }));
+    // Add to Shopify cart in background (fire-and-forget)
+    const client = shopifyClientRef.current;
+    if (client) {
+      (async () => {
+        try {
+          const shopifyProduct = await client.product.fetch('gid://shopify/Product/' + product.shopifyId);
+          const variant = shopifyProduct.variants[0];
+          let checkout = shopifyCartRef.current;
+          if (!checkout) checkout = await client.checkout.create();
+          checkout = await client.checkout.addLineItems(checkout.id, [{ variantId: variant.id, quantity: 1 }]);
+          shopifyCartRef.current = checkout;
+        } catch (_) { /* fallback: product link used at checkout */ }
+      })();
     }
   };
 
@@ -173,12 +167,9 @@ export const CommercialStore: React.FC = () => {
                     </div>
                     <button
                       onClick={(e) => { e.stopPropagation(); handleAddToCart(product); }}
-                      disabled={addingToCart === product.id}
-                      className="w-full py-3 sm:py-4 bg-emerald-500 hover:bg-emerald-600 active:scale-95 disabled:opacity-60 disabled:scale-100 text-white font-black text-[11px] sm:text-[13px] uppercase tracking-wider rounded-full transition-all duration-200 shadow-[0_0_20px_rgba(34,197,94,0.3)]"
+                      className="w-full py-3 sm:py-4 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white font-black text-[11px] sm:text-[13px] uppercase tracking-wider rounded-full transition-all duration-200 shadow-[0_0_20px_rgba(34,197,94,0.3)]"
                     >
-                      {addingToCart === product.id
-                        ? (lang === 'es' ? 'AGREGANDO...' : 'ADDING...')
-                        : (lang === 'es' ? 'AGREGAR' : 'ADD')}
+                      {lang === 'es' ? 'AGREGAR' : 'ADD'}
                     </button>
                   </div>
                 </div>
