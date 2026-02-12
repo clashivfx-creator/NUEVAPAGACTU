@@ -84,34 +84,43 @@ export const CommercialStore: React.FC = () => {
   };
 
   const addToCartViaAPI = async (shopifyId: string) => {
-    // 1. Get the first variant GID
-    const productGid = `gid://shopify/Product/${shopifyId}`;
-    const { data: prodData } = await storefrontFetch(`
-      query getProduct($id: ID!) { node(id: $id) { ... on Product { variants(first: 1) { edges { node { id } } } } } }
-    `, { id: productGid });
-    const variantId = prodData?.node?.variants?.edges?.[0]?.node?.id;
-    if (!variantId) return;
+    try {
+      // 1. Get the first variant GID
+      const productGid = `gid://shopify/Product/${shopifyId}`;
+      const prodResult = await storefrontFetch(`
+        query getProduct($id: ID!) { node(id: $id) { ... on Product { variants(first: 1) { edges { node { id } } } } } }
+      `, { id: productGid });
+      console.log('[v0] Storefront product fetch result:', JSON.stringify(prodResult));
+      const variantId = prodResult?.data?.node?.variants?.edges?.[0]?.node?.id;
+      if (!variantId) { console.log('[v0] No variant found for', shopifyId); return; }
 
-    // 2. Create or add to checkout
-    if (!checkoutIdRef.current) {
-      const { data: createData } = await storefrontFetch(`
-        mutation checkoutCreate($input: CheckoutCreateInput!) { checkoutCreate(input: $input) { checkout { id webUrl } } }
-      `, { input: { lineItems: [{ variantId, quantity: 1 }] } });
-      const checkout = createData?.checkoutCreate?.checkout;
-      if (checkout) {
-        checkoutIdRef.current = checkout.id;
-        checkoutUrlRef.current = checkout.webUrl;
+      // 2. Create or add to checkout
+      if (!checkoutIdRef.current) {
+        const createResult = await storefrontFetch(`
+          mutation checkoutCreate($input: CheckoutCreateInput!) { checkoutCreate(input: $input) { checkout { id webUrl } userErrors { field message } } }
+        `, { input: { lineItems: [{ variantId, quantity: 1 }] } });
+        console.log('[v0] Checkout create result:', JSON.stringify(createResult));
+        const checkout = createResult?.data?.checkoutCreate?.checkout;
+        if (checkout) {
+          checkoutIdRef.current = checkout.id;
+          checkoutUrlRef.current = checkout.webUrl;
+          console.log('[v0] Checkout created:', checkout.webUrl);
+        }
+      } else {
+        const addResult = await storefrontFetch(`
+          mutation checkoutLineItemsAdd($checkoutId: ID!, $lineItems: [CheckoutLineItemInput!]!) { checkoutLineItemsAdd(checkoutId: $checkoutId, lineItems: $lineItems) { checkout { id webUrl } userErrors { field message } } }
+        `, { checkoutId: checkoutIdRef.current, lineItems: [{ variantId, quantity: 1 }] });
+        console.log('[v0] Checkout add result:', JSON.stringify(addResult));
+        const checkout = addResult?.data?.checkoutLineItemsAdd?.checkout;
+        if (checkout) checkoutUrlRef.current = checkout.webUrl;
       }
-    } else {
-      const { data: addData } = await storefrontFetch(`
-        mutation checkoutLineItemsAdd($checkoutId: ID!, $lineItems: [CheckoutLineItemInput!]!) { checkoutLineItemsAdd(checkoutId: $checkoutId, lineItems: $lineItems) { checkout { id webUrl } } }
-      `, { checkoutId: checkoutIdRef.current, lineItems: [{ variantId, quantity: 1 }] });
-      const checkout = addData?.checkoutLineItemsAdd?.checkout;
-      if (checkout) checkoutUrlRef.current = checkout.webUrl;
+    } catch (err) {
+      console.log('[v0] addToCartViaAPI error:', err);
     }
   };
 
   const handleAddToCart = (product: Product) => {
+    console.log('[v0] handleAddToCart called for:', product.name, 'shopifyId:', product.shopifyId);
     // Fire Meta Pixel immediately
     if (typeof (window as any).fbq === 'function') {
       (window as any).fbq('track', 'AddToCart', { content_name: product.name, value: parseFloat(product.newPrice), currency: 'USD' });
