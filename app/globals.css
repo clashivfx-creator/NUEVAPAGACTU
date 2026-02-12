@@ -197,6 +197,16 @@ section {
   transform: translateY(0);
 }
 
+/* Shimmer animation for upsell separator */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 /* LiquidEther container */
 .liquid-ether-container {
   width: 100%;

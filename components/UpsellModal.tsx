@@ -85,11 +85,12 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose, selec
                     "button": {
                       "font-family": "Manrope, sans-serif",
                       "font-weight": "900",
-                      "background-color": "#3b82f6",
+                      "background-color": "#22c55e",
+                      "border": "2px solid #22c55e",
                       "border-radius": "50px",
                       "font-size": "13px",
                       "padding": "14px 28px",
-                      ":hover": { "background-color": "#2563eb" }
+                      ":hover": { "background-color": "#16a34a", "border-color": "#16a34a" }
                     }
                   },
                   "contents": { "img": false, "title": false, "price": false },
@@ -252,7 +253,7 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose, selec
 
           {/* Selected Product - Top Section */}
           {selectedProduct && (
-            <div className="mb-8 sm:mb-12 p-4 sm:p-6 bg-blue-950/30 border-2 border-blue-500/40 rounded-2xl">
+            <div className="mb-8 sm:mb-12 p-4 sm:p-6 bg-emerald-950/20 border-2 border-emerald-500/40 rounded-2xl">
               <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
                 <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-xl overflow-hidden shrink-0">
                   <img src={selectedProduct.img} alt={t(selectedProduct.nameKey)} className="w-full h-full object-cover" />
@@ -273,8 +274,9 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose, selec
 
           {/* Separator */}
           {selectedProduct && (
-            <div className="mb-6 sm:mb-8 text-center">
-              <p className="text-white/60 text-xs sm:text-sm uppercase tracking-wide font-bold">
+            <div className="mb-6 sm:mb-8 text-center relative overflow-hidden py-4">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent animate-[shimmer_2s_ease-in-out_infinite]" />
+              <p className="relative text-white text-sm sm:text-base uppercase tracking-[0.25em] font-black bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-400 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(34,197,94,0.6)] animate-pulse">
                 {lang === 'es' ? 'O AGREGA MÁS CON 40% OFF' : 'OR ADD MORE WITH 40% OFF'}
               </p>
             </div>
@@ -286,7 +288,7 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose, selec
               <div key={prod.shopifyId} className="bg-white/[0.03] border border-white/10 rounded-xl sm:rounded-2xl p-3 sm:p-4 flex flex-col items-center group hover:border-emerald-500/50 transition-all hover:-translate-y-1">
                 <div className="relative aspect-square w-full rounded-lg sm:rounded-xl overflow-hidden mb-3 sm:mb-4">
                   <img src={prod.img} alt={t(prod.nameKey)} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                  <div className="absolute top-2 right-2 bg-red-600 text-white text-[8px] sm:text-[10px] font-black px-2 sm:px-3 py-0.5 sm:py-1 rounded-full uppercase shadow-xl animate-pulse">
+                  <div className="absolute top-2 right-2 bg-red-600 text-white text-[9px] sm:text-[11.5px] font-black px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full uppercase shadow-xl animate-pulse">
                     -40%
                   </div>
                 </div>
@@ -294,8 +296,8 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose, selec
                   {t(prod.nameKey)}
                 </h3>
                 <div className="flex items-baseline gap-1.5 mb-3">
-                  <span className="text-gray-600 line-through text-[9px] sm:text-[10px] font-bold">${prod.oldPrice}</span>
-                  <span className="text-emerald-500 text-sm sm:text-base font-black">${prod.newPrice}</span>
+                  <span className="text-gray-600 line-through text-[9px] sm:text-[10px] font-bold">${prod.newPrice}</span>
+                  <span className="text-emerald-500 text-sm sm:text-base font-black">${(parseFloat(prod.newPrice) * 0.6).toFixed(2)}</span>
                 </div>
                 <div id={`upsell-dynamic-${idx}`} className="w-full flex justify-center" />
               </div>
