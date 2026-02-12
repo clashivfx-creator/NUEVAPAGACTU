@@ -264,7 +264,7 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose, selec
                   </h3>
                   <div className="flex items-baseline gap-2 justify-center sm:justify-start mb-4">
                     <span className="text-gray-600 line-through text-sm font-bold">${selectedProduct.oldPrice}</span>
-                    <span className="text-blue-400 text-2xl font-black">${selectedProduct.newPrice}</span>
+                    <span className="text-emerald-500 text-2xl font-black">${selectedProduct.newPrice}</span>
                   </div>
                   <div id="upsell-selected-product" className="flex justify-center sm:justify-start" />
                 </div>

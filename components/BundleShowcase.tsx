@@ -316,7 +316,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
                     
                     <button
                       onClick={handleAddToCart}
-                      className="w-full py-3 sm:py-4 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white font-black text-xs sm:text-sm uppercase tracking-wider rounded-full transition-all duration-200 shadow-[0_0_20px_rgba(34,197,94,0.3)] -mt-2 lg:mt-0"
+                      className="w-full py-3 sm:py-4 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white font-black text-xs sm:text-sm uppercase tracking-wider rounded-full transition-all duration-200 shadow-[0_0_20px_rgba(34,197,94,0.3)] mt-3 lg:mt-2"
                     >
                       {lang === 'es' ? 'AGREGAR AL CARRITO' : 'ADD TO CART'}
                     </button>
