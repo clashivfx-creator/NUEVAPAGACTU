@@ -176,7 +176,7 @@ export const CommercialStore: React.FC = () => {
 
   return (
     <div className="bg-black min-h-screen pb-24 overflow-x-hidden">
-      <div className={`fixed bottom-0 left-0 w-full z-[120] p-4 bg-black/80 backdrop-blur-xl border-t border-white/10 transition-transform duration-500 transform ${isCartVisible ? 'translate-y-0' : 'translate-y-full'}`}>
+      <div className={`fixed bottom-0 left-0 w-full z-[120] p-4 bg-black/80 backdrop-blur-xl border-t border-white/10 transition-all duration-500 ${isCartVisible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0 pointer-events-none'}`}>
         <div className="container mx-auto max-w-7xl flex items-center justify-between gap-4">
            <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center border border-white/20"><ShoppingCart className="w-6 h-6 text-white" /></div>
@@ -213,7 +213,7 @@ export const CommercialStore: React.FC = () => {
                         ${product.newPrice} USD
                       </span>
                     </div>
-                    <div id={product.nodeId} className="w-full" onClick={(e) => e.stopPropagation()}></div>
+                    <div id={product.nodeId} className="w-full min-h-[50px]" onClick={(e) => e.stopPropagation()}></div>
                   </div>
                 </div>
               </div>
