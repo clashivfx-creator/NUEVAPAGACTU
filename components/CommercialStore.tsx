@@ -44,6 +44,9 @@ const DiscordIcon = ({ className }: { className?: string }) => (
 export const CommercialStore: React.FC = () => {
   const { t, lang, setActiveTab } = useContext(LanguageContext);
   const [isCartVisible, setIsCartVisible] = useState(false);
+  const [addingToCart, setAddingToCart] = useState<string | null>(null);
+  const shopifyClientRef = useRef<any>(null);
+  const shopifyCartRef = useRef<any>(null);
   const products = useMemo<Product[]>(() => [
     { 
       id: 'ultimate-2026', 
@@ -68,105 +71,60 @@ export const CommercialStore: React.FC = () => {
     { id: 'ultraworkflow', shopifyId: '8473627754671', nodeId: 'product-component-1770243547561', name: t('product.workflow_name'), oldPrice: '50.00', newPrice: '39.99', mediaUrl: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787944/ultraworkflow_ocxa8x.gif', isVideo: false, link: 'https://e08ff1-xx.myshopify.com/products/pack-avanzado-copia-1', customAction: 'ultra', description: t('product.workflow_desc') }
   ], [lang, t]);
 
+  // Initialize Shopify client only (no iframes) for programmatic cart
   useEffect(() => {
     let cancelled = false;
     const scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
-    const ShopifyBuyInit = () => {
-      if (cancelled) return;
-      if (!window.ShopifyBuy || !window.ShopifyBuy.UI) return;
+    const init = () => {
+      if (cancelled || !window.ShopifyBuy) return;
       const client = window.ShopifyBuy.buildClient({ domain: 'e08ff1-xx.myshopify.com', storefrontAccessToken: '64026182325df844d6b96ce1f55661c5' });
-      const cartOptions = {
-        "styles": {
-          "cart": { "background-color": "#000000", "box-shadow": "0 0 50px rgba(0,0,0,0.8)" },
-          "header": { "background-color": "#000000", "color": "#ffffff" },
-          "title": { "color": "#ffffff", "font-weight": "900", "font-size": "11px", "text-transform": "uppercase", "text-shadow": "none" },
-          "footer": { "background-color": "#000000", "color": "#ffffff", "border-top": "1px solid rgba(255,255,255,0.15)" },
-          "button": { "background-color": "#22c55e", "color": "#ffffff", "font-family": "Manrope, sans-serif", "font-weight": "900", ":hover": { "background-color": "#16a34a" } },
-          "close": { "color": "#ffffff" },
-          "empty": { "color": "#ffffff" },
-          "subtotalText": { "color": "#ffffff" },
-          "subtotal": { "color": "#ffffff", "font-weight": "900", "font-size": "18px" },
-          "currency": { "color": "#ffffff" },
-          "notice": { 
-            "color": "#22c55e", 
-            "font-weight": "900", 
-            "font-size": "14px", 
-            "text-align": "center", 
-            "margin-bottom": "20px",
-            "text-shadow": "0 0 10px rgba(34, 197, 94, 0.8), 0 0 20px rgba(34, 197, 94, 0.4)"
-          },
-          "discountText": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 10px rgba(34, 197, 94, 0.7)" },
-          "discountAmount": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 10px rgba(34, 197, 94, 0.7)" },
-          "discountIcon": { "fill": "#22c55e" }
-        },
-        "contents": { "title": true, "note": false, "footer": true, "button": true, "notice": true },
-        "text": { "total": "SUBTOTAL", "title": "CARRITO", "button": "PAGAR AHORA", "notice": "¡AGREGA OTRO PRODUCTO CON 40% OFF!" }
-      };
-      const lineItemOptions = {
-        "styles": {
-          "title": { "color": "#ffffff", "font-weight": "800" },
-          "price": { "color": "#ffffff", "font-weight": "900" },
-          "discount": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 8px rgba(34, 197, 94, 0.5)" },
-          "quantity": { "color": "#ffffff", "font-weight": "900" },
-          "quantityIncrement": { "color": "#ffffff", "border-color": "#ffffff" },
-          "quantityDecrement": { "color": "#ffffff", "border-color": "#ffffff" },
-          "quantityInput": { "color": "#ffffff", "background": "transparent" }
-        }
-      };
-      window.ShopifyBuy.UI.onReady(client).then((ui: any) => {
-        if (cancelled) return;
-        products.forEach(p => {
-          const node = document.getElementById(p.nodeId);
-          if (node) {
-            node.innerHTML = '';
-            ui.createComponent('product', {
-              id: p.shopifyId, node: node, moneyFormat: '%24%7B%7Bamount%7D%7D',
-              options: {
-                "product": {
-                  "events": {
-                    "addVariantToCart": (product: any) => {
-                      const title = product?.model?.title || 'Producto Store';
-                      const price = product?.model?.selectedVariant?.price?.amount || '0';
-                      console.log('[v0] Meta Pixel AddToCart (Store):', { content_name: title, value: price });
-                      if (typeof (window as any).fbq === 'function') {
-                        (window as any).fbq('track', 'AddToCart', { content_name: title, value: parseFloat(price), currency: 'USD' });
-                      }
-                    },
-                    "afterAddVariantToCart": () => {
-                      setIsCartVisible(true);
-                      window.dispatchEvent(new CustomEvent('openUpsellModal', { detail: { productId: p.shopifyId } }));
-                    }
-                  },
-                  "styles": { "button": { "font-family": "Manrope, sans-serif", "font-weight": "900", "background-color": "#22c55e", "color": "#ffffff", "border-radius": "40px", "font-size": "13px", ":hover": { "background-color": "#16a34a" } } },
-                  "contents": { "img": false, "title": false, "price": false },
-                  "text": { "button": lang === 'es' ? "AGREGAR" : "ADD" }
-                },
-                "cart": cartOptions, "lineItem": lineItemOptions,
-                "toggle": { "styles": { "toggle": { "background-color": "#22c55e" } } }
-              }
-            });
-          }
-        });
-      });
+      shopifyClientRef.current = client;
     };
-    const loadScript = () => {
-      const existing = document.querySelector(`script[src="${scriptURL}"]`);
-      if (existing) { if (window.ShopifyBuy && window.ShopifyBuy.UI) ShopifyBuyInit(); else existing.addEventListener('load', ShopifyBuyInit); return; }
+    const existing = document.querySelector(`script[src="${scriptURL}"]`);
+    if (existing) { if (window.ShopifyBuy) init(); else existing.addEventListener('load', init); }
+    else {
       const script = document.createElement('script'); script.async = true; script.src = scriptURL; script.crossOrigin = "anonymous";
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(script);
-      script.onload = ShopifyBuyInit;
-    };
-    loadScript();
-    return () => {
-      cancelled = true;
-      products.forEach(p => {
-        const node = document.getElementById(p.nodeId);
-        if (node) node.innerHTML = '';
-      });
-    };
-  }, [lang, products]);
+      (document.head || document.body).appendChild(script);
+      script.onload = init;
+    }
+    return () => { cancelled = true; };
+  }, []);
 
-  const handleCustomCheckout = () => window.dispatchEvent(new CustomEvent('customCheckoutTrigger'));
+  const handleAddToCart = async (product: Product) => {
+    setAddingToCart(product.id);
+    try {
+      const client = shopifyClientRef.current;
+      if (!client) { window.open(product.link, '_blank'); return; }
+      // Fetch product and add first variant to a checkout
+      const shopifyProduct = await client.product.fetch('gid://shopify/Product/' + product.shopifyId);
+      const variant = shopifyProduct.variants[0];
+      let checkout = shopifyCartRef.current;
+      if (!checkout) {
+        checkout = await client.checkout.create();
+        shopifyCartRef.current = checkout;
+      }
+      checkout = await client.checkout.addLineItems(checkout.id, [{ variantId: variant.id, quantity: 1 }]);
+      shopifyCartRef.current = checkout;
+      // Fire Meta Pixel
+      const title = shopifyProduct.title || product.name;
+      const price = variant.price?.amount || product.newPrice;
+      if (typeof (window as any).fbq === 'function') {
+        (window as any).fbq('track', 'AddToCart', { content_name: title, value: parseFloat(price), currency: 'USD' });
+      }
+      setIsCartVisible(true);
+      window.dispatchEvent(new CustomEvent('openUpsellModal', { detail: { productId: product.shopifyId } }));
+    } catch (err) {
+      window.open(product.link, '_blank');
+    } finally {
+      setAddingToCart(null);
+    }
+  };
+
+  const handleCustomCheckout = () => {
+    const checkout = shopifyCartRef.current;
+    if (checkout?.webUrl) window.open(checkout.webUrl, '_blank');
+    else window.dispatchEvent(new CustomEvent('customCheckoutTrigger'));
+  };
   const handleProductClick = (product: Product) => {
     if (product.customAction === 'elite') setActiveTab('products');
     else if (product.customAction === 'platinum') setActiveTab('platinum');
@@ -213,7 +171,15 @@ export const CommercialStore: React.FC = () => {
                         ${product.newPrice} USD
                       </span>
                     </div>
-                    <div id={product.nodeId} className="w-full min-h-[50px]" onClick={(e) => e.stopPropagation()}></div>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleAddToCart(product); }}
+                      disabled={addingToCart === product.id}
+                      className="w-full py-3 sm:py-4 bg-emerald-500 hover:bg-emerald-600 active:scale-95 disabled:opacity-60 disabled:scale-100 text-white font-black text-[11px] sm:text-[13px] uppercase tracking-wider rounded-full transition-all duration-200 shadow-[0_0_20px_rgba(34,197,94,0.3)]"
+                    >
+                      {addingToCart === product.id
+                        ? (lang === 'es' ? 'AGREGANDO...' : 'ADDING...')
+                        : (lang === 'es' ? 'AGREGAR' : 'ADD')}
+                    </button>
                   </div>
                 </div>
               </div>
