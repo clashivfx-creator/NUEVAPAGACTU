@@ -85,50 +85,38 @@ export const CommercialStore: React.FC = () => {
 
   const addToCartViaAPI = async (shopifyId: string) => {
     try {
-      // 1. Get the first variant GID
       const productGid = `gid://shopify/Product/${shopifyId}`;
       const prodResult = await storefrontFetch(`
         query getProduct($id: ID!) { node(id: $id) { ... on Product { variants(first: 1) { edges { node { id } } } } } }
       `, { id: productGid });
-      console.log('[v0] Storefront product fetch result:', JSON.stringify(prodResult));
       const variantId = prodResult?.data?.node?.variants?.edges?.[0]?.node?.id;
-      if (!variantId) { console.log('[v0] No variant found for', shopifyId); return; }
+      if (!variantId) return;
 
-      // 2. Create or add to checkout
       if (!checkoutIdRef.current) {
         const createResult = await storefrontFetch(`
-          mutation checkoutCreate($input: CheckoutCreateInput!) { checkoutCreate(input: $input) { checkout { id webUrl } userErrors { field message } } }
+          mutation checkoutCreate($input: CheckoutCreateInput!) { checkoutCreate(input: $input) { checkout { id webUrl } } }
         `, { input: { lineItems: [{ variantId, quantity: 1 }] } });
-        console.log('[v0] Checkout create result:', JSON.stringify(createResult));
         const checkout = createResult?.data?.checkoutCreate?.checkout;
         if (checkout) {
           checkoutIdRef.current = checkout.id;
           checkoutUrlRef.current = checkout.webUrl;
-          console.log('[v0] Checkout created:', checkout.webUrl);
         }
       } else {
         const addResult = await storefrontFetch(`
-          mutation checkoutLineItemsAdd($checkoutId: ID!, $lineItems: [CheckoutLineItemInput!]!) { checkoutLineItemsAdd(checkoutId: $checkoutId, lineItems: $lineItems) { checkout { id webUrl } userErrors { field message } } }
+          mutation checkoutLineItemsAdd($checkoutId: ID!, $lineItems: [CheckoutLineItemInput!]!) { checkoutLineItemsAdd(checkoutId: $checkoutId, lineItems: $lineItems) { checkout { id webUrl } } }
         `, { checkoutId: checkoutIdRef.current, lineItems: [{ variantId, quantity: 1 }] });
-        console.log('[v0] Checkout add result:', JSON.stringify(addResult));
         const checkout = addResult?.data?.checkoutLineItemsAdd?.checkout;
         if (checkout) checkoutUrlRef.current = checkout.webUrl;
       }
-    } catch (err) {
-      console.log('[v0] addToCartViaAPI error:', err);
-    }
+    } catch (err) {}
   };
 
   const handleAddToCart = (product: Product) => {
-    console.log('[v0] handleAddToCart called for:', product.name, 'shopifyId:', product.shopifyId);
-    // Fire Meta Pixel immediately
     if (typeof (window as any).fbq === 'function') {
       (window as any).fbq('track', 'AddToCart', { content_name: product.name, value: parseFloat(product.newPrice), currency: 'USD' });
     }
-    // Show cart bar + upsell modal instantly
     setIsCartVisible(true);
     window.dispatchEvent(new CustomEvent('openUpsellModal', { detail: { productId: product.shopifyId } }));
-    // Add to Shopify checkout in background via Storefront API (no SDK, no iframes)
     addToCartViaAPI(product.shopifyId).catch(() => {});
   };
 
@@ -155,13 +143,12 @@ export const CommercialStore: React.FC = () => {
         </div>
       </div>
       <div className="bg-red-600 py-4 overflow-hidden relative border-y border-red-500/50 shadow-[0_0_30px_rgba(239,68,68,0.3)]"><div className="flex justify-center sm:whitespace-nowrap sm:animate-marquee"><div className="flex items-center gap-10 mx-6"><span className="text-white text-sm sm:text-xl font-black tracking-tighter uppercase italic flex items-center gap-3"><Flame className="w-5 h-5 sm:w-7 sm:h-7 fill-current animate-pulse" /> {t('store.banner')}</span></div></div></div>
-      <div className="flex flex-col items-center mt-8 sm:mt-12"><p className="text-white/40 text-[10px] font-black uppercase tracking-[0.3em] mb-3">{t('store.ends_in')}</p><CountdownTimer /></div>
-      <div className="container mx-auto px-4 sm:px-8 max-w-7xl mt-12 sm:mt-24">
-        <FadeIn><div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12 border-b border-white/10 pb-10"><div><h2 className="text-4xl sm:text-6xl font-black text-white tracking-tighter uppercase leading-none mb-4">{t('store.title')}</h2><p className="text-red-500 font-bold tracking-widest uppercase text-xs sm:text-sm animate-pulse">Ofertas por tiempo limitado • Actualización 2026</p></div><div className="flex flex-col gap-3"><div className="flex flex-wrap items-center gap-4"><div className="flex gap-0.5 sm:gap-1 text-amber-400">{[...Array(5)].map((_, i) => <Star key={i} className="w-5 h-5 sm:w-7 sm:h-7 fill-current drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]" />)}</div><div className="text-white text-sm sm:text-[1.1rem] leading-none"><span className="flex items-center gap-2"><span className="opacity-80">Rated</span> <span className="font-black text-white">4.9/5 Excellent</span> <span className="px-3 py-1 bg-white/10 border border-white/20 rounded-full font-black text-emerald-500 text-[10px] sm:text-xs uppercase">678 {t('store.reviews_verified')}</span></span></div></div></div></div></FadeIn>
+      <div className="flex flex-col items-center mt-8 sm:mt-12 touch-pan-y"><p className="text-white/40 text-[10px] font-black uppercase tracking-[0.3em] mb-3">{t('store.ends_in')}</p><CountdownTimer /></div>
+      <div className="container mx-auto px-4 sm:px-8 max-w-7xl mt-12 sm:mt-24 touch-pan-y">
+        <FadeIn><div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12 border-b border-white/10 pb-10 touch-pan-y"><div><h2 className="text-4xl sm:text-6xl font-black text-white tracking-tighter uppercase leading-none mb-4">{t('store.title')}</h2><p className="text-red-500 font-bold tracking-widest uppercase text-xs sm:text-sm animate-pulse">Ofertas por tiempo limitado • Actualización 2026</p></div><div className="flex flex-col gap-3"><div className="flex flex-wrap items-center gap-4"><div className="flex gap-0.5 sm:gap-1 text-amber-400">{[...Array(5)].map((_, i) => <Star key={i} className="w-5 h-5 sm:w-7 sm:h-7 fill-current drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]" />)}</div><div className="text-white text-sm sm:text-[1.1rem] leading-none"><span className="flex items-center gap-2"><span className="opacity-80">Rated</span> <span className="font-black text-white">4.9/5 Excellent</span> <span className="px-3 py-1 bg-white/10 border border-white/20 rounded-full font-black text-emerald-500 text-[10px] sm:text-xs uppercase">678 {t('store.reviews_verified')}</span></span></div></div></div></div></FadeIn>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-12 gap-x-4 sm:gap-10">
           {products.map((product, index) => (
-            <FadeIn key={product.id + lang} delay={index * 50}>
-              <div className="relative group flex flex-col cursor-pointer" onClick={() => handleProductClick(product)}>
+            <div key={product.id + lang} className="relative group flex flex-col cursor-pointer" onClick={() => handleProductClick(product)}>
                 <div className="block transition-all">
                   <div className="relative aspect-square rounded-xl overflow-hidden bg-[#111] border border-white/5 group-hover:border-white/50 group-hover:shadow-[0_0_50px_rgba(255,255,255,0.1)] transition-all duration-500">
                     <div className="absolute top-3 left-3 z-30 bg-red-600 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest">{t('store.oferta')}</div>
@@ -191,10 +178,9 @@ export const CommercialStore: React.FC = () => {
                   </div>
                 </div>
               </div>
-            </FadeIn>
           ))}
         </div>
-        <FadeIn delay={400}><div className="mt-32 sm:mt-48 relative"><div className="absolute -inset-20 bg-[#5865F2]/20 blur-[100px] rounded-full opacity-50 pointer-events-none" /><div className="relative bg-[#5865F2]/10 border border-[#5865F2]/30 rounded-[2.5rem] p-10 sm:p-20 overflow-hidden text-center shadow-[0_0_50px_rgba(88,101,242,0.15)]"><div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-[#5865F2]/20 border border-[#5865F2]/40 text-[#5865F2] text-xs font-black uppercase tracking-widest mb-10 animate-pulse"><DiscordIcon className="w-5 h-5" />Discord VIP Community</div><h2 className="text-3xl sm:text-6xl font-black text-white tracking-tighter uppercase mb-6 leading-[0.9]">{t('store.community')}</h2><p className="text-gray-400 text-base sm:text-xl font-light max-w-3xl mx-auto mb-12 leading-relaxed">{t('store.community_desc')}</p><div className="flex flex-col items-center gap-6"><a href="https://discord.com/invite/zEcFPBqy6s" target="_blank" rel="noopener noreferrer" className="group relative"><div className="absolute -inset-1 bg-[#5865F2] rounded-full blur-xl opacity-40 group-hover:opacity-60 transition-opacity"></div><button className="relative px-12 py-5 sm:py-6 rounded-full bg-white hover:bg-gray-100 text-[#5865F2] font-black text-lg sm:text-2xl uppercase tracking-tighter shadow-2xl transition-all hover:scale-105 active:scale-95 flex items-center gap-4">UNIRSE AHORA <ArrowRight className="w-6 h-6 sm:w-8 h-8 group-hover:translate-x-2 transition-transform" /></button></a></div></div></div></FadeIn>
+        <FadeIn delay={100}><div className="mt-32 sm:mt-48 relative"><div className="absolute -inset-20 bg-[#5865F2]/20 blur-[100px] rounded-full opacity-50 pointer-events-none" /><div className="relative bg-[#5865F2]/10 border border-[#5865F2]/30 rounded-[2.5rem] p-10 sm:p-20 overflow-hidden text-center shadow-[0_0_50px_rgba(88,101,242,0.15)]"><div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-[#5865F2]/20 border border-[#5865F2]/40 text-[#5865F2] text-xs font-black uppercase tracking-widest mb-10 animate-pulse"><DiscordIcon className="w-5 h-5" />Discord VIP Community</div><h2 className="text-3xl sm:text-6xl font-black text-white tracking-tighter uppercase mb-6 leading-[0.9]">{t('store.community')}</h2><p className="text-gray-400 text-base sm:text-xl font-light max-w-3xl mx-auto mb-12 leading-relaxed">{t('store.community_desc')}</p><div className="flex flex-col items-center gap-6"><a href="https://discord.com/invite/zEcFPBqy6s" target="_blank" rel="noopener noreferrer" className="group relative"><div className="absolute -inset-1 bg-[#5865F2] rounded-full blur-xl opacity-40 group-hover:opacity-60 transition-opacity"></div><button className="relative px-12 py-5 sm:py-6 rounded-full bg-white hover:bg-gray-100 text-[#5865F2] font-black text-lg sm:text-2xl uppercase tracking-tighter shadow-2xl transition-all hover:scale-105 active:scale-95 flex items-center gap-4">UNIRSE AHORA <ArrowRight className="w-6 h-6 sm:w-8 h-8 group-hover:translate-x-2 transition-transform" /></button></a></div></div></div></FadeIn>
       </div>
     </div>
   );
