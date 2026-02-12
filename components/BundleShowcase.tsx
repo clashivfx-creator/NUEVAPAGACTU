@@ -115,7 +115,7 @@ const FAQItem = ({ question, answer }: { question: string, answer: string }) => 
 };
 
 export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
-  const { t, lang } = useContext(LanguageContext);
+  const { t, lang, setActiveTab } = useContext(LanguageContext);
   const checkoutIdRef = useRef<string | null>(null);
   const checkoutUrlRef = useRef<string | null>(null);
 
