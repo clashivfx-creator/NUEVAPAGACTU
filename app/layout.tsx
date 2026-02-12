@@ -50,7 +50,7 @@ export default function RootLayout({
             console.log('META PIXEL INICIALIZADO CORRECTAMENTE');
             fbq('track', 'PageView');
             fbq('track', 'ViewContent', {
-              content_name: 'Catalogo de Packs VFX',
+              content_name: 'Catálogo VFX',
               content_type: 'product_group'
             });
           `}

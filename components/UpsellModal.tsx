@@ -41,6 +41,16 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose }) => 
               moneyFormat: '%24%7B%7Bamount%7D%7D',
               options: {
                 "product": {
+                  "events": {
+                    "addVariantToCart": (product: any) => {
+                      const title = product?.model?.title || p.name;
+                      const price = product?.model?.selectedVariant?.price?.amount || '0';
+                      console.log('[v0] Meta Pixel AddToCart (Upsell):', { content_name: title, value: price });
+                      if (typeof (window as any).fbq === 'function') {
+                        (window as any).fbq('track', 'AddToCart', { content_name: title, value: parseFloat(price), currency: 'USD' });
+                      }
+                    }
+                  },
                   "styles": {
                     "button": {
                       "font-family": "Manrope, sans-serif",

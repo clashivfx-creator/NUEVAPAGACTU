@@ -20,6 +20,16 @@ export const ProductDetailView: React.FC = () => {
             id: selectedProduct.shopifyId, node: node, moneyFormat: '%24%7B%7Bamount%7D%7D',
             options: {
               "product": {
+                "events": {
+                  "addVariantToCart": (product: any) => {
+                    const title = product?.model?.title || selectedProduct.name;
+                    const price = product?.model?.selectedVariant?.price?.amount || '0';
+                    console.log('[v0] Meta Pixel AddToCart (Detail):', { content_name: title, value: price });
+                    if (typeof (window as any).fbq === 'function') {
+                      (window as any).fbq('track', 'AddToCart', { content_name: title, value: parseFloat(price), currency: 'USD' });
+                    }
+                  }
+                },
                 "styles": { "button": { "font-family": "Manrope, sans-serif", "font-weight": "900", "font-size": "18px", "padding": "24px", "border-radius": "50px", "background-color": "#22c55e", "color": "#ffffff", "width": "100%", ":hover": { "background-color": "#16a34a" } } },
                 "contents": { "img": false, "title": false, "price": false },
                 "text": { "button": t('detail.add') }

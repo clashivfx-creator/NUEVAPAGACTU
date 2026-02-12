@@ -120,7 +120,17 @@ export const CommercialStore: React.FC = () => {
               id: p.shopifyId, node: node, moneyFormat: '%24%7B%7Bamount%7D%7D',
               options: {
                 "product": {
-                  "events": { "afterAddVariantToCart": () => setIsCartVisible(true) },
+                  "events": {
+                    "addVariantToCart": (product: any) => {
+                      const title = product?.model?.title || 'Producto Store';
+                      const price = product?.model?.selectedVariant?.price?.amount || '0';
+                      console.log('[v0] Meta Pixel AddToCart (Store):', { content_name: title, value: price });
+                      if (typeof (window as any).fbq === 'function') {
+                        (window as any).fbq('track', 'AddToCart', { content_name: title, value: parseFloat(price), currency: 'USD' });
+                      }
+                    },
+                    "afterAddVariantToCart": () => setIsCartVisible(true)
+                  },
                   "styles": { "button": { "font-family": "Manrope, sans-serif", "font-weight": "900", "background-color": "#22c55e", "color": "#ffffff", "border-radius": "40px", "font-size": "13px", ":hover": { "background-color": "#16a34a" } } },
                   "contents": { "img": false, "title": false, "price": false },
                   "text": { "button": lang === 'es' ? "AGREGAR" : "ADD" }
