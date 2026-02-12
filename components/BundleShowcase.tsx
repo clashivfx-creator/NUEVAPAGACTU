@@ -474,7 +474,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
   <div className="flex items-center gap-2">
   <Zap className="w-2.5 h-2.5 text-purple-500" />
   <span className="text-[7.5px] sm:text-[9px] font-black uppercase tracking-[0.2em] text-purple-400">
-> ACTUALIZACIONES DE POR VIDA
+  ACTUALIZACIONES DE POR VIDA
   </span>
   </div>
                       </div>
@@ -634,7 +634,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
            <div className="bg-gradient-to-br from-purple-900/40 to-black border border-white/10 rounded-[3rem] p-10 sm:p-32 shadow-2xl">
              <h2 className="text-3xl sm:text-8xl font-black text-white uppercase tracking-tighter mb-8 leading-[0.85]">{t('bundle.cta_ready')} <br /> <span className="text-purple-500 italic">{t('bundle.cta_level')}</span></h2>
              <button 
-               onClick={handleCtaBuy}
+               onClick={handleAddToCart}
                className="bg-[#22c55e] hover:bg-[#16a34a] text-white shadow-[0_0_50px_rgba(34,197,94,0.6)] px-8 py-6 text-lg sm:text-3xl rounded-full font-black uppercase tracking-tighter flex items-center justify-center gap-4 mx-auto transition-all active:scale-95"
              >
                {t('bundle.cta_btn')} <ChevronRight className="w-8 h-8" />
