@@ -175,7 +175,7 @@ export const CommercialStore: React.FC = () => {
   };
 
   return (
-    <div className="bg-black min-h-screen pb-32 sm:pb-24 overflow-x-hidden">
+    <div className="bg-black min-h-screen pb-32 sm:pb-24" style={{ touchAction: 'pan-y', overflowX: 'hidden' }}>
       <div className={`fixed bottom-0 left-0 w-full z-[120] p-3 sm:p-4 bg-black/80 backdrop-blur-xl border-t border-white/10 transition-all duration-500 ${isCartVisible ? 'translate-y-0 opacity-100 pointer-events-auto' : 'translate-y-full opacity-0 pointer-events-none'}`}>
         <div className="container mx-auto max-w-7xl flex items-center justify-between gap-3 sm:gap-4">
            <div className="flex items-center gap-3 min-w-0">
@@ -213,7 +213,7 @@ export const CommercialStore: React.FC = () => {
                         ${product.newPrice} USD
                       </span>
                     </div>
-                    <div id={product.nodeId} className="w-full" onClick={(e) => e.stopPropagation()}></div>
+                    <div id={product.nodeId} className="w-full [&_iframe]:pointer-events-auto [&_iframe]:touch-action-auto" onClick={(e) => e.stopPropagation()}></div>
                   </div>
                 </div>
               </div>
