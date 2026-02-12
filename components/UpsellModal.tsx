@@ -6,7 +6,7 @@ import { LanguageContext } from '../App';
 interface UpsellModalProps {
   isOpen: boolean;
   onClose: () => void;
-  excludeProductId?: string | null;
+  selectedProductId?: string | null;
 }
 
 const ALL_PRODUCTS = [
@@ -21,13 +21,17 @@ const ALL_PRODUCTS = [
   { shopifyId: '8473627754671', name: 'ULTRAWORKFLOW', nameKey: 'product.workflow_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787944/ultraworkflow_ocxa8x.gif', oldPrice: '50.00', newPrice: '39.99' },
 ];
 
-export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose, excludeProductId }) => {
+export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose, selectedProductId }) => {
   const { lang, t } = useContext(LanguageContext);
   const [countdown, setCountdown] = useState(120);
 
-  const filteredProducts = useMemo(() => {
-    return ALL_PRODUCTS.filter(p => p.shopifyId !== excludeProductId);
-  }, [excludeProductId]);
+  const selectedProduct = useMemo(() => {
+    return ALL_PRODUCTS.find(p => p.shopifyId === selectedProductId);
+  }, [selectedProductId]);
+
+  const otherProducts = useMemo(() => {
+    return ALL_PRODUCTS.filter(p => p.shopifyId !== selectedProductId);
+  }, [selectedProductId]);
 
   // Countdown timer for urgency
   useEffect(() => {
@@ -54,7 +58,51 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose, exclu
 
       window.ShopifyBuy.UI.onReady(client).then((ui: any) => {
         if (cancelled) return;
-        filteredProducts.forEach((p, idx) => {
+        
+        // Initialize selected product button (top)
+        if (selectedProduct) {
+          const selectedNode = document.getElementById('upsell-selected-product');
+          if (selectedNode && !selectedNode.hasAttribute('data-shopify-initialized')) {
+            ui.createComponent('product', {
+              id: selectedProduct.shopifyId,
+              node: selectedNode,
+              moneyFormat: '%24%7B%7Bamount%7D%7D',
+              options: {
+                "product": {
+                  "events": {
+                    "addVariantToCart": (product: any) => {
+                      const title = product?.model?.title || selectedProduct.name;
+                      const price = product?.model?.selectedVariant?.price?.amount || '0';
+                      if (typeof (window as any).fbq === 'function') {
+                        (window as any).fbq('track', 'AddToCart', { content_name: title, value: parseFloat(price), currency: 'USD' });
+                      }
+                    },
+                    "afterAddVariantToCart": () => {
+                      onClose();
+                    }
+                  },
+                  "styles": {
+                    "button": {
+                      "font-family": "Manrope, sans-serif",
+                      "font-weight": "900",
+                      "background-color": "#3b82f6",
+                      "border-radius": "50px",
+                      "font-size": "13px",
+                      "padding": "14px 28px",
+                      ":hover": { "background-color": "#2563eb" }
+                    }
+                  },
+                  "contents": { "img": false, "title": false, "price": false },
+                  "text": { "button": lang === 'es' ? "CONTINUAR SOLO CON ESTE PRODUCTO" : "CONTINUE WITH THIS PRODUCT ONLY" }
+                }
+              }
+            });
+            selectedNode.setAttribute('data-shopify-initialized', 'true');
+          }
+        }
+
+        // Initialize other products
+        otherProducts.forEach((p, idx) => {
           const nodeId = `upsell-dynamic-${idx}`;
           const node = document.getElementById(nodeId);
           if (node && !node.hasAttribute('data-shopify-initialized')) {
@@ -138,7 +186,12 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose, exclu
     return () => {
       cancelled = true;
       clearTimeout(timer);
-      filteredProducts.forEach((_, idx) => {
+      const selectedNode = document.getElementById('upsell-selected-product');
+      if (selectedNode) {
+        selectedNode.innerHTML = '';
+        selectedNode.removeAttribute('data-shopify-initialized');
+      }
+      otherProducts.forEach((_, idx) => {
         const node = document.getElementById(`upsell-dynamic-${idx}`);
         if (node) {
           node.innerHTML = '';
@@ -146,7 +199,7 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose, exclu
         }
       });
     };
-  }, [isOpen, lang, filteredProducts, onClose]);
+  }, [isOpen, lang, selectedProduct, otherProducts, onClose]);
 
   if (!isOpen) return null;
 
@@ -197,9 +250,39 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose, exclu
             </div>
           </div>
 
-          {/* Products Grid */}
+          {/* Selected Product - Top Section */}
+          {selectedProduct && (
+            <div className="mb-8 sm:mb-12 p-4 sm:p-6 bg-blue-950/30 border-2 border-blue-500/40 rounded-2xl">
+              <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+                <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-xl overflow-hidden shrink-0">
+                  <img src={selectedProduct.img} alt={t(selectedProduct.nameKey)} className="w-full h-full object-cover" />
+                </div>
+                <div className="flex-1 text-center sm:text-left">
+                  <h3 className="text-lg sm:text-xl font-black text-white uppercase mb-2">
+                    {t(selectedProduct.nameKey)}
+                  </h3>
+                  <div className="flex items-baseline gap-2 justify-center sm:justify-start mb-4">
+                    <span className="text-gray-600 line-through text-sm font-bold">${selectedProduct.oldPrice}</span>
+                    <span className="text-blue-400 text-2xl font-black">${selectedProduct.newPrice}</span>
+                  </div>
+                  <div id="upsell-selected-product" className="flex justify-center sm:justify-start" />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Separator */}
+          {selectedProduct && (
+            <div className="mb-6 sm:mb-8 text-center">
+              <p className="text-white/60 text-xs sm:text-sm uppercase tracking-wide font-bold">
+                {lang === 'es' ? 'O AGREGA MÁS CON 40% OFF' : 'OR ADD MORE WITH 40% OFF'}
+              </p>
+            </div>
+          )}
+
+          {/* Other Products Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
-            {filteredProducts.map((prod, idx) => (
+            {otherProducts.map((prod, idx) => (
               <div key={prod.shopifyId} className="bg-white/[0.03] border border-white/10 rounded-xl sm:rounded-2xl p-3 sm:p-4 flex flex-col items-center group hover:border-emerald-500/50 transition-all hover:-translate-y-1">
                 <div className="relative aspect-square w-full rounded-lg sm:rounded-xl overflow-hidden mb-3 sm:mb-4">
                   <img src={prod.img} alt={t(prod.nameKey)} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />

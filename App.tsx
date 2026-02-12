@@ -395,7 +395,7 @@ const App = () => {
         </main>
         <Footer />
 
-        <UpsellModal isOpen={showUpsell} onClose={() => setShowUpsell(false)} excludeProductId={upsellExcludeId} />
+        <UpsellModal isOpen={showUpsell} onClose={() => setShowUpsell(false)} selectedProductId={upsellExcludeId} />
       </div>
     </LanguageContext.Provider>
   );
