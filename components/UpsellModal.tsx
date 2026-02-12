@@ -1,5 +1,6 @@
-import React, { useEffect, useContext, useState, useMemo, useCallback } from 'react';
-import { X, Zap, Flame, Clock } from 'lucide-react';
+
+import React, { useEffect, useContext, useState, useMemo } from 'react';
+import { X, Zap, Flame, Clock, ShoppingCart } from 'lucide-react';
 import { LanguageContext } from '../App';
 
 interface UpsellModalProps {
@@ -9,37 +10,26 @@ interface UpsellModalProps {
 }
 
 const ALL_PRODUCTS = [
-  { shopifyId: '8476233466031', nameKey: 'product.ultimate_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770737015/aaaaaaaaaxa_0-00-00-00_.00_00_00_00.Imagen_fija001_hmnkuf.png', oldPrice: '690', newPrice: '29.99' },
-  { shopifyId: '8480949338287', nameKey: 'product.platinum_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770735767/Gemini_Generated_Image_415qgo415qgo415q_0-00-00-00_ddzyye.png', oldPrice: '590', newPrice: '9' },
-  { shopifyId: '8170902323375', nameKey: 'product.advanced_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787956/PACK_AVANZADO_krghxs.gif', oldPrice: '79.99', newPrice: '19.99' },
-  { shopifyId: '8239170584751', nameKey: 'product.reel_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770334329/ssstik.io__clashivfx_1765467778171_sdxohb.gif', oldPrice: '49.99', newPrice: '19.99' },
-  { shopifyId: '8211512656047', nameKey: 'product.mixed_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787956/mixmedia_xcb5po.gif', oldPrice: '49.99', newPrice: '14.99' },
-  { shopifyId: '8448020152495', nameKey: 'product.yeat_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787949/YEAT_oqvxyf.gif', oldPrice: '49.99', newPrice: '19.99' },
-  { shopifyId: '8476755034287', nameKey: 'product.shakes_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787949/SHAKES_dimjeh.gif', oldPrice: '49.99', newPrice: '9.99' },
-  { shopifyId: '8277720498351', nameKey: 'product.title3d_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787941/TITULO_xecwfj.gif', oldPrice: '19.99', newPrice: '4.99' },
-  { shopifyId: '8473627754671', nameKey: 'product.workflow_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787944/ultraworkflow_ocxa8x.gif', oldPrice: '50.00', newPrice: '39.99' },
+  { shopifyId: '8476233466031', name: '2026 Ultimate Editing Pack', nameKey: 'product.ultimate_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770737015/aaaaaaaaaxa_0-00-00-00_.00_00_00_00.Imagen_fija001_hmnkuf.png', oldPrice: '690', newPrice: '29.99' },
+  { shopifyId: '8480949338287', name: 'PLATINUM LUTs PACK', nameKey: 'product.platinum_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770735767/Gemini_Generated_Image_415qgo415qgo415q_0-00-00-00_ddzyye.png', oldPrice: '590', newPrice: '9' },
+  { shopifyId: '8170902323375', name: 'PACK AVANZADO', nameKey: 'product.advanced_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787956/PACK_AVANZADO_krghxs.gif', oldPrice: '79.99', newPrice: '19.99' },
+  { shopifyId: '8239170584751', name: 'REEL EDITABLE', nameKey: 'product.reel_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770334329/ssstik.io__clashivfx_1765467778171_sdxohb.gif', oldPrice: '49.99', newPrice: '19.99' },
+  { shopifyId: '8211512656047', name: 'MIXED MEDIA', nameKey: 'product.mixed_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787956/mixmedia_xcb5po.gif', oldPrice: '49.99', newPrice: '14.99' },
+  { shopifyId: '8448020152495', name: 'YEAT PROJECT', nameKey: 'product.yeat_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787949/YEAT_oqvxyf.gif', oldPrice: '49.99', newPrice: '19.99' },
+  { shopifyId: '8476755034287', name: 'SHAKES', nameKey: 'product.shakes_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787949/SHAKES_dimjeh.gif', oldPrice: '49.99', newPrice: '9.99' },
+  { shopifyId: '8277720498351', name: 'TITULO 3D', nameKey: 'product.title3d_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787941/TITULO_xecwfj.gif', oldPrice: '19.99', newPrice: '4.99' },
+  { shopifyId: '8473627754671', name: 'ULTRAWORKFLOW', nameKey: 'product.workflow_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787944/ultraworkflow_ocxa8x.gif', oldPrice: '50.00', newPrice: '39.99' },
 ];
 
 export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose, excludeProductId }) => {
   const { lang, t } = useContext(LanguageContext);
   const [countdown, setCountdown] = useState(120);
-  const [addingId, setAddingId] = useState<string | null>(null);
-  const [visible, setVisible] = useState(false);
 
   const filteredProducts = useMemo(() => {
     return ALL_PRODUCTS.filter(p => p.shopifyId !== excludeProductId);
   }, [excludeProductId]);
 
-  // Animate in
-  useEffect(() => {
-    if (isOpen) {
-      requestAnimationFrame(() => setVisible(true));
-    } else {
-      setVisible(false);
-    }
-  }, [isOpen]);
-
-  // Countdown
+  // Countdown timer for urgency
   useEffect(() => {
     if (!isOpen) { setCountdown(120); return; }
     const timer = setInterval(() => {
@@ -48,68 +38,115 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose, exclu
     return () => clearInterval(timer);
   }, [isOpen]);
 
-  // Lock body scroll when open
+  // Shopify buttons
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => { document.body.style.overflow = ''; };
-  }, [isOpen]);
+    if (!isOpen) return;
+    let cancelled = false;
+    const scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
 
-  const handleAddToCart = useCallback(async (product: typeof ALL_PRODUCTS[0]) => {
-    setAddingId(product.shopifyId);
-    try {
-      const scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
-      const waitForShopify = (): Promise<void> => new Promise((resolve) => {
-        if (window.ShopifyBuy && window.ShopifyBuy.UI) { resolve(); return; }
-        const existing = document.querySelector(`script[src="${scriptURL}"]`);
-        if (existing) { existing.addEventListener('load', () => resolve()); return; }
-        const script = document.createElement('script');
-        script.async = true; script.src = scriptURL; script.crossOrigin = "anonymous";
-        script.onload = () => resolve();
-        document.head.appendChild(script);
-      });
-      await waitForShopify();
+    const initShopify = () => {
+      if (cancelled) return;
+      if (!window.ShopifyBuy || !window.ShopifyBuy.UI) return;
       const client = window.ShopifyBuy.buildClient({
         domain: 'e08ff1-xx.myshopify.com',
         storefrontAccessToken: '64026182325df844d6b96ce1f55661c5',
       });
-      const shopifyProduct = await client.product.fetch(`gid://shopify/Product/${product.shopifyId}`);
-      const variant = shopifyProduct.variants[0];
-      let checkoutId: string | null = null;
-      try { checkoutId = localStorage.getItem('shopify_checkout_id'); } catch {}
-      let checkout;
-      if (checkoutId) {
-        try { checkout = await client.checkout.fetch(checkoutId); } catch {}
-      }
-      if (!checkout) {
-        checkout = await client.checkout.create();
-        try { localStorage.setItem('shopify_checkout_id', checkout.id); } catch {}
-      }
-      await client.checkout.addLineItems(checkout.id, [{ variantId: variant.id, quantity: 1 }]);
 
-      // Track pixel
-      if (typeof (window as any).fbq === 'function') {
-        (window as any).fbq('track', 'AddToCart', {
-          content_name: t(product.nameKey),
-          value: parseFloat(product.newPrice),
-          currency: 'USD'
+      window.ShopifyBuy.UI.onReady(client).then((ui: any) => {
+        if (cancelled) return;
+        filteredProducts.forEach((p, idx) => {
+          const nodeId = `upsell-dynamic-${idx}`;
+          const node = document.getElementById(nodeId);
+          if (node && !node.hasAttribute('data-shopify-initialized')) {
+            ui.createComponent('product', {
+              id: p.shopifyId,
+              node: node,
+              moneyFormat: '%24%7B%7Bamount%7D%7D',
+              options: {
+                "product": {
+                  "events": {
+                    "addVariantToCart": (product: any) => {
+                      const title = product?.model?.title || p.name;
+                      const price = product?.model?.selectedVariant?.price?.amount || '0';
+                      if (typeof (window as any).fbq === 'function') {
+                        (window as any).fbq('track', 'AddToCart', { content_name: title, value: parseFloat(price), currency: 'USD' });
+                      }
+                    },
+                    "afterAddVariantToCart": () => {
+                      onClose();
+                    }
+                  },
+                  "styles": {
+                    "button": {
+                      "font-family": "Manrope, sans-serif",
+                      "font-weight": "900",
+                      "background-color": "#22c55e",
+                      "border-radius": "40px",
+                      "font-size": "11px",
+                      "padding": "10px 16px",
+                      ":hover": { "background-color": "#16a34a" }
+                    }
+                  },
+                  "contents": { "img": false, "title": false, "price": false },
+                  "text": { "button": lang === 'es' ? "AGREGAR -40%" : "ADD -40%" }
+                },
+                "cart": {
+                  "contents": { "title": false },
+                  "styles": {
+                    "cart": { "background-color": "#000000" },
+                    "discountText": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 10px rgba(34, 197, 94, 0.7)" },
+                    "discountAmount": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 10px rgba(34, 197, 94, 0.7)" },
+                    "discountIcon": { "fill": "#22c55e" },
+                    "subtotal": { "color": "#ffffff", "font-weight": "900" }
+                  }
+                },
+                "lineItem": {
+                  "styles": {
+                    "title": { "color": "#ffffff" },
+                    "price": { "color": "#22c55e", "font-weight": "900" },
+                    "discount": { "color": "#22c55e", "font-weight": "900", "text-shadow": "0 0 8px rgba(34, 197, 94, 0.5)" },
+                    "quantity": { "color": "#ffffff", "font-weight": "900" },
+                    "quantityIncrement": { "color": "#ffffff", "border-color": "#ffffff" },
+                    "quantityDecrement": { "color": "#ffffff", "border-color": "#ffffff" }
+                  }
+                }
+              }
+            });
+            node.setAttribute('data-shopify-initialized', 'true');
+          }
         });
+      });
+    };
+
+    const loadScript = () => {
+      const existing = document.querySelector(`script[src="${scriptURL}"]`);
+      if (existing) {
+        if (window.ShopifyBuy && window.ShopifyBuy.UI) initShopify();
+        else existing.addEventListener('load', initShopify);
+        return;
       }
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = scriptURL;
+      script.crossOrigin = "anonymous";
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(script);
+      script.onload = initShopify;
+    };
 
-      // Open the Shopify cart drawer if it exists
-      const cartToggle = document.querySelector('.shopify-buy__cart-toggle') as HTMLElement;
-      if (cartToggle) cartToggle.click();
-
-      onClose();
-    } catch (e) {
-      console.error('Error adding to cart from upsell:', e);
-    } finally {
-      setAddingId(null);
-    }
-  }, [t, onClose]);
+    // Small delay to ensure DOM nodes are rendered
+    const timer = setTimeout(loadScript, 100);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+      filteredProducts.forEach((_, idx) => {
+        const node = document.getElementById(`upsell-dynamic-${idx}`);
+        if (node) {
+          node.innerHTML = '';
+          node.removeAttribute('data-shopify-initialized');
+        }
+      });
+    };
+  }, [isOpen, lang, filteredProducts, onClose]);
 
   if (!isOpen) return null;
 
@@ -118,94 +155,75 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose, exclu
 
   return (
     <div className="fixed inset-0 z-[2000] flex items-center justify-center px-3 sm:px-4">
-      {/* Overlay */}
-      <div
-        className={`absolute inset-0 bg-black/90 backdrop-blur-md transition-opacity duration-300 ${visible ? 'opacity-100' : 'opacity-0'}`}
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-black/95 backdrop-blur-md" onClick={onClose} />
 
-      {/* Modal */}
-      <div className={`relative w-full max-w-4xl bg-[#0a0a0c] border border-white/10 rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.8)] max-h-[90vh] flex flex-col transition-all duration-300 ${visible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
+      <div className="relative w-full max-w-5xl bg-[#0a0a0c] border border-red-500/30 rounded-2xl sm:rounded-[2.5rem] overflow-hidden shadow-[0_0_100px_rgba(239,68,68,0.2)] max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-300">
+        {/* Decorative glows */}
+        <div className="absolute -top-24 -left-24 w-48 h-48 bg-red-600/20 blur-[80px] rounded-full pointer-events-none" />
+        <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-emerald-600/10 blur-[80px] rounded-full pointer-events-none" />
 
-        {/* Red top accent bar */}
-        <div className="w-full h-1 bg-gradient-to-r from-red-600 via-red-500 to-red-600" />
-
-        {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 sm:top-5 sm:right-5 text-gray-600 hover:text-white transition-colors z-50 p-1.5 rounded-full hover:bg-white/10"
+          className="absolute top-4 right-4 sm:top-6 sm:right-6 text-gray-500 hover:text-white transition-colors z-50 p-2"
           aria-label="Cerrar"
         >
-          <X className="w-5 h-5 sm:w-6 sm:h-6" />
+          <X className="w-6 h-6 sm:w-8 sm:h-8" />
         </button>
 
-        {/* Scrollable content */}
-        <div className="overflow-y-auto p-5 sm:p-8 lg:p-10">
+        <div className="p-5 sm:p-10 lg:p-14">
           {/* Header */}
-          <div className="text-center mb-5 sm:mb-8">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-600/15 border border-red-500/30 text-red-500 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] mb-4 animate-pulse">
-              <Flame className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" />
+          <div className="text-center mb-6 sm:mb-10">
+            {/* Flash badge */}
+            <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 rounded-full bg-red-600/20 border border-red-500/40 text-red-500 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] mb-4 sm:mb-6 animate-pulse">
+              <Flame className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" />
               {lang === 'es' ? 'OFERTA RELAMPAGO' : 'FLASH SALE'}
-              <Zap className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" />
+              <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" />
             </div>
 
-            <h2 className="text-xl sm:text-3xl lg:text-4xl font-black text-white uppercase tracking-tighter leading-none mb-2 sm:mb-3">
-              {lang === 'es' ? 'AGREGA OTRO PRODUCTO AL' : 'ADD ANOTHER PRODUCT AT'}
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white uppercase tracking-tighter leading-none mb-3 sm:mb-4">
+              {lang === 'es' ? 'AGREGA OTRO PRODUCTO AL' : 'ADD ANOTHER PRODUCT AT'} <br />
+              <span className="text-emerald-500 text-4xl sm:text-6xl lg:text-7xl italic drop-shadow-[0_0_30px_rgba(34,197,94,0.4)]">40% OFF</span>
             </h2>
-            <p className="text-emerald-500 text-4xl sm:text-5xl lg:text-6xl font-black italic tracking-tighter leading-none drop-shadow-[0_0_20px_rgba(34,197,94,0.3)]">
-              40% OFF
-            </p>
 
             {/* Countdown */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 mt-4">
-              <Clock className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-red-500 animate-pulse" />
-              <span className="text-white text-[10px] sm:text-xs font-black tracking-tight">
+            <div className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-white/5 border border-white/10 mt-2">
+              <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-500 animate-pulse" />
+              <span className="text-white text-xs sm:text-sm font-black tracking-tight">
                 {lang === 'es' ? 'EXPIRA EN' : 'EXPIRES IN'}:
               </span>
-              <span className="text-red-500 text-xs sm:text-sm font-black tabular-nums">
+              <span className="text-red-500 text-sm sm:text-lg font-black tabular-nums">
                 {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
               </span>
             </div>
           </div>
 
           {/* Products Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
-            {filteredProducts.map((prod) => {
-              const isAdding = addingId === prod.shopifyId;
-              return (
-                <div key={prod.shopifyId} className="bg-white/[0.03] border border-white/[0.08] rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 flex flex-col items-center group hover:border-emerald-500/40 transition-all duration-300">
-                  <div className="relative aspect-square w-full rounded-lg sm:rounded-xl overflow-hidden mb-2.5 sm:mb-3 bg-black">
-                    <img src={prod.img} alt={t(prod.nameKey)} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                    <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 bg-red-600 text-white text-[7px] sm:text-[9px] font-black px-2 py-0.5 rounded-full uppercase animate-pulse">
-                      -40%
-                    </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+            {filteredProducts.map((prod, idx) => (
+              <div key={prod.shopifyId} className="bg-white/[0.03] border border-white/10 rounded-xl sm:rounded-2xl p-3 sm:p-4 flex flex-col items-center group hover:border-emerald-500/50 transition-all hover:-translate-y-1">
+                <div className="relative aspect-square w-full rounded-lg sm:rounded-xl overflow-hidden mb-3 sm:mb-4">
+                  <img src={prod.img} alt={t(prod.nameKey)} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  <div className="absolute top-2 right-2 bg-red-600 text-white text-[8px] sm:text-[10px] font-black px-2 sm:px-3 py-0.5 sm:py-1 rounded-full uppercase shadow-xl animate-pulse">
+                    -40%
                   </div>
-                  <h3 className="text-[9px] sm:text-[11px] font-black text-white uppercase mb-1 text-center leading-tight line-clamp-2 min-h-[2em]">
-                    {t(prod.nameKey)}
-                  </h3>
-                  <div className="flex items-baseline gap-1.5 mb-2.5">
-                    <span className="text-gray-600 line-through text-[8px] sm:text-[10px] font-bold">${prod.oldPrice}</span>
-                    <span className="text-emerald-500 text-sm sm:text-base font-black">${prod.newPrice}</span>
-                  </div>
-                  <button
-                    onClick={() => handleAddToCart(prod)}
-                    disabled={isAdding}
-                    className="w-full py-2 sm:py-2.5 px-3 bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-500/50 text-white text-[9px] sm:text-[10px] font-black uppercase tracking-wider rounded-full transition-all active:scale-95"
-                  >
-                    {isAdding
-                      ? (lang === 'es' ? 'AGREGANDO...' : 'ADDING...')
-                      : (lang === 'es' ? 'AGREGAR -40%' : 'ADD -40%')}
-                  </button>
                 </div>
-              );
-            })}
+                <h3 className="text-[10px] sm:text-xs font-black text-white uppercase mb-1 text-center truncate w-full">
+                  {t(prod.nameKey)}
+                </h3>
+                <div className="flex items-baseline gap-1.5 mb-3">
+                  <span className="text-gray-600 line-through text-[9px] sm:text-[10px] font-bold">${prod.oldPrice}</span>
+                  <span className="text-emerald-500 text-sm sm:text-base font-black">${prod.newPrice}</span>
+                </div>
+                <div id={`upsell-dynamic-${idx}`} className="w-full flex justify-center" />
+              </div>
+            ))}
           </div>
 
-          {/* Skip */}
-          <div className="mt-6 sm:mt-8 pt-5 border-t border-white/5 text-center">
+          {/* Skip button */}
+          <div className="mt-8 sm:mt-12 pt-6 sm:pt-10 border-t border-white/5 text-center">
             <button
               onClick={onClose}
-              className="text-gray-600 hover:text-gray-400 text-[8px] sm:text-[10px] font-bold uppercase tracking-[0.15em] transition-colors"
+              className="group flex items-center gap-2 mx-auto text-gray-600 hover:text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.15em] sm:tracking-[0.2em] transition-colors"
             >
               {lang === 'es' ? 'NO GRACIAS, CONTINUAR SIN DESCUENTO' : 'NO THANKS, CONTINUE WITHOUT DISCOUNT'}
             </button>

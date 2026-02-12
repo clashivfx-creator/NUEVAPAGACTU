@@ -175,14 +175,14 @@ export const CommercialStore: React.FC = () => {
   };
 
   return (
-    <div className="bg-black min-h-screen pb-32 sm:pb-24" style={{ touchAction: 'pan-y', overflowX: 'hidden' }}>
-      <div className={`fixed bottom-0 left-0 w-full z-[120] p-3 sm:p-4 bg-black/80 backdrop-blur-xl border-t border-white/10 transition-all duration-500 ${isCartVisible ? 'translate-y-0 opacity-100 pointer-events-auto' : 'translate-y-full opacity-0 pointer-events-none'}`}>
-        <div className="container mx-auto max-w-7xl flex items-center justify-between gap-3 sm:gap-4">
-           <div className="flex items-center gap-3 min-w-0">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-2xl bg-white/10 flex items-center justify-center border border-white/20"><ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6 text-white" /></div>
-              <div className="min-w-0"><p className="text-white font-black uppercase text-[10px] sm:text-xs tracking-widest truncate">{t('store.cart_notification')}</p><p className="text-gray-400 font-bold text-[8px] sm:text-[10px] uppercase truncate">{t('store.auto_discounts')}</p></div>
+    <div className="bg-black min-h-screen pb-24 overflow-x-hidden">
+      <div className={`fixed bottom-0 left-0 w-full z-[120] p-4 bg-black/80 backdrop-blur-xl border-t border-white/10 transition-transform duration-500 transform ${isCartVisible ? 'translate-y-0' : 'translate-y-full'}`}>
+        <div className="container mx-auto max-w-7xl flex items-center justify-between gap-4">
+           <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center border border-white/20"><ShoppingCart className="w-6 h-6 text-white" /></div>
+              <div><p className="text-white font-black uppercase text-xs tracking-widest">{t('store.cart_notification')}</p><p className="text-gray-400 font-bold text-[10px] uppercase">{t('store.auto_discounts')}</p></div>
            </div>
-           <button onClick={handleCustomCheckout} className="shrink-0 px-5 sm:px-10 py-3 sm:py-4 bg-white hover:bg-gray-200 text-black font-black uppercase tracking-tighter text-xs sm:text-base rounded-full transition-all flex items-center gap-2 sm:gap-3 shadow-[0_0_20px_rgba(255,255,255,0.2)]">{t('store.pay_now')} <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" /></button>
+           <button onClick={handleCustomCheckout} className="px-10 py-4 bg-white hover:bg-gray-200 text-black font-black uppercase tracking-tighter rounded-full transition-all flex items-center gap-3 shadow-[0_0_20px_rgba(255,255,255,0.2)]">{t('store.pay_now')} <ArrowRight className="w-5 h-5" /></button>
         </div>
       </div>
       <div className="bg-red-600 py-4 overflow-hidden relative border-y border-red-500/50 shadow-[0_0_30px_rgba(239,68,68,0.3)]"><div className="flex justify-center sm:whitespace-nowrap sm:animate-marquee"><div className="flex items-center gap-10 mx-6"><span className="text-white text-sm sm:text-xl font-black tracking-tighter uppercase italic flex items-center gap-3"><Flame className="w-5 h-5 sm:w-7 sm:h-7 fill-current animate-pulse" /> {t('store.banner')}</span></div></div></div>
@@ -213,7 +213,7 @@ export const CommercialStore: React.FC = () => {
                         ${product.newPrice} USD
                       </span>
                     </div>
-                    <div id={product.nodeId} className="w-full [&_iframe]:pointer-events-auto [&_iframe]:touch-action-auto" onClick={(e) => e.stopPropagation()}></div>
+                    <div id={product.nodeId} className="w-full" onClick={(e) => e.stopPropagation()}></div>
                   </div>
                 </div>
               </div>
