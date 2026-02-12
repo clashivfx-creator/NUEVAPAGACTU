@@ -341,7 +341,7 @@ const App = () => {
 
   return (
     <LanguageContext.Provider value={{ lang, t, setActiveTab: handleSetTab, selectedProduct }}>
-      <div className="min-h-screen bg-black text-white font-sans selection:bg-purple-500/30 overflow-x-hidden">
+      <div className="min-h-screen bg-black text-white font-sans selection:bg-purple-500/30">
         <ScrollProgress />
         <AnimatedBackground />
         <LanguageSelector currentLang={lang} onLanguageChange={setLang} activeTab={activeTab === 'about' ? 'products' : activeTab as any} />
@@ -377,7 +377,7 @@ const App = () => {
           </div>
         </nav>
 
-        <main className="pt-16 md:pt-20 overflow-x-hidden">
+        <main className="pt-16 md:pt-20">
           {activeTab === 'about' ? (
             <AboutUs />
           ) : activeTab === 'products' ? (
