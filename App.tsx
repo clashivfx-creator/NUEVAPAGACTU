@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, createContext, useEffect } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 import { CommercialStore } from './components/CommercialStore';
 import { BundleShowcase } from './components/BundleShowcase';
 import { AboutUs } from './components/AboutUs';
@@ -29,6 +30,23 @@ const DiscordIcon = ({ className }: { className?: string }) => (
 );
 
 export type ActiveTab = 'about' | 'products' | 'platinum' | 'store' | 'checkout' | 'ultra' | 'detail';
+
+// Product ID to slug mapping
+const PRODUCT_SLUGS: Record<string, string> = {
+  'ultimate-2026': '2026-ultimate-editing-pack',
+  'platinum-luts': 'platinum-luts-pack',
+  'pack-avanzado': 'pack-avanzado',
+  'reel-editable': 'reel-editable',
+  'mixed-media': 'mixed-media-project',
+  'yeat-project-renamed': 'yeat-project',
+  'shakes': 'shakes',
+  'titulo-3d': 'titulo-3d',
+  'ultraworkflow': 'ultraworkflow'
+};
+
+const SLUG_TO_PRODUCT: Record<string, string> = Object.fromEntries(
+  Object.entries(PRODUCT_SLUGS).map(([id, slug]) => [slug, id])
+);
 
 export const LanguageContext = createContext<{
   lang: 'es' | 'en';
@@ -268,16 +286,35 @@ const translations = {
   }
 };
 
-const App = () => {
+interface AppProps {
+  initialTab?: ActiveTab;
+  productSlug?: string;
+}
+
+const App = ({ initialTab = 'products', productSlug }: AppProps = {}) => {
+  const router = useRouter();
+  const pathname = usePathname();
   const [lang, setLang] = useState<'es' | 'en'>('es');
-  const [activeTab, setActiveTab] = useState<ActiveTab>('products');
+  const [activeTab, setActiveTab] = useState<ActiveTab>(initialTab);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [showUpsell, setShowUpsell] = useState(false);
   const [upsellExcludeId, setUpsellExcludeId] = useState<string | null>(null);
 
+  // Initialize product from slug if provided
+  useEffect(() => {
+    if (productSlug && activeTab === 'detail') {
+      const productId = SLUG_TO_PRODUCT[productSlug];
+      if (productId) {
+        // Find product in CommercialStore products list
+        setSelectedProduct({ id: productId });
+      }
+    }
+  }, [productSlug, activeTab]);
+
   useEffect(() => {
     window.goToStore = () => {
       setActiveTab('store');
+      router.push('/store');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -290,6 +327,7 @@ const App = () => {
 
     const handleInterceptCheckout = () => {
       setActiveTab('checkout');
+      router.push('/checkout');
     };
 
     window.addEventListener('openUpsellModal', handleOpenUpsell);
@@ -309,6 +347,28 @@ const App = () => {
     if (product) setSelectedProduct(product);
     setActiveTab(tab);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Update URL based on tab
+    let newPath = '/';
+    if (tab === 'store') {
+      newPath = '/store';
+    } else if (tab === 'checkout') {
+      newPath = '/checkout';
+    } else if (tab === 'products') {
+      newPath = '/elite-pack';
+    } else if (tab === 'detail' && product?.id) {
+      const slug = PRODUCT_SLUGS[product.id] || product.id;
+      newPath = `/product/${slug}`;
+    } else if (tab === 'ultra') {
+      const slug = PRODUCT_SLUGS['ultraworkflow'];
+      newPath = `/product/${slug}`;
+    } else if (tab === 'about') {
+      newPath = '/';
+    }
+
+    if (pathname !== newPath) {
+      router.push(newPath);
+    }
   };
 
   const NavButtons = () => (
