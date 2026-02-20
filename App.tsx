@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, createContext, useEffect } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
 import { CommercialStore } from './components/CommercialStore';
 import { BundleShowcase } from './components/BundleShowcase';
 import { AboutUs } from './components/AboutUs';
@@ -31,22 +30,18 @@ const DiscordIcon = ({ className }: { className?: string }) => (
 
 export type ActiveTab = 'about' | 'products' | 'platinum' | 'store' | 'checkout' | 'ultra' | 'detail';
 
-// Product ID to slug mapping
+// Product ID to URL slug mapping
 const PRODUCT_SLUGS: Record<string, string> = {
-  'ultimate-2026': '2026-ultimate-editing-pack',
-  'platinum-luts': 'platinum-luts-pack',
+  'ultimate-2026': 'ultimate-pack',
+  'platinum-luts': 'platinum-pack',
   'pack-avanzado': 'pack-avanzado',
   'reel-editable': 'reel-editable',
-  'mixed-media': 'mixed-media-project',
+  'mixed-media': 'mixed-media',
   'yeat-project-renamed': 'yeat-project',
   'shakes': 'shakes',
   'titulo-3d': 'titulo-3d',
   'ultraworkflow': 'ultraworkflow'
 };
-
-const SLUG_TO_PRODUCT: Record<string, string> = Object.fromEntries(
-  Object.entries(PRODUCT_SLUGS).map(([id, slug]) => [slug, id])
-);
 
 export const LanguageContext = createContext<{
   lang: 'es' | 'en';
@@ -286,35 +281,17 @@ const translations = {
   }
 };
 
-interface AppProps {
-  initialTab?: ActiveTab;
-  productSlug?: string;
-}
-
-const App = ({ initialTab = 'products', productSlug }: AppProps = {}) => {
-  const router = useRouter();
-  const pathname = usePathname();
+const App = () => {
   const [lang, setLang] = useState<'es' | 'en'>('es');
-  const [activeTab, setActiveTab] = useState<ActiveTab>(initialTab);
+  const [activeTab, setActiveTab] = useState<ActiveTab>('products');
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [showUpsell, setShowUpsell] = useState(false);
   const [upsellExcludeId, setUpsellExcludeId] = useState<string | null>(null);
 
-  // Initialize product from slug if provided
-  useEffect(() => {
-    if (productSlug && activeTab === 'detail') {
-      const productId = SLUG_TO_PRODUCT[productSlug];
-      if (productId) {
-        // Find product in CommercialStore products list
-        setSelectedProduct({ id: productId });
-      }
-    }
-  }, [productSlug, activeTab]);
-
   useEffect(() => {
     window.goToStore = () => {
       setActiveTab('store');
-      router.push('/store');
+      window.history.pushState({}, '', '/store');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -327,7 +304,7 @@ const App = ({ initialTab = 'products', productSlug }: AppProps = {}) => {
 
     const handleInterceptCheckout = () => {
       setActiveTab('checkout');
-      router.push('/checkout');
+      window.history.pushState({}, '', '/checkout');
     };
 
     window.addEventListener('openUpsellModal', handleOpenUpsell);
@@ -348,7 +325,7 @@ const App = ({ initialTab = 'products', productSlug }: AppProps = {}) => {
     setActiveTab(tab);
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // Update URL based on tab
+    // Update URL without navigation
     let newPath = '/';
     if (tab === 'store') {
       newPath = '/store';
@@ -358,17 +335,14 @@ const App = ({ initialTab = 'products', productSlug }: AppProps = {}) => {
       newPath = '/elite-pack';
     } else if (tab === 'detail' && product?.id) {
       const slug = PRODUCT_SLUGS[product.id] || product.id;
-      newPath = `/product/${slug}`;
+      newPath = `/${slug}`;
     } else if (tab === 'ultra') {
-      const slug = PRODUCT_SLUGS['ultraworkflow'];
-      newPath = `/product/${slug}`;
+      newPath = '/ultraworkflow';
     } else if (tab === 'about') {
       newPath = '/';
     }
 
-    if (pathname !== newPath) {
-      router.push(newPath);
-    }
+    window.history.pushState({}, '', newPath);
   };
 
   const NavButtons = () => (

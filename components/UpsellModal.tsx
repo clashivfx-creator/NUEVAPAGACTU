@@ -23,7 +23,7 @@ const ALL_PRODUCTS = [
 
 export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose, selectedProductId }) => {
   const { lang, t } = useContext(LanguageContext);
-  const [countdown, setCountdown] = useState(120);
+  const [countdown, setCountdown] = useState(300);
 
   const selectedProduct = useMemo(() => {
     return ALL_PRODUCTS.find(p => p.shopifyId === selectedProductId);
@@ -35,7 +35,7 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose, selec
 
   // Countdown timer for urgency
   useEffect(() => {
-    if (!isOpen) { setCountdown(120); return; }
+    if (!isOpen) { setCountdown(300); return; }
     const timer = setInterval(() => {
       setCountdown(prev => (prev <= 0 ? 0 : prev - 1));
     }, 1000);
@@ -94,7 +94,7 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose, selec
                     }
                   },
                   "contents": { "img": false, "title": false, "price": false },
-                  "text": { "button": lang === 'es' ? "CONTINUAR SOLO CON ESTE PRODUCTO" : "CONTINUE WITH THIS PRODUCT ONLY" }
+                  "text": { "button": lang === 'es' ? "AGREGAR" : "ADD TO CART" }
                 }
               }
             });
