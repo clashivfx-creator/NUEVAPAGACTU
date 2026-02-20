@@ -30,19 +30,6 @@ const DiscordIcon = ({ className }: { className?: string }) => (
 
 export type ActiveTab = 'about' | 'products' | 'platinum' | 'store' | 'checkout' | 'ultra' | 'detail';
 
-// Product ID to URL slug mapping
-const PRODUCT_SLUGS: Record<string, string> = {
-  'ultimate-2026': 'ultimate-pack',
-  'platinum-luts': 'platinum-pack',
-  'pack-avanzado': 'pack-avanzado',
-  'reel-editable': 'reel-editable',
-  'mixed-media': 'mixed-media',
-  'yeat-project-renamed': 'yeat-project',
-  'shakes': 'shakes',
-  'titulo-3d': 'titulo-3d',
-  'ultraworkflow': 'ultraworkflow'
-};
-
 export const LanguageContext = createContext<{
   lang: 'es' | 'en';
   t: (key: string) => string;
@@ -291,7 +278,6 @@ const App = () => {
   useEffect(() => {
     window.goToStore = () => {
       setActiveTab('store');
-      window.history.pushState({}, '', '/store');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -304,7 +290,6 @@ const App = () => {
 
     const handleInterceptCheckout = () => {
       setActiveTab('checkout');
-      window.history.pushState({}, '', '/checkout');
     };
 
     window.addEventListener('openUpsellModal', handleOpenUpsell);
@@ -324,25 +309,6 @@ const App = () => {
     if (product) setSelectedProduct(product);
     setActiveTab(tab);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    // Update URL without navigation
-    let newPath = '/';
-    if (tab === 'store') {
-      newPath = '/store';
-    } else if (tab === 'checkout') {
-      newPath = '/checkout';
-    } else if (tab === 'products') {
-      newPath = '/elite-pack';
-    } else if (tab === 'detail' && product?.id) {
-      const slug = PRODUCT_SLUGS[product.id] || product.id;
-      newPath = `/${slug}`;
-    } else if (tab === 'ultra') {
-      newPath = '/ultraworkflow';
-    } else if (tab === 'about') {
-      newPath = '/';
-    }
-
-    window.history.pushState({}, '', newPath);
   };
 
   const NavButtons = () => (
