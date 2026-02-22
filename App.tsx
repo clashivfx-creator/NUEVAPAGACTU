@@ -292,12 +292,22 @@ const App = () => {
       setActiveTab('checkout');
     };
 
+    const handleSetInitialTab = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      const tab = customEvent?.detail?.tab;
+      if (tab) {
+        setActiveTab(tab);
+      }
+    };
+
     window.addEventListener('openUpsellModal', handleOpenUpsell);
     window.addEventListener('customCheckoutTrigger', handleInterceptCheckout);
+    window.addEventListener('setInitialTab', handleSetInitialTab);
     
     return () => {
       window.removeEventListener('openUpsellModal', handleOpenUpsell);
       window.removeEventListener('customCheckoutTrigger', handleInterceptCheckout);
+      window.removeEventListener('setInitialTab', handleSetInitialTab);
     };
   }, []);
 
