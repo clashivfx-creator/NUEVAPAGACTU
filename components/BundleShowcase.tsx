@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect, useMemo, useRef } from 'react';
 import { FadeIn } from './ui/FadeIn';
-import { 
-  Tv, Sparkles, Flame, Cloud, Banknote, Zap, 
+import {
+  Tv, Sparkles, Flame, Cloud, Banknote, Zap,
   Palette, Smartphone, Layout, Scissors, Ghost, Volume2, Award, Check,
   Star, ChevronRight, Clock, Package, ShieldCheck, ZapIcon, MousePointer2, Plus, Minus,
   ArrowRight, ExternalLink, ShieldAlert, BadgeCheck, X, Music, ShoppingCart
@@ -20,13 +20,13 @@ const SoftwareLogos = () => {
   const softwares = [
     { name: 'Lightroom', logo: 'https://upload.wikimedia.org/wikipedia/commons/b/b6/Adobe_Photoshop_Lightroom_CC_logo.svg' },
     { name: 'Photoshop', logo: 'https://upload.wikimedia.org/wikipedia/commons/a/af/Adobe_Photoshop_CC_icon.svg' },
-    { name: 'Premiere Pro', logo: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770214190/Adobe_Premiere_Pro_CC_icon.svg_um6zec.png' },
-    { name: 'After Effects', logo: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770214189/Adobe_After_Effects_CC_icon.svg_1_okzvsz.png' },
-    { name: 'Final Cut', logo: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770214188/97f5f4dfe6df84d78caacff68ec63538_dsu36n.png' },
-    { name: 'DaVinci', logo: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770214187/DaVinci_Resolve_Studio_ebxpwn.png', scale: 'scale-[1.3]' },
-    { name: 'Vegas Pro', logo: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770214187/Vegas_Pro_15.0_kbkgf6.png' },
-    { name: 'Filmora', logo: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770214188/filmora-transparent-icon-free-png_vddcnn.webp', scale: 'scale-[1.5]' },
-    { name: 'CapCut', logo: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770214189/Capcut-icon_zsrexg.png' }
+    { name: 'Premiere Pro', logo: 'https://raw.githubusercontent.com/clashivfx-creator/MEDIA/57d3d73cf1d2b8361023082b3c7a353cceae2f85/Adobe_Premiere_Pro_CC_icon.svg.png' },
+    { name: 'After Effects', logo: 'https://raw.githubusercontent.com/clashivfx-creator/MEDIA/57d3d73cf1d2b8361023082b3c7a353cceae2f85/Adobe_After_Effects_CC_icon.svg%20(1).png' },
+    { name: 'Final Cut', logo: 'https://raw.githubusercontent.com/clashivfx-creator/MEDIA/57d3d73cf1d2b8361023082b3c7a353cceae2f85/97f5f4dfe6df84d78caacff68ec63538.png' },
+    { name: 'DaVinci', logo: 'https://raw.githubusercontent.com/clashivfx-creator/MEDIA/57d3d73cf1d2b8361023082b3c7a353cceae2f85/DaVinci_Resolve_Studio.png', scale: 'scale-[1.3]' },
+    { name: 'Vegas Pro', logo: 'https://raw.githubusercontent.com/clashivfx-creator/MEDIA/57d3d73cf1d2b8361023082b3c7a353cceae2f85/Vegas_Pro_15.0.png' },
+    { name: 'Filmora', logo: 'https://raw.githubusercontent.com/clashivfx-creator/MEDIA/57d3d73cf1d2b8361023082b3c7a353cceae2f85/filmora-transparent-icon-free-png.webp', scale: 'scale-[1.5]' },
+    { name: 'CapCut', logo: 'https://raw.githubusercontent.com/clashivfx-creator/MEDIA/57d3d73cf1d2b8361023082b3c7a353cceae2f85/Capcut-icon.png' }
   ];
 
   return (
@@ -55,7 +55,7 @@ const SoftwareLogos = () => {
 export const CountdownTimer = () => {
   const INITIAL_HOURS = 0;
   const INITIAL_MINUTES = 30;
-  const STORAGE_KEY = 'clashivfx_offer_timer_end_v30m'; 
+  const STORAGE_KEY = 'clashivfx_offer_timer_end_v30m';
   const [timeLeft, setTimeLeft] = useState({ h: INITIAL_HOURS, m: INITIAL_MINUTES, s: 0 });
 
   useEffect(() => {
@@ -76,7 +76,7 @@ export const CountdownTimer = () => {
       let diff = target - now;
       if (diff <= 0) {
         const newTarget = Date.now() + (INITIAL_HOURS * 3600 + INITIAL_MINUTES * 60) * 1000;
-        try { localStorage.setItem(STORAGE_KEY, newTarget.toString()); } catch (e) {}
+        try { localStorage.setItem(STORAGE_KEY, newTarget.toString()); } catch (e) { }
         diff = newTarget - now;
       }
       setTimeLeft({
@@ -127,7 +127,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
         name: t('product.platinum_name'),
         oldPrice: '590',
         newPrice: '9',
-        image: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770735767/Gemini_Generated_Image_415qgo415qgo415q_0-00-00-00_ddzyye.png',
+        image: 'https://raw.githubusercontent.com/clashivfx-creator/MEDIA/df400ef6c01fa19845ba4ac2d823b7a0c3e2424b/Gemini_Generated_Image_415qgo415qgo415q%20(0-00-00-00).png',
         resourcesLabel: t('bundle.resources_platinum'),
         reviewsCount: '236',
         isBestSeller: true
@@ -139,7 +139,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
       name: t('product.ultimate_name'),
       oldPrice: '690',
       newPrice: '29.99',
-      image: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770737015/aaaaaaaaaxa_0-00-00-00_.00_00_00_00.Imagen_fija001_hmnkuf.png',
+      image: 'https://raw.githubusercontent.com/clashivfx-creator/MEDIA/68188fbd934f38239f153e8e3066141a6d392dba/aaaaaaaaaxa%20(0-00-00-00).00_00_00_00.Imagen%20fija001.png',
       resourcesLabel: t('bundle.resources_count'),
       reviewsCount: '374',
       isBestSeller: true
@@ -193,7 +193,7 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
       (window as any).fbq('track', 'AddToCart', { content_name: productData.name, value: parseFloat(productData.newPrice), currency: 'USD' });
     }
     window.dispatchEvent(new CustomEvent('openUpsellModal', { detail: { productId: productData.shopifyId } }));
-    addToCartViaAPI(productData.shopifyId).catch(() => {});
+    addToCartViaAPI(productData.shopifyId).catch(() => { });
   };
 
 
@@ -212,8 +212,8 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
         { icon: Layout, name: 'Overlays', desc: t('vfx.all') }
       ],
       visuals: [
-        { type: 'image', url: "https://res.cloudinary.com/dbu9kzomq/image/upload/v1769800502/ghidd_pag_pewc99.gif" },
-        { type: 'video', url: "https://res.cloudinary.com/dbu9kzomq/video/upload/v1770687966/sdwq2dewdwqew_fh4dw5.mp4" }
+        { type: 'image', url: "https://raw.githubusercontent.com/clashivfx-creator/MEDIA/68188fbd934f38239f153e8e3066141a6d392dba/ghidd%20pag.gif" },
+        { type: 'video', url: "https://raw.githubusercontent.com/clashivfx-creator/MEDIA/8e004d4cbb88eb3ab02efcadff921b2d21cbb8ab/sdwq2dewdwqew.mp4" }
       ],
       aspect: "aspect-[9/16]"
     }
@@ -255,17 +255,17 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
       <div className="relative pt-6 sm:pt-8 pb-0 overflow-hidden">
         <div className="w-full lg:container lg:mx-auto lg:max-w-7xl lg:px-4">
           <div className="flex flex-col items-center">
-            
+
             {/* Top Badges */}
             <FadeIn delay={50} className="w-full flex flex-col items-center gap-1 mb-2.5 sm:mb-3.5 px-4">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-600/10 border border-purple-500/30">
                 <span className="text-purple-400 text-[8px] sm:text-[10px] font-black uppercase tracking-[0.12em] flex items-center gap-1.5">
-                   <ShieldCheck className="w-3.5 h-3.5" /> {productData.resourcesLabel}
+                  <ShieldCheck className="w-3.5 h-3.5" /> {productData.resourcesLabel}
                 </span>
               </div>
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
                 <span className="text-emerald-400 text-[8px] sm:text-[10px] font-black uppercase tracking-[0.12em] flex items-center gap-1.5">
-                   <Clock className="w-3.5 h-3.5" /> {t('bundle.limited_offer')}
+                  <Clock className="w-3.5 h-3.5" /> {t('bundle.limited_offer')}
                 </span>
               </div>
             </FadeIn>
@@ -278,17 +278,30 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
                 </div>
                 {/* Lado de información */}
                 <div className="w-full lg:w-[38%] p-6 sm:p-10 lg:p-6 xl:p-8 flex flex-col justify-center relative group overflow-visible">
-                  <h2 className="text-[10px] sm:text-xs lg:text-[11px] xl:text-[12px] font-black text-white uppercase tracking-tight mb-4 text-center lg:text-left drop-shadow-xl opacity-80">
-                    {variant === 'platinum' ? t('product.platinum_name') : t('bundle.title_main')}
+                  <h2 className="text-[14px] sm:text-lg lg:text-[13px] xl:text-[15px] font-black text-white uppercase tracking-tight mb-4 text-center lg:text-left drop-shadow-xl max-w-[280px] mx-auto lg:mx-0">
+                    {productData.name}
                   </h2>
-                  
-                  {/* RESEÑAS Y ESTRELLAS */}
-                  <div className="flex flex-wrap items-center justify-center lg:justify-start gap-1.5 mb-4 bg-white/5 w-fit px-2.5 py-1 rounded-full border border-white/10 mx-auto lg:mx-0">
-                    <div className="flex gap-0.5">{[...Array(5)].map((_, i) => <Star key={i} className="w-2.5 h-2.5 text-emerald-500 fill-current" />)}</div>
-                    <span className="text-white text-[7px] font-black tracking-tight uppercase flex items-center gap-1">
-                      <span>Excellent <span className="text-emerald-500">4.9/5</span></span>
-                      <span className="text-emerald-400">{productData.reviewsCount} {t('store.reviews_verified')}</span>
-                    </span>
+
+                  {/* RESEÑAS Y ESTRELLAS - Estilo exacto a la imagen con Glow y ajuste PC */}
+                  <div className="w-full sm:w-fit mb-5 bg-[#111111] rounded-full border border-white/5 px-4 lg:px-3 py-1.5 lg:py-1 flex flex-row items-center justify-center sm:justify-start gap-3 lg:gap-2.5 group/reviews hover:bg-[#161616] transition-all mx-auto lg:mx-0">
+                    <div className="flex items-center gap-2 lg:gap-1.5 shrink-0">
+                      <div className="flex gap-0.5">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className="w-2.5 h-2.5 lg:w-2 lg:h-2 text-emerald-500 fill-current"
+                          />
+                        ))}
+                      </div>
+                      <span className="text-white text-[8px] lg:text-[7.5px] font-black uppercase whitespace-nowrap flex items-center gap-1">
+                        EXCELLENT <span className="text-emerald-500 drop-shadow-[0_0_8px_rgba(16,185,129,0.7)]">4.9/5</span>
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <span className="text-emerald-500 text-[8px] lg:text-[7.5px] font-black uppercase whitespace-nowrap drop-shadow-[0_0_8px_rgba(16,185,129,0.7)]">
+                        {productData.reviewsCount} {t('store.reviews_verified')}
+                      </span>
+                    </div>
                   </div>
 
                   {/* LISTA DE BENEFICIOS */}
@@ -308,19 +321,19 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
                         ${productData.oldPrice}
                       </span>
                     </div>
-                    
+
                     <div className="mt-0 lg:mt-1 flex items-center gap-1.5">
-                       <Clock className="w-2.5 h-2.5 text-emerald-500 animate-pulse" />
-                       <CountdownTimer />
+                      <Clock className="w-2.5 h-2.5 text-emerald-500 animate-pulse" />
+                      <CountdownTimer />
                     </div>
-                    
+
                     <button
                       onClick={handleAddToCart}
                       className="w-full py-3 sm:py-4 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white font-black text-xs sm:text-sm uppercase tracking-wider rounded-full transition-all duration-200 shadow-[0_0_20px_rgba(34,197,94,0.3)] mt-3 lg:mt-2"
                     >
                       {lang === 'es' ? 'AGREGAR AL CARRITO' : 'ADD TO CART'}
                     </button>
-                    
+
                     {variant === 'elite' && (
                       <div className="mt-3 lg:mt-5 flex flex-col items-center lg:items-start gap-2.5 border-t border-white/5 pt-4 w-full">
                         <div className="flex items-center gap-2">
@@ -329,12 +342,12 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
                             DESCARGA ÚNICA
                           </span>
                         </div>
-  <div className="flex items-center gap-2">
-  <Zap className="w-2.5 h-2.5 text-purple-500" />
-  <span className="text-[7.5px] sm:text-[9px] font-black uppercase tracking-[0.2em] text-purple-400">
-  ACTUALIZACIONES DE POR VIDA
-  </span>
-  </div>
+                        <div className="flex items-center gap-2">
+                          <Zap className="w-2.5 h-2.5 text-purple-500" />
+                          <span className="text-[7.5px] sm:text-[9px] font-black uppercase tracking-[0.2em] text-purple-400">
+                            ACTUALIZACIONES DE POR VIDA
+                          </span>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -394,19 +407,19 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
 
                 {/* LADO DERECHO: TEXTOS DESCRIPTIVOS */}
                 <div className="w-full lg:w-[45%] grid grid-cols-2 gap-x-4 sm:gap-x-6 gap-y-4 sm:gap-y-6 lg:pt-10">
-                    {cat.items.map((item, i) => (
-                      <FadeIn key={i} delay={i * 30} className="flex flex-col items-center lg:items-start w-full">
-                        <div className="flex flex-col items-center lg:items-start gap-2 group">
-                          <div className="shrink-0 w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-purple-600 transition-all duration-300">
-                            <item.icon className="w-4.5 h-4.5 text-white" />
-                          </div>
-                          <div className="flex flex-col items-center lg:items-start">
-                            <h3 className="text-[14px] sm:text-base font-black text-white mb-0.5 uppercase tracking-tight leading-none text-center lg:text-left">{item.name}</h3>
-                            <p className="text-gray-500 text-[10px] sm:text-[11px] font-light leading-snug text-center lg:text-left max-w-[210px]">{item.desc}</p>
-                          </div>
+                  {cat.items.map((item, i) => (
+                    <FadeIn key={i} delay={i * 30} className="flex flex-col items-center lg:items-start w-full">
+                      <div className="flex flex-col items-center lg:items-start gap-2 group">
+                        <div className="shrink-0 w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-purple-600 transition-all duration-300">
+                          <item.icon className="w-4.5 h-4.5 text-white" />
                         </div>
-                      </FadeIn>
-                    ))}
+                        <div className="flex flex-col items-center lg:items-start">
+                          <h3 className="text-[14px] sm:text-base font-black text-white mb-0.5 uppercase tracking-tight leading-none text-center lg:text-left">{item.name}</h3>
+                          <p className="text-gray-500 text-[10px] sm:text-[11px] font-light leading-snug text-center lg:text-left max-w-[210px]">{item.desc}</p>
+                        </div>
+                      </div>
+                    </FadeIn>
+                  ))}
                 </div>
               </div>
             </div>
@@ -430,18 +443,18 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 max-w-7xl mx-auto">
               <FadeIn>
                 <div className="relative rounded-[2rem] overflow-hidden shadow-[0_0_50px_rgba(168,85,247,0.1)]">
-                   <BeforeAfterSlider 
-                     beforeImage="https://res.cloudinary.com/dbu9kzomq/image/upload/v1769797395/1_SIN_COLORR_duqhlg.png" 
-                     afterImage="https://res.cloudinary.com/dbu9kzomq/image/upload/v1769797395/1_COLORR_pys6wd.png"
-                   />
+                  <BeforeAfterSlider
+                    beforeImage="https://raw.githubusercontent.com/clashivfx-creator/MEDIA/8e004d4cbb88eb3ab02efcadff921b2d21cbb8ab/1%20SIN%20COLORR.png"
+                    afterImage="https://raw.githubusercontent.com/clashivfx-creator/MEDIA/8e004d4cbb88eb3ab02efcadff921b2d21cbb8ab/1%20COLORR.png"
+                  />
                 </div>
               </FadeIn>
               <FadeIn delay={100}>
                 <div className="relative rounded-[2rem] overflow-hidden shadow-[0_0_50px_rgba(168,85,247,0.1)]">
-                   <BeforeAfterSlider 
-                     beforeImage="https://res.cloudinary.com/dbu9kzomq/image/upload/v1769797197/2_SIN_COLOR_vwa1ek.png" 
-                     afterImage="https://res.cloudinary.com/dbu9kzomq/image/upload/v1769797198/2_COLOR_pb66sw.png"
-                   />
+                  <BeforeAfterSlider
+                    beforeImage="https://raw.githubusercontent.com/clashivfx-creator/MEDIA/8e004d4cbb88eb3ab02efcadff921b2d21cbb8ab/2%20SIN%20COLOR.png"
+                    afterImage="https://raw.githubusercontent.com/clashivfx-creator/MEDIA/8e004d4cbb88eb3ab02efcadff921b2d21cbb8ab/2%20COLOR.png"
+                  />
                 </div>
               </FadeIn>
             </div>
@@ -465,9 +478,9 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
               </FadeIn>
               <FadeIn delay={100}>
                 <div className="relative rounded-[2rem] overflow-hidden border border-white/10 bg-white/5 shadow-2xl group">
-                  <img 
-                    src="https://res.cloudinary.com/dbu9kzomq/image/upload/v1769810913/mjghkjmgjhmg_rc8xe5.png" 
-                    alt="Sound Effects Pack" 
+                  <img
+                    src="https://raw.githubusercontent.com/clashivfx-creator/MEDIA/155fbc8b915cab5008d29d1c3a44710631410c27/mjghkjmgjhmg.png"
+                    alt="Sound Effects Pack"
                     className="w-full h-auto object-cover transition-transform duration-1000 group-hover:scale-[1.02]"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 pointer-events-none" />
@@ -489,15 +502,15 @@ export const BundleShowcase: React.FC<BundleShowcaseProps> = ({ variant }) => {
         </div>
 
         <FadeIn delay={200} className="mt-32 text-center">
-           <div className="bg-gradient-to-br from-purple-900/40 to-black border border-white/10 rounded-[3rem] p-10 sm:p-32 shadow-2xl">
-             <h2 className="text-3xl sm:text-8xl font-black text-white uppercase tracking-tighter mb-8 leading-[0.85]">{t('bundle.cta_ready')} <br /> <span className="text-purple-500 italic">{t('bundle.cta_level')}</span></h2>
-             <button 
-               onClick={handleAddToCart}
-               className="bg-[#22c55e] hover:bg-[#16a34a] text-white shadow-[0_0_50px_rgba(34,197,94,0.6)] px-8 py-6 text-lg sm:text-3xl rounded-full font-black uppercase tracking-tighter flex items-center justify-center gap-4 mx-auto transition-all active:scale-95"
-             >
-               {t('bundle.cta_btn')} <ChevronRight className="w-8 h-8" />
-             </button>
-           </div>
+          <div className="bg-gradient-to-br from-purple-900/40 to-black border border-white/10 rounded-[3rem] p-10 sm:p-32 shadow-2xl">
+            <h2 className="text-3xl sm:text-8xl font-black text-white uppercase tracking-tighter mb-8 leading-[0.85]">{t('bundle.cta_ready')} <br /> <span className="text-purple-500 italic">{t('bundle.cta_level')}</span></h2>
+            <button
+              onClick={handleAddToCart}
+              className="bg-[#22c55e] hover:bg-[#16a34a] text-white shadow-[0_0_50px_rgba(34,197,94,0.6)] px-8 py-6 text-lg sm:text-3xl rounded-full font-black uppercase tracking-tighter flex items-center justify-center gap-4 mx-auto transition-all active:scale-95"
+            >
+              {t('bundle.cta_btn')} <ChevronRight className="w-8 h-8" />
+            </button>
+          </div>
         </FadeIn>
       </div>
     </div>

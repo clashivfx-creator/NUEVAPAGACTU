@@ -10,15 +10,15 @@ interface UpsellModalProps {
 }
 
 const ALL_PRODUCTS = [
-  { shopifyId: '8476233466031', name: '2026 Ultimate Editing Pack', nameKey: 'product.ultimate_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770737015/aaaaaaaaaxa_0-00-00-00_.00_00_00_00.Imagen_fija001_hmnkuf.png', oldPrice: '690', newPrice: '29.99' },
-  { shopifyId: '8480949338287', name: 'PLATINUM LUTs PACK', nameKey: 'product.platinum_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770735767/Gemini_Generated_Image_415qgo415qgo415q_0-00-00-00_ddzyye.png', oldPrice: '590', newPrice: '9' },
-  { shopifyId: '8170902323375', name: 'PACK AVANZADO', nameKey: 'product.advanced_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787956/PACK_AVANZADO_krghxs.gif', oldPrice: '79.99', newPrice: '19.99' },
-  { shopifyId: '8239170584751', name: 'REEL EDITABLE', nameKey: 'product.reel_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1770334329/ssstik.io__clashivfx_1765467778171_sdxohb.gif', oldPrice: '49.99', newPrice: '19.99' },
-  { shopifyId: '8211512656047', name: 'MIXED MEDIA', nameKey: 'product.mixed_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787956/mixmedia_xcb5po.gif', oldPrice: '49.99', newPrice: '14.99' },
-  { shopifyId: '8448020152495', name: 'YEAT PROJECT', nameKey: 'product.yeat_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787949/YEAT_oqvxyf.gif', oldPrice: '49.99', newPrice: '19.99' },
-  { shopifyId: '8476755034287', name: 'SHAKES', nameKey: 'product.shakes_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787949/SHAKES_dimjeh.gif', oldPrice: '49.99', newPrice: '9.99' },
-  { shopifyId: '8277720498351', name: 'TITULO 3D', nameKey: 'product.title3d_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787941/TITULO_xecwfj.gif', oldPrice: '19.99', newPrice: '4.99' },
-  { shopifyId: '8473627754671', name: 'ULTRAWORKFLOW', nameKey: 'product.workflow_name', img: 'https://res.cloudinary.com/dbu9kzomq/image/upload/v1769787944/ultraworkflow_ocxa8x.gif', oldPrice: '50.00', newPrice: '39.99' },
+  { shopifyId: '8476233466031', name: '2026 Ultimate Editing Pack', nameKey: 'product.ultimate_name', img: 'https://raw.githubusercontent.com/clashivfx-creator/MEDIA/68188fbd934f38239f153e8e3066141a6d392dba/aaaaaaaaaxa%20(0-00-00-00).00_00_00_00.Imagen%20fija001.png', oldPrice: '690', newPrice: '29.99' },
+  { shopifyId: '8480949338287', name: 'PLATINUM LUTs PACK', nameKey: 'product.platinum_name', img: 'https://raw.githubusercontent.com/clashivfx-creator/MEDIA/df400ef6c01fa19845ba4ac2d823b7a0c3e2424b/Gemini_Generated_Image_415qgo415qgo415q%20(0-00-00-00).png', oldPrice: '590', newPrice: '9' },
+  { shopifyId: '8170902323375', name: 'PACK AVANZADO', nameKey: 'product.advanced_name', img: 'https://raw.githubusercontent.com/clashivfx-creator/MEDIA/8e004d4cbb88eb3ab02efcadff921b2d21cbb8ab/VIDEOPAGINA1500X1500_TERMINAENBUCLE%20(1).gif', oldPrice: '79.99', newPrice: '19.99' },
+  { shopifyId: '8239170584751', name: 'REEL EDITABLE', nameKey: 'product.reel_name', img: 'https://raw.githubusercontent.com/clashivfx-creator/MEDIA/b1df4397a668b7c7fba94d7ea0d9a25bcc506486/ssstik.io__clashivfx_1765467778171%20(1).gif', oldPrice: '49.99', newPrice: '19.99' },
+  { shopifyId: '8211512656047', name: 'MIXED MEDIA', nameKey: 'product.mixed_name', img: 'https://raw.githubusercontent.com/clashivfx-creator/MEDIA/68188fbd934f38239f153e8e3066141a6d392dba/yafue_1_0b1b8d6c-1b1d-4f93-9932-59313a4563bd.gif', oldPrice: '49.99', newPrice: '14.99' },
+  { shopifyId: '8448020152495', name: 'YEAT PROJECT', nameKey: 'product.yeat_name', img: 'https://raw.githubusercontent.com/clashivfx-creator/MEDIA/68188fbd934f38239f153e8e3066141a6d392dba/h264%20(2).gif', oldPrice: '49.99', newPrice: '19.99' },
+  { shopifyId: '8476755034287', name: 'SHAKES', nameKey: 'product.shakes_name', img: 'https://raw.githubusercontent.com/clashivfx-creator/MEDIA/68188fbd934f38239f153e8e3066141a6d392dba/CENTRALCEEFT.LILBABY-BAND4BAND_MUSICVIDEO__1%20(1).gif', oldPrice: '49.99', newPrice: '9.99' },
+  { shopifyId: '8277720498351', name: 'TITULO 3D', nameKey: 'product.title3d_name', img: 'https://raw.githubusercontent.com/clashivfx-creator/MEDIA/8e004d4cbb88eb3ab02efcadff921b2d21cbb8ab/AdobeExpress-Comp1_1%20(1).gif', oldPrice: '19.99', newPrice: '4.99' },
+  { shopifyId: '8473627754671', name: 'ULTRAWORKFLOW', nameKey: 'product.workflow_name', img: 'https://raw.githubusercontent.com/clashivfx-creator/MEDIA/68188fbd934f38239f153e8e3066141a6d392dba/videonashhh%20(1).gif', oldPrice: '50.00', newPrice: '39.99' },
 ];
 
 export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose, selectedProductId }) => {
@@ -58,7 +58,7 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose, selec
 
       window.ShopifyBuy.UI.onReady(client).then((ui: any) => {
         if (cancelled) return;
-        
+
         // Initialize selected product button (top)
         if (selectedProduct) {
           const selectedNode = document.getElementById('upsell-selected-product');
@@ -85,16 +85,21 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose, selec
                     "button": {
                       "font-family": "Manrope, sans-serif",
                       "font-weight": "900",
-                      "background-color": "#22c55e",
-                      "border": "2px solid #22c55e",
+                      "background-color": "#10b981",
                       "border-radius": "50px",
                       "font-size": "13px",
+                      "text-shadow": "none",
                       "padding": "14px 28px",
-                      ":hover": { "background-color": "#16a34a", "border-color": "#16a34a" }
+                      "box-shadow": "none",
+                      ":hover": {
+                        "background-color": "#059669",
+                        "box-shadow": "none"
+                      },
+                      "transition": "all 0.3s ease"
                     }
                   },
                   "contents": { "img": false, "title": false, "price": false },
-                  "text": { "button": lang === 'es' ? "CONTINUAR SOLO CON ESTE PRODUCTO" : "CONTINUE WITH THIS PRODUCT ONLY" }
+                  "text": { "button": lang === 'es' ? "AGREGAR" : "ADD" }
                 }
               }
             });
@@ -129,11 +134,16 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose, selec
                     "button": {
                       "font-family": "Manrope, sans-serif",
                       "font-weight": "900",
-                      "background-color": "#22c55e",
+                      "background-color": "#10b981",
                       "border-radius": "40px",
                       "font-size": "11px",
+                      "text-shadow": "none",
                       "padding": "10px 16px",
-                      ":hover": { "background-color": "#16a34a" }
+                      "box-shadow": "none",
+                      ":hover": {
+                        "background-color": "#059669",
+                        "box-shadow": "none"
+                      }
                     }
                   },
                   "contents": { "img": false, "title": false, "price": false },
@@ -182,11 +192,11 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose, selec
       script.onload = initShopify;
     };
 
-    // Small delay to ensure DOM nodes are rendered
-    const timer = setTimeout(loadScript, 100);
+    // Initialize Shopify UI immediately without delay to make the button appear "instantly"
+    loadScript();
+
     return () => {
       cancelled = true;
-      clearTimeout(timer);
       const selectedNode = document.getElementById('upsell-selected-product');
       if (selectedNode) {
         selectedNode.innerHTML = '';
@@ -285,21 +295,29 @@ export const UpsellModal: React.FC<UpsellModalProps> = ({ isOpen, onClose, selec
           {/* Other Products Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
             {otherProducts.map((prod, idx) => (
-              <div key={prod.shopifyId} className="bg-white/[0.03] border border-white/10 rounded-xl sm:rounded-2xl p-3 sm:p-4 flex flex-col items-center group hover:border-emerald-500/50 transition-all hover:-translate-y-1">
-                <div className="relative aspect-square w-full rounded-lg sm:rounded-xl overflow-hidden mb-3 sm:mb-4">
+              <div key={prod.shopifyId} className="relative bg-gradient-to-br from-white/[0.05] to-transparent border border-white/10 rounded-xl sm:rounded-2xl p-3 sm:p-5 flex flex-col items-center group hover:border-emerald-500/50 transition-all hover:-translate-y-2 shadow-xl">
+                {/* Exclusivity glow */}
+                <div className="absolute -top-10 -right-10 w-20 h-20 bg-emerald-500/10 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                <div className="relative aspect-square w-full rounded-lg sm:rounded-xl overflow-hidden mb-3 sm:mb-5">
                   <img src={prod.img} alt={t(prod.nameKey)} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                  <div className="absolute top-2 right-2 bg-red-600 text-white text-[9px] sm:text-[11.5px] font-black px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full uppercase shadow-xl animate-pulse">
-                    -40%
+                  <div className="absolute top-2 right-2 gold-shine-badge text-[9px] sm:text-[11px] px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full uppercase shadow-xl">
+                    -40% OFF
+                  </div>
+                  <div className="absolute bottom-2 left-2 bg-black/80 backdrop-blur-md text-white text-[7px] sm:text-[8px] font-black px-2 py-1 rounded-md uppercase tracking-widest border border-white/10">
+                    {lang === 'es' ? 'OFERTA ÚNICA' : 'ONE-TIME OFFER'}
                   </div>
                 </div>
-                <h3 className="text-[10px] sm:text-xs font-black text-white uppercase mb-1 text-center truncate w-full">
+                <h3 className="text-[10px] sm:text-xs font-black text-white uppercase mb-2 text-center truncate w-full group-hover:text-emerald-400 transition-colors">
                   {t(prod.nameKey)}
                 </h3>
-                <div className="flex items-baseline gap-1.5 mb-3">
-                  <span className="text-gray-600 line-through text-[9px] sm:text-[10px] font-bold">${prod.newPrice}</span>
-                  <span className="text-emerald-500 text-sm sm:text-base font-black">${(parseFloat(prod.newPrice) * 0.6).toFixed(2)}</span>
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="text-white/20 line-through text-[9px] sm:text-[10px] font-bold">${prod.newPrice}</span>
+                  <div className="px-2 py-0.5 bg-emerald-500/10 rounded-md border border-emerald-500/20">
+                    <span className="text-[#22c55e] text-sm sm:text-lg font-black tracking-tighter">${(parseFloat(prod.newPrice) * 0.6).toFixed(2)}</span>
+                  </div>
                 </div>
-                <div id={`upsell-dynamic-${idx}`} className="w-full flex justify-center" />
+                <div id={`upsell-dynamic-${idx}`} className="w-full flex justify-center scale-105" />
               </div>
             ))}
           </div>
