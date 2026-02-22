@@ -122,16 +122,10 @@ export const CommercialStore: React.FC = () => {
     else window.dispatchEvent(new CustomEvent('customCheckoutTrigger'));
   };
   const handleProductClick = (product: Product) => {
-    if (product.customAction === 'elite') {
-      setActiveTab('products');
-    } else if (product.customAction === 'platinum') {
-      setActiveTab('platinum');
-      window.history.pushState({}, '', '/platinum-luts-pack');
-    } else if (product.customAction === 'ultra') {
-      setActiveTab('ultra');
-    } else if (product.customAction === 'detail') {
-      setActiveTab('detail', product);
-    }
+    if (product.customAction === 'elite') setActiveTab('products');
+    else if (product.customAction === 'platinum') setActiveTab('platinum');
+    else if (product.customAction === 'ultra') setActiveTab('ultra');
+    else if (product.customAction === 'detail') setActiveTab('detail', product);
   };
 
   return (

@@ -75,8 +75,8 @@ const translations = {
     'store.pay_now': 'PAGAR AHORA',
     'footer.rights': 'ClashiVFX - Herramientas de nivel industria para editores exigentes.',
     'bundle.tagline': 'LA HERRAMIENTA DEFINITIVA PARA EDITORES',
-    'bundle.reviews': '1,117 reseñas verificadas',
-    'bundle.reviews_platinum': '436 reseñas verificadas',
+    'bundle.reviews': '374 reseñas verificadas',
+    'bundle.reviews_platinum': '236 reseñas verificadas',
     'bundle.rated': 'Excelente',
     'bundle.compatible': 'Compatible y testeado en todos los programas de edición',
     'bundle.title_main': 'El pack definitivo para editar más rápido con calidad profesional',
@@ -268,13 +268,9 @@ const translations = {
   }
 };
 
-interface AppProps {
-  initialTab?: ActiveTab;
-}
-
-const App = ({ initialTab = 'products' }: AppProps = {}) => {
+const App = () => {
   const [lang, setLang] = useState<'es' | 'en'>('es');
-  const [activeTab, setActiveTab] = useState<ActiveTab>(initialTab);
+  const [activeTab, setActiveTab] = useState<ActiveTab>('products');
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [showUpsell, setShowUpsell] = useState(false);
   const [upsellExcludeId, setUpsellExcludeId] = useState<string | null>(null);
@@ -296,22 +292,12 @@ const App = ({ initialTab = 'products' }: AppProps = {}) => {
       setActiveTab('checkout');
     };
 
-    const handleSetInitialTab = (e: Event) => {
-      const customEvent = e as CustomEvent;
-      const tab = customEvent?.detail?.tab;
-      if (tab) {
-        setActiveTab(tab);
-      }
-    };
-
     window.addEventListener('openUpsellModal', handleOpenUpsell);
     window.addEventListener('customCheckoutTrigger', handleInterceptCheckout);
-    window.addEventListener('setInitialTab', handleSetInitialTab);
     
     return () => {
       window.removeEventListener('openUpsellModal', handleOpenUpsell);
       window.removeEventListener('customCheckoutTrigger', handleInterceptCheckout);
-      window.removeEventListener('setInitialTab', handleSetInitialTab);
     };
   }, []);
 
