@@ -268,13 +268,9 @@ const translations = {
   }
 };
 
-interface AppProps {
-  initialTab?: ActiveTab;
-}
-
-const App = ({ initialTab = 'products' }: AppProps = {}) => {
+const App = () => {
   const [lang, setLang] = useState<'es' | 'en'>('es');
-  const [activeTab, setActiveTab] = useState<ActiveTab>(initialTab);
+  const [activeTab, setActiveTab] = useState<ActiveTab>('products');
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [showUpsell, setShowUpsell] = useState(false);
   const [upsellExcludeId, setUpsellExcludeId] = useState<string | null>(null);
