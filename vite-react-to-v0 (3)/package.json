@@ -1,0 +1,26 @@
+{
+  "name": "clashivfx",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "three": "0.170.0",
+    "lucide-react": "^0.562.0",
+    "react-dom": "^19.0.0",
+    "react": "^19.0.0",
+    "next": "^15.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/three": "^0.170.0",
+    "typescript": "~5.8.2",
+    "tailwindcss": "^4",
+    "@tailwindcss/postcss": "^4"
+  }
+}
