@@ -7,6 +7,8 @@ const nextConfig = {
       { protocol: 'https', hostname: 'flagcdn.com' },
     ],
   },
+  trailingSlash: false,
+  skipTrailingSlashRedirect: true,
 };
 
 export default nextConfig;
