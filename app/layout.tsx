@@ -52,7 +52,7 @@ export default function RootLayout({
             t.src=v;s=b.getElementsByTagName(e)[0];
             s.parentNode.insertBefore(t,s)}(window, document,'script',
             'https://connect.facebook.net/en_US/fbevents.js');
-            fbq('init', '927443432987006');
+            fbq('init', '1594983758216504');
             fbq('track', 'PageView');
             fbq('track', 'ViewContent', {
               content_name: 'Catálogo VFX',
@@ -65,7 +65,7 @@ export default function RootLayout({
             height="1"
             width="1"
             style={{ display: "none" }}
-            src="https://www.facebook.com/tr?id=927443432987006&ev=PageView&noscript=1"
+            src="https://www.facebook.com/tr?id=1594983758216504&ev=PageView&noscript=1"
             alt=""
           />
         </noscript>
