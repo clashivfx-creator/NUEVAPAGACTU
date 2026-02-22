@@ -19,9 +19,5 @@ export default function CatchAllPage({ params }: { params: Promise<{ slug?: stri
   const slug = resolvedParams.slug?.[0] || '';
   const initialTab = pathToTab[slug] || 'products';
   
-  useEffect(() => {
-    console.log('[v0] CatchAllPage - slug:', slug, 'initialTab:', initialTab);
-  }, [slug, initialTab]);
-  
   return <App initialTab={initialTab} />;
 }
