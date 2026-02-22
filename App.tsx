@@ -268,9 +268,13 @@ const translations = {
   }
 };
 
-const App = () => {
+interface AppProps {
+  initialTab?: ActiveTab;
+}
+
+const App = ({ initialTab = 'products' }: AppProps = {}) => {
   const [lang, setLang] = useState<'es' | 'en'>('es');
-  const [activeTab, setActiveTab] = useState<ActiveTab>('products');
+  const [activeTab, setActiveTab] = useState<ActiveTab>(initialTab);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [showUpsell, setShowUpsell] = useState(false);
   const [upsellExcludeId, setUpsellExcludeId] = useState<string | null>(null);
@@ -292,22 +296,12 @@ const App = () => {
       setActiveTab('checkout');
     };
 
-    const handleSetInitialTab = (e: Event) => {
-      const customEvent = e as CustomEvent;
-      const tab = customEvent?.detail?.tab;
-      if (tab) {
-        setActiveTab(tab);
-      }
-    };
-
     window.addEventListener('openUpsellModal', handleOpenUpsell);
     window.addEventListener('customCheckoutTrigger', handleInterceptCheckout);
-    window.addEventListener('setInitialTab', handleSetInitialTab);
     
     return () => {
       window.removeEventListener('openUpsellModal', handleOpenUpsell);
       window.removeEventListener('customCheckoutTrigger', handleInterceptCheckout);
-      window.removeEventListener('setInitialTab', handleSetInitialTab);
     };
   }, []);
 
